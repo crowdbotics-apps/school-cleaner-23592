@@ -24,14 +24,14 @@ class User(AbstractUser):
         max_length=255,
     )
     phone = models.CharField(
-        max_length=256,
         null=True,
         blank=True,
+        max_length=256,
     )
     employer_code = models.CharField(
-        max_length=256,
         null=True,
         blank=True,
+        max_length=256,
     )
     is_superadmin = models.BooleanField(
         null=True,
