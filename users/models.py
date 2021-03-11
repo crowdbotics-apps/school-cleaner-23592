@@ -42,6 +42,7 @@ class User(AbstractUser):
         blank=True,
     )
     is_inspector = models.BooleanField(
+        default=True,
         null=True,
         blank=True,
     )
