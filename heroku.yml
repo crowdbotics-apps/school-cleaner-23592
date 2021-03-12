@@ -4,7 +4,12 @@ build:
   config:
     DEBUG_COLLECTSTATIC: 1
     SECRET_KEY: build
+    NODE_ENV: production
+    PORT: 3000
+    REACT_APP_SCHOOL_CLEANER_URL:
+    REACT_APP_SCHOOL_CLEANER_API_TOKEN: 
+    REACT_APP_SCHOOL_CLEANER_API_BASE_URL:
 release:
   image: web
   command:
-    - python3 manage.py migrate
+    - cd backend && python3 manage.py migrate
