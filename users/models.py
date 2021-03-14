@@ -36,10 +36,12 @@ class User(AbstractUser):
     is_superadmin = models.BooleanField(
         null=True,
         blank=True,
+        default=False
     )
     is_admin = models.BooleanField(
         null=True,
         blank=True,
+        default=False
     )
     is_inspector = models.BooleanField(
         default=True,

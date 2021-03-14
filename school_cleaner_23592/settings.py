@@ -56,8 +56,8 @@ LOCAL_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
-    "rest_auth",
-    "rest_auth.registration",
+    "rest_auth_custom",
+    "rest_auth_custom.registration",
     "bootstrap4",
     "allauth",
     "allauth.account",
@@ -188,7 +188,8 @@ REST_AUTH_SERIALIZERS = {
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
     # Use custom serializer that has no username and matches web signup
-    "REGISTER_SERIALIZER": "home.api.v1.serializers.SignupSerializer",
+    # "REGISTER_SERIALIZER": "home.api.v1.serializers.SignupSerializer",
+    "REGISTER_SERIALIZER": "rest_auth_custom.registration.serializers.RegisterSerializer",
 }
 
 # Custom user model
