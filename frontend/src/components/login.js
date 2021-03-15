@@ -1,7 +1,8 @@
 import './App.css';
+import React from 'react';
 import device from './device.jpg';
 
-function App() {
+export default function LogIn() {
   return (
     <div class="device-holder d-flex h-100">
       <div class="image-holder flex-fill">
@@ -47,5 +48,3 @@ function App() {
   </div>
   );
 }
-
-export default App;
