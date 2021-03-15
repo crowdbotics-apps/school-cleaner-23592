@@ -52,6 +52,7 @@ LOCAL_APPS = [
     "home",
     "modules",
     "users.apps.UsersConfig",
+    "corsheaders",
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
@@ -70,7 +71,7 @@ THIRD_PARTY_APPS = [
 INSTALLED_APPS += LOCAL_APPS + THIRD_PARTY_APPS
 
 MIDDLEWARE = [
-    "school_cleaner_23592.middleware.CORSMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -80,6 +81,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware"
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = "school_cleaner_23592.urls"
 
