@@ -31,12 +31,10 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path(r'', views.catchall),
     path("", include("home.urls")),
     path("accounts/", include("allauth.urls")),
     path("modules/", include("modules.urls")),
     path("api/v1/", include("home.api.v1.urls")),
-    path("admin/", admin.site.urls),
     path("users/", include("users.urls", namespace="users")),
 
     path("rest-auth/", include("rest_auth_custom.urls")),
@@ -44,6 +42,7 @@ urlpatterns = [
     # Override email confirm to use allauth's HTML view instead of rest_auth's API view
     path("rest-auth/registration/account-confirm-email/<str:key>/", confirm_email),
     path("home/", include("home.urls")),
+    re_path(r'', views.catchall),
 ]
 
 
