@@ -13,10 +13,6 @@ const getToken = (name = 'token') => {
   return Cookies.get(name);
 };
 
-const csrfCookie = (name = 'XSRF-TOKEN') => {
-  return Cookies.get(name);
-};
-
 const Axios = axios.create({
   baseURL,
   timeout: 80000,
@@ -27,10 +23,6 @@ Axios.interceptors.request.use(
   async (config) => {
     const token = getToken('token');
     if (token) config.headers.Authorization = `Token ${token}`;
-    // config.headers.xsrfHeaderName = csrfCookie
-
-    config.headers.xsrfCookieName = "csrftoken";
-    config.headers.xsrfHeaderName = csrfCookie;
 
 
     return config;
