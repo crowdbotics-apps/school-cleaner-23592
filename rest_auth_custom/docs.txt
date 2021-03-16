@@ -1,0 +1,42 @@
+
+/rest-auth/login/ (POST)
+
+    email
+    password
+    Returns Token key
+
+/rest-auth/logout/ (POST)
+
+    # without any param 
+    # post request for secure logouts
+
+/rest-auth/password/reset/ (POST)
+
+    email
+
+/rest-auth/password/reset/confirm/ (POST)
+
+    uid
+    token
+    new_password1
+    new_password2
+
+    # uid+token are sent in email for verification
+
+
+/rest-auth/password/change/ (POST)
+
+    new_password1
+    new_password2
+    old_password
+
+
+/rest-auth/registration/ (POST)
+
+    email
+    password1
+    password2
+    first_name
+    last_name
+    employer_code
+    phone
