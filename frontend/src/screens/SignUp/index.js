@@ -1,11 +1,8 @@
-import '../../main/App.css';
 import React,{ useState, useEffect } from 'react';
 import device from "../../assets/images/device.jpg";
 import { signup } from '../../modules/actions/AuthActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-
-
 
 export default function SignUp() {
   const dispatch = useDispatch();
@@ -20,7 +17,7 @@ export default function SignUp() {
     }
   }, [success]);
 
-  const [signUpDetails, setSignUpDetails] = useState({first_name: '', last_name: '',email: '',phone_no:'',password: '',confirm_password: '', employer_code: '' });
+  const [signUpDetails, setSignUpDetails] = useState({first_name: '', last_name: '', email: '', phone_no:'', password: '', confirm_password: '', employer_code: '' });
   const [validated, setValidated] = useState(false);
 
   const handleChange = ({ target: { name, value } }) => {
@@ -108,5 +105,3 @@ export default function SignUp() {
     </div>   
   );
 }
-
-

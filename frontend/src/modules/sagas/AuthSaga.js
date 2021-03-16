@@ -15,6 +15,9 @@ import {
   CHANGE_PASSWORD_ERROR,
   CHANGE_PASSWORD_REQUEST,
   CHANGE_PASSWORD_SUCCESS,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_ERROR,
 } from '../reducers/AuthReducer';
 
 async function signup({ first_name,last_name,email,phone_no,password,confirm_password,employer_code }) {
@@ -72,10 +75,10 @@ function* handleLogin({ payload }) {
 }
 
 async function forgotPassword({ email, reset_url }) {
-  // return await Axios.post('/password-reset/', {
-  //   email,
-  //   reset_url,
-  // });
+  return await Axios.post('/rest-auth/password/reset/', {
+    email,
+    reset_url,
+  });
 }
 function* handleForgotPassword({ payload }) {
   try {
@@ -94,22 +97,34 @@ function* handleForgotPassword({ payload }) {
 }
 
 async function changePassword({ token, password }) {
-  // return await Axios.post('/password-reset/confirm/', {
-  //   token,
-  //   password,
-  // });
+  return await Axios.post('/password-reset/confirm/', {
+    token,
+    password,
+  });
 }
+
+
+async function resetPassword({ uuid, token , password, confirm_password }) {
+  return await Axios.post('/rest-auth/password/reset/confirm/', {
+    uuid,
+    token,
+    password,
+    confirm_password
+  });
+}
+
+
 function* handleResetPassword({ payload }) {
   try {
-    const { status } = yield call(changePassword, payload);
+    const { status } = yield call(resetPassword, payload);
     if (status === 200) {
       yield put({
-        type: CHANGE_PASSWORD_SUCCESS,
+        type: RESET_PASSWORD_SUCCESS,
       });
     }
   } catch (error) {
     yield put({
-      type: CHANGE_PASSWORD_ERROR,
+      type: RESET_PASSWORD_ERROR,
       error: getSimplifiedError(error),
     });
   }
@@ -119,5 +134,5 @@ export default all([
   takeLatest(SIGNUP_REQUEST, handleSignup),
   takeLatest(LOGIN_REQUEST, handleLogin),
   takeLatest(FORGOT_PASSWORD_REQUEST, handleForgotPassword),
-  takeLatest(CHANGE_PASSWORD_REQUEST, handleResetPassword),
+  takeLatest(RESET_PASSWORD_REQUEST, handleResetPassword),
 ]);

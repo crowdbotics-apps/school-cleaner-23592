@@ -1,0 +1,129 @@
+// Place all the styles related to the device controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: https://sass-lang.com/
+
+$base-color: #136162;
+html,
+body{
+	height: 100%;
+	font-family: 'Roboto', sans-serif !important;
+	overflow-x:hidden;
+	a{
+		color: $base-color;
+		&:hover {
+	   	 color: $base-color;
+		}
+	}
+	.form-control{
+		color: rgba(5, 36, 37, 0.6);
+		font-size: 14px;		
+	}
+	input::placeholder{
+			color: rgba(5, 36, 37, 0.6);
+		}
+	.form-floating > {
+		.password-holder {
+			position: relative;
+			.eye-icon {
+
+			}
+		}
+	  .form-control {
+	    &:focus ~ label, &:not(:placeholder-shown) ~ label {
+	      opacity: 9;
+	      transform: scale(0.85) translateY(-0.9rem) translateX(0.15rem);
+	      background: #fff;
+	      margin-left: 5px;
+	      padding: 0 5px;
+	      height: auto;
+	      color: rgba(5, 36, 37, 0.6);
+	      border-radius: 4px;
+	    }
+	  }
+
+	  .form-select ~ label {
+	    opacity: 9;
+	    transform: scale(0.85) translateY(-0.9rem) translateX(0.15rem);
+	    background: #fff;
+	    margin-left: 5px;
+	    padding: 0 5px;
+	    height: auto;
+	    color: rgba(5, 36, 37, 0.6);
+	    border-radius: 4px;
+	  }
+	}
+
+	.form-control:focus {
+	  color: #212529;
+	  background-color: #fff;
+	  border-color: #ced4da;
+	  outline: 0;
+	  box-shadow: none;
+	}
+
+	.form-floating > {
+	  .form-control {
+	    &:focus, &:not(:placeholder-shown) {
+	      padding-top: 0.8rem;
+	      padding-bottom: .625rem;
+	    }
+	  }
+
+	  label {
+	    padding: 0.6rem .75rem;
+	    color: rgba(5, 36, 37, 0.6);
+	  }
+
+	  .form-control, .form-select {
+	    height: 48px;
+	    padding: 1rem .75rem;
+	  }
+	}
+	.form-check {
+		.form-check-label {
+			color: $base-color;
+		}
+	}
+	.password-holder {
+		position: relative;
+		.form-control {
+			padding-right: 44px;
+		}
+		.eye-icon {
+			position: absolute;
+			top: 15px;
+			right: 15px;
+			cursor: pointer;
+		}
+	}
+	.btn-primary:active,
+	.btn-primary:focus,
+	.btn-primary {
+		background-color: $base-color;
+		border-color: $base-color;
+		text-transform: uppercase;
+		min-height: 48px;
+		box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 3px 1px rgba(0, 0, 0, 0.12), 0px 1px 5px rgba(0, 0, 0, 0.2);
+		&:hover {
+			background: #fff;
+			color: $base-color;
+			border-color: $base-color;
+		}
+	}
+	.btn-light{
+		color: $base-color;
+		text-transform: uppercase;
+		min-height: 48px;
+		box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.14), 0px 3px 1px rgba(0, 0, 0, 0.12), 0px 1px 5px rgba(0, 0, 0, 0.2);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		&:hover {
+			background: $base-color;
+			color: #fff;
+			border-color: $base-color;
+		}
+	}
+}
+ 
+ 

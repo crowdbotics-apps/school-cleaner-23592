@@ -1,13 +1,14 @@
-import '../../main/App.css';
 import React,{ useState, useEffect } from 'react';
 import device from "../../assets/images/device.jpg";
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { login } from '../../modules/actions/AuthActions';
+import { forgotPassword }  from '../../modules/actions/AuthActions';
 import CSRFToken from '../../utils/csrfToken';
-
-
-
+import "./login.scss";
+import $ from 'jquery';
+import '../../../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import '../../../node_modules/bootstrap/dist/js/bootstrap.js';
 
 const LogIn = () => {
   const dispatch = useDispatch();
@@ -23,10 +24,15 @@ const LogIn = () => {
   }, [success]);
 
   const [loginDetails, setLoginDetails] = useState({ email: '', password: '' });
+  const [email, setEmail] = useState('');
   const [validated, setValidated] = useState(false);
 
   const handleChange = ({ target: { name, value } }) => {
     setLoginDetails({ ...loginDetails, [name]: value });
+  };
+
+  const handleForgetPasswordChange = ({ target: { value } }) => {
+    setEmail(value);
   };
 
   const handleSubmit = (e) => {
@@ -41,7 +47,14 @@ const LogIn = () => {
   };
 
   const handleClick = () => {
-    alert("forget password clicked")
+    if(email != '') {
+      $('.modal').modal('hide');
+      $('body').removeClass('modal-open');
+      $('.modal-backdrop').remove();
+      dispatch(forgotPassword(email));
+      history.push('/reset-password');
+    }
+    
   }
 
   return (
@@ -70,32 +83,36 @@ const LogIn = () => {
                        placeholder="sample@example.com"
                        name="email"
                        value={loginDetails.email}
-                      onChange={handleChange}>
+                       onChange={handleChange}
+                      required={true}
+                      >
                       </input>
                       <label for="name">Email address</label>
                     </div>
                 </div>
                  <div class="mb-4">
                     <div class="form-floating">
-                      <input type="password" class="form-control" id="floatingPassword" placeholder="Password"></input>
+                      <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
+                      name="password"
+                      value={loginDetails.password}
+                      onChange={handleChange}
+                      required={true}
+                      ></input>
                       <label for="floatingPassword">Password</label>
                     </div>
                 </div>
                 <div class="mb-4 form-check d-flex justify-content-between">
                   <div>
-                    <input type="checkbox" class="form-check-input" id="exampleCheck1"
-                    name="password"
-                    value={loginDetails.password}
-                    onChange={handleChange}>
+                    <input type="checkbox" class="form-check-input" id="exampleCheck1">
                     </input>
                     <label class="form-check-label" for="exampleCheck1">Remember me</label>
                   </div>
-                  <a href="#" class="forgot-link" data-bs-toggle="modal" data-bs-target="#exampleModal">Forgot Password ?</a>
+                  <a href="#" class="forgot-link" data-bs-toggle="modal" data-bs-target="#resetModal">Forgot Password ?</a>
                 </div>
                 <button type="submit" class="btn btn-primary w-100">Continue</button>
               </form>
           </div>
-          <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal fade" id="resetModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-holder">
                 <div class="modal-dialog">
                   <div class="modal-content">
@@ -104,11 +121,13 @@ const LogIn = () => {
                         <p class="modal-details">Password reset link will be sent to your verified email address</p>
                           <div class="mb-4">
                             <div class="form-floating mb-3 go-bottom">
-                                <input type="email" class="form-control" id="floatingInput" placeholder="sample@example.com" />
+                                <input type="email" class="form-control" id="floatingInput"
+                                 placeholder="sample@example.com" onChange={handleForgetPasswordChange}
+                                 value={email} required={true}/>
                                 <label for="name">Email address</label>
                               </div>
                           </div>
-                        <button type="button" class="btn btn-primary w-100">Submit</button>
+                        <button type="button" class="btn btn-primary w-100" onClick={handleClick}>Submit</button>
                       </div>
                   </div>
                 </div>
@@ -118,6 +137,5 @@ const LogIn = () => {
   </div>
   );
 }
-
 
 export default LogIn;

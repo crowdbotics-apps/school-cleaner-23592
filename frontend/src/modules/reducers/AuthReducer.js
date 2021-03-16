@@ -14,6 +14,12 @@ export const CHANGE_PASSWORD_REQUEST = 'CHANGE_PASSWORD_REQUEST';
 export const CHANGE_PASSWORD_SUCCESS = 'CHANGE_PASSWORD_SUCCESS';
 export const CHANGE_PASSWORD_ERROR = 'CHANGE_PASSWORD_ERROR';
 
+export const RESET_PASSWORD_REQUEST = 'RESET_PASSWORD_REQUEST';
+export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS';
+export const RESET_PASSWORD_ERROR = 'RESET_PASSWORD_ERROR';
+
+
+
 const block = {
   loading: false,
   error: '',
@@ -25,6 +31,7 @@ const initialState = {
   login: { ...block },
   forgotPassword: { ...block },
   changePassword: { ...block },
+  resetPassword: { ...block },
 };
 
 export const AuthReducer = (state = initialState, action) => {
@@ -78,6 +85,30 @@ export const AuthReducer = (state = initialState, action) => {
           error: action.error,
         },
       };
+
+    case RESET_PASSWORD_REQUEST:
+      return {
+        ...state,
+        resetPassword: { ...state.resetPassword, loading: true },
+      };
+    case RESET_PASSWORD_SUCCESS:
+      return {
+        ...state,
+        resetPassword: {
+          ...state.resetPassword,
+          loading: false,
+          success: true,
+        },
+      };
+    case RESET_PASSWORD_ERROR:
+      return {
+        ...state,
+        resetPassword: {
+          ...state.resetPassword,
+          loading: false,
+          error: action.error,
+        },
+    };  
 
     case CHANGE_PASSWORD_REQUEST:
       return {
