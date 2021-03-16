@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import LogIn from '../screens/LogIn';
 import SignUp from '../screens/SignUp';
 import ResetPassword from '../screens/ResetPassword';
+import Dashboard from '../screens/Dashboard';
 
 export default function Routes() {
   return (
@@ -10,6 +11,7 @@ export default function Routes() {
       <Route path='/' exact component={LogIn} />
     	<Route path='/signup' exact component={SignUp} />
     	<Route path='/reset-password' exact component={ResetPassword} />
+    	<Route path='/dashboard' exact component={Dashboard} />
     </Switch>
   );
 }

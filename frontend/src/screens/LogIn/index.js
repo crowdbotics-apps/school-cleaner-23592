@@ -54,7 +54,6 @@ const LogIn = () => {
       dispatch(forgotPassword(email));
       history.push('/reset-password');
     }
-    
   }
 
   return (

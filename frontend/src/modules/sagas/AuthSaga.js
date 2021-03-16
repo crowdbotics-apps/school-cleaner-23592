@@ -21,16 +21,17 @@ import {
 } from '../reducers/AuthReducer';
 
 async function signup({ first_name,last_name,email,phone_no,password,confirm_password,employer_code }) {
-  return await Axios.post('/rest-auth/registration/', {
+  return await Axios.post('rest-auth/registration/', {
     first_name,
     last_name,
     email,
-    phone_no,
-    password,
-    confirm_password,
+    phone: phone_no,
+    password1: password,
+    password2: confirm_password,
     employer_code
   });
 }
+
 function* handleSignup({ payload }) {
   try {
     const response = yield call(signup, payload);
@@ -50,7 +51,7 @@ function* handleSignup({ payload }) {
 
 async function login({ email, password }) {
   return await Axios.post('rest-auth/login/', {
-    username: email,
+    email,
     password,
   });
 }
@@ -59,7 +60,7 @@ function* handleLogin({ payload }) {
   try {
     const response = yield call(login, payload);
     // console.log('response :>> ', response);
-    if (response.token) {
+    if (response.key) {
       const options = { path: '/' };
       Cookies.set('token', response.token, options);
       yield put({
@@ -74,15 +75,15 @@ function* handleLogin({ payload }) {
   }
 }
 
-async function forgotPassword({ email, reset_url }) {
-  return await Axios.post('/rest-auth/password/reset/', {
-    email,
-    reset_url,
+async function forgotPassword({ email }) {
+  return await Axios.post('rest-auth/password/reset/', {
+    email
   });
 }
+
 function* handleForgotPassword({ payload }) {
   try {
-    const { data, status } = yield call(forgotPassword, payload);
+    const { data, status } = yield call(forgotPassword, {email: payload});
     if (status === 200 && data.status === 'OK') {
       yield put({
         type: FORGOT_PASSWORD_SUCCESS,
@@ -97,7 +98,7 @@ function* handleForgotPassword({ payload }) {
 }
 
 async function changePassword({ token, password }) {
-  return await Axios.post('/password-reset/confirm/', {
+  return await Axios.post('password-reset/confirm/', {
     token,
     password,
   });
@@ -108,8 +109,8 @@ async function resetPassword({ uuid, token , password, confirm_password }) {
   return await Axios.post('/rest-auth/password/reset/confirm/', {
     uuid,
     token,
-    password,
-    confirm_password
+    new_password1: password,
+    new_password2: confirm_password
   });
 }
 
