@@ -46,7 +46,7 @@ function* handleSignup({ payload }) {
 }
 
 async function login({ email, password }) {
-  return await Axios.post('/rest-auth', {
+  return await Axios.post('/rest-auth/login/', {
     username: email,
     password,
   });
