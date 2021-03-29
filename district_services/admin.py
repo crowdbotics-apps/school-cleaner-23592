@@ -18,7 +18,7 @@ class SchoolBuildingAdmin(admin.ModelAdmin):
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     list_display = ['name', 'school', 'paper_towel_dispensers', 'toiler_tissue_dispensers', 'hand_soap_dispensers',
-                    'hand_sanitizer_dispensers', 'estimated_time_to_clean', 'updated', 'created']
+                    'hand_sanitizer_dispensers', 'updated', 'created']
     list_per_page = 10
 
 
@@ -30,6 +30,6 @@ class RoomTypeAdmin(admin.ModelAdmin):
 
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
-    list_display = ['name', 'section', 'room_type', 'square_feet', 'desks', 'windows',
+    list_display = ['name', 'section', 'room_type', 'estimated_time_to_clean', 'square_feet', 'desks', 'windows',
                     'trash_cans', 'updated', 'created']
     list_per_page = 10

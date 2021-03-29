@@ -4,17 +4,7 @@ from rest_framework.permissions import BasePermission
 SAFE_METHODS_FOR_ALL_USER = ["OPTIONS", "GET"]
 
 
-class DistrictUserPermission(BasePermission):
-    def has_permission(self, request, view):
-        if request.user.is_superuser:
-            return True
-        elif request.method in SAFE_METHODS_FOR_ALL_USER:
-            return True
-        else:
-            return False
-
-
-class SchoolBuildingPermission(BasePermission):
+class ProductTypePermission(BasePermission):
     def has_permission(self, request, view):
         if request.user.is_superuser:
             return True
@@ -24,7 +14,7 @@ class SchoolBuildingPermission(BasePermission):
             return False
 
 
-class SectionPermission(BasePermission):
+class ProductNeededPermission(BasePermission):
     def has_permission(self, request, view):
         if request.user.is_superuser:
             return True
@@ -34,17 +24,7 @@ class SectionPermission(BasePermission):
             return False
 
 
-class RoomTypePermission(BasePermission):
-    def has_permission(self, request, view):
-        if request.user.is_superuser:
-            return True
-        elif request.user.role == "inspector" or request.user.role == "admin":
-            return True
-        else:
-            return False
-
-
-class RoomPermission(BasePermission):
+class InspectionPermission(BasePermission):
     def has_permission(self, request, view):
         if request.user.is_superuser:
             return True

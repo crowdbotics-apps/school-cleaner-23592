@@ -1,5 +1,5 @@
 import json
-
+from drf_extra_fields.fields import Base64ImageField
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils import timezone
@@ -18,6 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class DistrictSerializer(serializers.ModelSerializer):
     admin_detail = UserSerializer(source="admins", read_only=True, many=True)
+    logo = Base64ImageField()
 
     class Meta:
         model = District
@@ -27,6 +28,9 @@ class DistrictSerializer(serializers.ModelSerializer):
 class SchoolBuildingSerializer(serializers.ModelSerializer):
     inspector_detail = UserSerializer(source="inspectors", read_only=True, many=True)
     district_name = serializers.CharField(source="district.name", read_only=True)
+    total_rooms = serializers.IntegerField(read_only=True)
+    total_area = serializers.IntegerField(read_only=True)
+    image = Base64ImageField()
 
     class Meta:
         model = SchoolBuilding
@@ -56,6 +60,8 @@ class RoomTypeSerializer(serializers.ModelSerializer):
 
 
 class RoomSerializer(serializers.ModelSerializer):
+    room_type_name = serializers.CharField(source="room_type.name", read_only=True)
+    total_square_feet = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Room

@@ -50,7 +50,6 @@ class Section(models.Model):
     hand_soap_dispensers = models.PositiveIntegerField(default=0)
     hand_sanitizer_dispensers = models.PositiveIntegerField(default=0)
 
-    estimated_time_to_clean = models.TimeField(null=True, blank=True)
     people = models.ManyToManyField(User, blank=True, related_name="people_in_section")
 
     created = models.DateTimeField(auto_now_add=True)
@@ -85,6 +84,7 @@ class Room(models.Model):
     windows = models.PositiveIntegerField(default=0)
     trash_cans = models.PositiveIntegerField(default=0)
     section = models.ForeignKey("district_services.Section", on_delete=models.CASCADE, related_name="rooms_in_section")
+    estimated_time_to_clean = models.TimeField(null=True, blank=True)
 
     cleaner = models.ForeignKey(
         User, blank=True, related_name="cleaner_of_room", on_delete=models.SET_NULL,

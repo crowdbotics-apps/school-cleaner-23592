@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "96ac03eb6611ec702aa2700bc8699cfb20dd29de9d0351d113a2cd7d1ed17b63"
+            "sha256": "cbf655a8141f394f8298e93bd4f75fa136db23d8268a2c1fdaae54797dc1e0bb"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -142,6 +142,14 @@
             ],
             "index": "pypi",
             "version": "==3.11.2"
+        },
+        "drf-extra-fields": {
+            "hashes": [
+                "sha256:6643c1d81cdce0d8c87412b210db0393ddf2b1e13ea17fbd1cfcf45ba44a92ce",
+                "sha256:68091a78f1be821e98061a61e599ccc14c2b355e8b8b41741b05d7bc391a15d0"
+            ],
+            "index": "pypi",
+            "version": "==3.1.1"
         },
         "drf-yasg": {
             "hashes": [
@@ -397,10 +405,10 @@
         },
         "ruamel.yaml": {
             "hashes": [
-                "sha256:3572505e63dd35b5dea62cd0386d03c4f2a53da29a3af09f428114cc85c564aa",
-                "sha256:3a41b30235cc6ff7baee0321ffa99e7f94bbc7c7e0f2cac1d75b6b24fc24f202"
+                "sha256:0850def9ebca23b3a8c64c4b4115ebb6b364a10d49f89d289a26ee965e1e7d9d",
+                "sha256:8f1e15421668b9edf30ed02899f5f81aff9808a4271935776f61a99a569a13da"
             ],
-            "version": "==0.17.0"
+            "version": "==0.17.2"
         },
         "ruamel.yaml.clib": {
             "hashes": [

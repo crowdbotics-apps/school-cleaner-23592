@@ -1,7 +1,10 @@
 from django.db.models import Sum, Count
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
+from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+
 from district_services.api.v1.permissions import DistrictUserPermission, SchoolBuildingPermission, SectionPermission, \
     RoomTypePermission, RoomPermission
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
@@ -24,7 +27,10 @@ class DistrictViewSet(viewsets.ModelViewSet):
 
 class SchoolBuildingViewSet(viewsets.ModelViewSet):
     serializer_class = SchoolBuildingSerializer
-    queryset = SchoolBuilding.objects.all()
+    queryset = SchoolBuilding.objects.all().annotate(
+        total_rooms=Count("sections_in_school__rooms_in_section")).annotate(
+        total_area=Sum("sections_in_school__rooms_in_section__square_feet")
+    )
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, SchoolBuildingPermission]
 
@@ -79,8 +85,35 @@ class RoomViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         section = self.request.query_params.get("section")
+
         if section:
             queryset = queryset.filter(section_id=int(section))
         if self.request.user.is_superuser:
             return queryset
         return queryset.filter(school__inspectors=self.request.user)
+
+    @action(methods=['get'], detail=False, url_path='room-specs', url_name='room-specs')
+    def room_specs(self, request):
+        """ TO get rooms with total area against same room type."""
+        school = self.request.query_params.get("school")
+        queryset = None
+        if school:
+            queryset = Room.objects.filter(
+                section__school_id=int(school)).values(
+                "room_type__name", "room_type_id", "estimated_time_to_clean"
+            ).annotate(
+                Sum('square_feet'),
+                Count("room_type__name"),
+                # Sum("estimated_time_to_clean"),
+            ).order_by("room_type__name")
+        response_list = []
+        print(queryset)
+        if queryset:
+            for q in queryset:
+                response_list.append(
+                    {"room_name": q.get("room_type__name"),
+                     "square_feet": q.get("square_feet__sum"),
+                     "count": q.get("room_type__name__count")}
+                )
+        return Response(response_list)
+
