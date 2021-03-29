@@ -18,6 +18,13 @@ class User(AbstractUser):
     This model represents the User instance of the system, login system and
     everything that relates with an `User` is represented by this model.
     """
+
+    USER_ROLES = (
+        ("super_admin", "Super Admin"),
+        ("admin", "Administrator / Custodian"),
+        ("inspector", "Inspectors"),
+        ("simple_user", "Simple User"),
+    )
     name = models.CharField(
         null=True,
         blank=True,
@@ -48,6 +55,12 @@ class User(AbstractUser):
         null=True,
         blank=True,
     )
+    role = models.CharField(max_length=15, choices=USER_ROLES, default="simple_user")
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
+
+    def save(self, *args, **kwargs):
+        if self.is_superuser:
+            self.role = "super_user"
+        super(User, self).save(*args, **kwargs)
