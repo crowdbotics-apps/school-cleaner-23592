@@ -25,6 +25,9 @@ class ProductNeededViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
+        user = self.request.user
+        # if user.is_superuser or user.role:
+        #     queryset = queryset.filter()
         return queryset
 
 

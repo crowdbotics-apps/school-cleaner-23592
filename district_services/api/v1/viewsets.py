@@ -10,6 +10,7 @@ from district_services.api.v1.permissions import DistrictUserPermission, SchoolB
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
     RoomSerializer, RoomTypeSerializer
 from district_services.models import District, SchoolBuilding, Section, Room, RoomType
+from district_services.utils import district_code_generator
 
 
 class DistrictViewSet(viewsets.ModelViewSet):
@@ -23,6 +24,15 @@ class DistrictViewSet(viewsets.ModelViewSet):
         if self.request.user.is_superuser:
             return queryset
         return queryset.filter(admins=self.request.user)
+
+    @action(methods=['get'], detail=False, url_path='district-code', url_name='district-code')
+    def district_code(self, request):
+        while True:
+            code = district_code_generator(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+            district = District.objects.filter(code__exact=code)
+            if not district:
+                break
+        return Response({"code": code})
 
 
 class SchoolBuildingViewSet(viewsets.ModelViewSet):
