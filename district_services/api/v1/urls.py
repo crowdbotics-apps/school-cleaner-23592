@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from district_services.api.v1.viewsets import (
-    DistrictViewSet, SchoolBuildingViewSet, SectionViewSet, RoomTypeViewSet, RoomViewSet
+    DistrictViewSet, SchoolBuildingViewSet, SectionViewSet, RoomTypeViewSet, RoomViewSet, AdminUserViewSet
 )
 
 
@@ -12,6 +12,7 @@ router.register('school', SchoolBuildingViewSet)
 router.register('section', SectionViewSet)
 router.register('room-type', RoomTypeViewSet)
 router.register('room', RoomViewSet)
+router.register('users', AdminUserViewSet)
 
 urlpatterns = [
     path("", include(router.urls)),

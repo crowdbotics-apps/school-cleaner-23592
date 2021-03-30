@@ -1,10 +1,7 @@
 import json
 from drf_extra_fields.fields import Base64ImageField
 from django.contrib.auth import get_user_model
-from django.db import transaction
-from django.utils import timezone
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 from district_services.models import District, SchoolBuilding, Section, Room, RoomType
 
 User = get_user_model()
@@ -13,12 +10,15 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'phone', 'email')
+        fields = ('id', 'phone', 'email', "name", "role")
 
 
 class DistrictSerializer(serializers.ModelSerializer):
     admin_detail = UserSerializer(source="admins", read_only=True, many=True)
     logo = Base64ImageField()
+    buildings = serializers.IntegerField(read_only=True)
+    rooms = serializers.IntegerField(read_only=True)
+    sq_feet = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = District
@@ -30,6 +30,7 @@ class SchoolBuildingSerializer(serializers.ModelSerializer):
     district_name = serializers.CharField(source="district.name", read_only=True)
     total_rooms = serializers.IntegerField(read_only=True)
     total_area = serializers.IntegerField(read_only=True)
+    estimated_time_in_seconds = serializers.IntegerField(read_only=True)
     image = Base64ImageField()
 
     class Meta:
@@ -46,6 +47,7 @@ class SectionSerializer(serializers.ModelSerializer):
     desks = serializers.IntegerField(read_only=True)
     windows = serializers.IntegerField(read_only=True)
     trash_cans = serializers.IntegerField(read_only=True)
+    estimated_time_in_seconds = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = Section

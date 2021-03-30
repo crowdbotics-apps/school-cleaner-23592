@@ -16,9 +16,9 @@ class ProductTypePermission(BasePermission):
 
 class ProductNeededPermission(BasePermission):
     def has_permission(self, request, view):
-        if request.user.is_superuser:
+        if request.user.is_superuser or request.user.role == "admin":
             return True
-        elif request.user.role == "inspector" or request.user.role == "admin":
+        elif request.user.role == "inspector":
             return True
         else:
             return False

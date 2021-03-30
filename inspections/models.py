@@ -37,7 +37,7 @@ class ProductNeeded(models.Model):
 
 
 class Inspection(models.Model):
-    inspection_no = models.PositiveIntegerField()
+    inspection_no = models.PositiveIntegerField(default=1000)
     inspected_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="inspection_user")
     grade = models.PositiveIntegerField()
     room = models.ForeignKey("district_services.Room",

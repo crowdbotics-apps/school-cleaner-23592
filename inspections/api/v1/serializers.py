@@ -15,6 +15,7 @@ class ProductNeededSerializer(serializers.ModelSerializer):
     inspector_name = serializers.CharField(source="inspector.name", read_only=True)
     section_name = serializers.CharField(source="section.name", read_only=True)
     product_type_title = serializers.CharField(source="product_type.title", read_only=True)
+    total_price = serializers.IntegerField(read_only=True)
 
     class Meta:
         model = ProductNeeded

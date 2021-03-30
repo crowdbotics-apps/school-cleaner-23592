@@ -84,7 +84,7 @@ class Room(models.Model):
     windows = models.PositiveIntegerField(default=0)
     trash_cans = models.PositiveIntegerField(default=0)
     section = models.ForeignKey("district_services.Section", on_delete=models.CASCADE, related_name="rooms_in_section")
-    estimated_time_to_clean = models.TimeField(null=True, blank=True)
+    estimated_time_to_clean = models.IntegerField(default=0)
 
     cleaner = models.ForeignKey(
         User, blank=True, related_name="cleaner_of_room", on_delete=models.SET_NULL,

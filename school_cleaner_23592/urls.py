@@ -47,7 +47,6 @@ urlpatterns = [
     re_path(r'', views.catchall),
 ]
 
-
 admin.site.site_header = "School cleaner"
 admin.site.site_title = "School cleaner Admin Portal"
 admin.site.index_title = "School cleaner Admin"
@@ -68,6 +67,15 @@ schema_view = get_schema_view(
 urlpatterns += [
     path("api-docs/", schema_view.with_ui("swagger", cache_timeout=0), name="api_docs")
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 urlpatterns += [path('', TemplateView.as_view(template_name='index.html'))]
 urlpatterns += [

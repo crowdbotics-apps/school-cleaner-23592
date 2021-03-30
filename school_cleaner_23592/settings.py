@@ -256,3 +256,16 @@ if DEBUG or not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
             "You should setup `SENDGRID_USERNAME` and `SENDGRID_PASSWORD` env vars to send emails."
         )
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+if DEBUG:
+    INSTALLED_APPS += [
+        'debug_toolbar',
+    ]
+
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
+    INTERNAL_IPS = ['127.0.0.1', ]
+    DEBUG_TOOLBAR_CONFIG = {
+        'INTERCEPT_REDIRECTS': False,
+    }

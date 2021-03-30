@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db.models import Sum, Count
 from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
@@ -8,14 +9,24 @@ from rest_framework.response import Response
 from district_services.api.v1.permissions import DistrictUserPermission, SchoolBuildingPermission, SectionPermission, \
     RoomTypePermission, RoomPermission
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
-    RoomSerializer, RoomTypeSerializer
+    RoomSerializer, RoomTypeSerializer, UserSerializer
 from district_services.models import District, SchoolBuilding, Section, Room, RoomType
 from district_services.utils import district_code_generator
+User = get_user_model()
+
+
+class AdminUserViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.filter(role="admin")
 
 
 class DistrictViewSet(viewsets.ModelViewSet):
     serializer_class = DistrictSerializer
-    queryset = District.objects.all()
+    queryset = District.objects.all().annotate(
+        buildings=Count("schools_in_district")).annotate(
+        rooms=Count("schools_in_district__sections_in_school__rooms_in_section")).annotate(
+        sq_feet=Sum("schools_in_district__sections_in_school__rooms_in_section__square_feet")
+    )
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, DistrictUserPermission]
 
@@ -39,7 +50,8 @@ class SchoolBuildingViewSet(viewsets.ModelViewSet):
     serializer_class = SchoolBuildingSerializer
     queryset = SchoolBuilding.objects.all().annotate(
         total_rooms=Count("sections_in_school__rooms_in_section")).annotate(
-        total_area=Sum("sections_in_school__rooms_in_section__square_feet")
+        total_area=Sum("sections_in_school__rooms_in_section__square_feet")).annotate(
+        estimated_time_in_seconds=Sum("sections_in_school__rooms_in_section__estimated_time_to_clean")
     )
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, SchoolBuildingPermission]
@@ -61,7 +73,9 @@ class SectionViewSet(viewsets.ModelViewSet):
         square_feet=Sum("rooms_in_section__square_feet")).annotate(
         desks=Sum("rooms_in_section__desks")).annotate(
         windows=Sum("rooms_in_section__windows")).annotate(
-        trash_cans=Sum("rooms_in_section__trash_cans"))
+        trash_cans=Sum("rooms_in_section__trash_cans")).annotate(
+        estimated_time_in_seconds=Sum("rooms_in_section__estimated_time_to_clean")
+    )
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, SectionPermission]
 
