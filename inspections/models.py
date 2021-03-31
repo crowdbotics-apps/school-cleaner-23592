@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 User = get_user_model()
 
@@ -14,7 +16,7 @@ class ProductType(models.Model):
         return self.title
 
     class Meta:
-        verbose_name_plural = "Inspections"
+        verbose_name_plural = "1- Product Type"
         ordering = ('-created',)
 
 
@@ -32,12 +34,12 @@ class ProductNeeded(models.Model):
         return str(self.product_type)
 
     class Meta:
-        verbose_name_plural = "Inspections"
+        verbose_name_plural = "2- Product Needed"
         ordering = ('-created',)
 
 
 class Inspection(models.Model):
-    inspection_no = models.PositiveIntegerField(default=1000)
+    inspection_no = models.PositiveIntegerField(unique=True)
     inspected_by = models.ForeignKey(User, on_delete=models.PROTECT, related_name="inspection_user")
     grade = models.PositiveIntegerField()
     room = models.ForeignKey("district_services.Room",
@@ -51,8 +53,20 @@ class Inspection(models.Model):
         return str(self.inspected_by)
 
     class Meta:
-        verbose_name_plural = "Inspections"
+        verbose_name_plural = "3- Inspections"
         ordering = ('-created',)
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        try:
+            inspection = Inspection.objects.latest('id')
+            if inspection.id != self.pk:
+                if inspection:
+                    self.inspection_no = inspection.inspection_no + 1
+        except:
+            self.inspection_no = 1000
+        super(Inspection, self).save(force_insert=False, force_update=False, using=None,
+             update_fields=None)
 
 
 class Parameter(models.Model):
@@ -70,10 +84,10 @@ class Parameter(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return str(self.inspection)
+        return str(self.title)
 
     class Meta:
-        verbose_name_plural = "2- Inspection Parameters"
+        verbose_name_plural = "4- Inspection Parameters"
         ordering = ('-created',)
 
 
@@ -87,7 +101,5 @@ class ParameterImage(models.Model):
         return str(self.parameter)
 
     class Meta:
-        verbose_name_plural = "3- Parameter Images"
+        verbose_name_plural = "5- Parameter Images"
         ordering = ('-created',)
-
-

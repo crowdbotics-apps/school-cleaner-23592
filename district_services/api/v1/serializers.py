@@ -30,7 +30,7 @@ class SchoolBuildingSerializer(serializers.ModelSerializer):
     district_name = serializers.CharField(source="district.name", read_only=True)
     total_rooms = serializers.IntegerField(read_only=True)
     total_area = serializers.IntegerField(read_only=True)
-    estimated_time_in_seconds = serializers.IntegerField(read_only=True)
+    estimated_time_to_clean = serializers.DurationField(read_only=True)
     image = Base64ImageField()
 
     class Meta:
@@ -47,7 +47,7 @@ class SectionSerializer(serializers.ModelSerializer):
     desks = serializers.IntegerField(read_only=True)
     windows = serializers.IntegerField(read_only=True)
     trash_cans = serializers.IntegerField(read_only=True)
-    estimated_time_in_seconds = serializers.IntegerField(read_only=True)
+    estimated_time_to_clean = serializers.DurationField(read_only=True)
 
     class Meta:
         model = Section
@@ -67,4 +67,14 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
+        fields = '__all__'
+
+
+class RoomSpecsSerializer(serializers.Serializer):
+    room_name = serializers.CharField(source="room_type__name", read_only=True)
+    square_feet = serializers.IntegerField(source="square_feet__sum", read_only=True)
+    count = serializers.IntegerField(source="room_type__name__count", read_only=True)
+    estimated_time_to_clean = serializers.DurationField(source="estimated_time_to_clean__sum", read_only=True)
+
+    class Meta:
         fields = '__all__'

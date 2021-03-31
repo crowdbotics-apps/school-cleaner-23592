@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from district_services.api.v1.permissions import DistrictUserPermission, SchoolBuildingPermission, SectionPermission, \
     RoomTypePermission, RoomPermission
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
-    RoomSerializer, RoomTypeSerializer, UserSerializer
+    RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer
 from district_services.models import District, SchoolBuilding, Section, Room, RoomType
 from district_services.utils import district_code_generator
 User = get_user_model()
@@ -51,19 +51,24 @@ class SchoolBuildingViewSet(viewsets.ModelViewSet):
     queryset = SchoolBuilding.objects.all().annotate(
         total_rooms=Count("sections_in_school__rooms_in_section")).annotate(
         total_area=Sum("sections_in_school__rooms_in_section__square_feet")).annotate(
-        estimated_time_in_seconds=Sum("sections_in_school__rooms_in_section__estimated_time_to_clean")
+        estimated_time_to_clean=Sum("sections_in_school__rooms_in_section__estimated_time_to_clean")
     )
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, SchoolBuildingPermission]
 
     def get_queryset(self):
         queryset = self.queryset
+        user = self.request.user
         district = self.request.query_params.get("district")
         if district:
             queryset = queryset.filter(district_id=int(district))
-        if self.request.user.is_superuser:
+        if user.is_superuser:
             return queryset
-        return queryset.filter(inspectors=self.request.user)
+        elif user.role == "admin":
+            queryset = queryset.filter(district__admins=user)
+        elif user.role == "inspector":
+            queryset = queryset.filter(inspectors=user)
+        return queryset
 
 
 class SectionViewSet(viewsets.ModelViewSet):
@@ -74,19 +79,27 @@ class SectionViewSet(viewsets.ModelViewSet):
         desks=Sum("rooms_in_section__desks")).annotate(
         windows=Sum("rooms_in_section__windows")).annotate(
         trash_cans=Sum("rooms_in_section__trash_cans")).annotate(
-        estimated_time_in_seconds=Sum("rooms_in_section__estimated_time_to_clean")
+        estimated_time_to_clean=Sum("rooms_in_section__estimated_time_to_clean")
     )
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, SectionPermission]
 
     def get_queryset(self):
         queryset = self.queryset
+        user = self.request.user
         school = self.request.query_params.get("school")
+        district = self.request.query_params.get("district")
         if school:
             queryset = queryset.filter(school_id=int(school))
-        if self.request.user.is_superuser:
-            return queryset
-        return queryset.filter(school__inspectors=self.request.user)
+        if school:
+            queryset = queryset.filter(school__district_id=int(district))
+        if user.is_superuser:
+            queryset = queryset
+        elif user.role == "admin":
+            queryset = queryset.filter(school__district__admins=user)
+        elif user.role == "inspector":
+            queryset = queryset.filter(school__inspectors=user)
+        return queryset
 
 
 class RoomTypeViewSet(viewsets.ModelViewSet):
@@ -108,36 +121,45 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = self.queryset
+        school = self.request.query_params.get("school")
         section = self.request.query_params.get("section")
-
+        user = self.request.user
         if section:
             queryset = queryset.filter(section_id=int(section))
-        if self.request.user.is_superuser:
-            return queryset
-        return queryset.filter(school__inspectors=self.request.user)
+        if school:
+            queryset = queryset.filter(section__school_id=int(school))
+        if user.is_superuser:
+            queryset = queryset
+        elif user.role == "admin":
+            queryset = queryset.filter(section__school__district__admins=self.request.user)
+        elif user.role == "inspector":
+            queryset = queryset.filter(section__school__inspectors=user)
+        return queryset
 
     @action(methods=['get'], detail=False, url_path='room-specs', url_name='room-specs')
     def room_specs(self, request):
         """ TO get rooms with total area against same room type."""
         school = self.request.query_params.get("school")
+        section = self.request.query_params.get("section")
         queryset = None
         if school:
             queryset = Room.objects.filter(
                 section__school_id=int(school)).values(
-                "room_type__name", "room_type_id", "estimated_time_to_clean"
+                "room_type__name", "room_type_id"
             ).annotate(
                 Sum('square_feet'),
                 Count("room_type__name"),
-                # Sum("estimated_time_to_clean"),
+                Sum("estimated_time_to_clean"),
             ).order_by("room_type__name")
-        response_list = []
-        print(queryset)
-        if queryset:
-            for q in queryset:
-                response_list.append(
-                    {"room_name": q.get("room_type__name"),
-                     "square_feet": q.get("square_feet__sum"),
-                     "count": q.get("room_type__name__count")}
-                )
-        return Response(response_list)
+        elif section:
+            queryset = Room.objects.filter(
+                section_id=int(section)).values(
+                "room_type__name", "room_type_id"
+            ).annotate(
+                Sum('square_feet'),
+                Count("room_type__name"),
+                Sum("estimated_time_to_clean"),
+            ).order_by("room_type__name")
 
+        serializer = RoomSpecsSerializer(queryset, many=True)
+        return Response(serializer.data)
