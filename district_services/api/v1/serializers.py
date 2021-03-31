@@ -10,7 +10,7 @@ User = get_user_model()
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'phone', 'email', "name", "role")
+        fields = ('id', 'phone', 'email', "name", "role", "employer_code")
 
 
 class DistrictSerializer(serializers.ModelSerializer):
