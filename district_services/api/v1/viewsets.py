@@ -20,6 +20,16 @@ class AdminUserViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.filter(role="admin")
 
 
+class InspectorUserViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.filter(role="inspector")
+
+
+class SimpleUserViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = UserSerializer
+    queryset = User.objects.filter(role="simple_user")
+
+
 class DistrictViewSet(viewsets.ModelViewSet):
     serializer_class = DistrictSerializer
     queryset = District.objects.all().annotate(
