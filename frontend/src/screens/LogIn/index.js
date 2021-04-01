@@ -59,7 +59,7 @@ const LogIn = () => {
   return (
     <div class="device-holder d-flex h-100">
       <div class="image-holder flex-fill">
-          <img src={device} class="image-responsive"/>
+          <img src={device} class="image-responsive form-image" />
           <div class="image-caption">
               <div class="caption-head">
                 <h2>Cleaning Services</h2>
@@ -79,11 +79,11 @@ const LogIn = () => {
                 <div class="mb-4">
                   <div class="form-floating mb-3 go-bottom">
                       <input type="email" class="form-control" id="floatingInput"
-                       placeholder="sample@example.com"
-                       name="email"
-                       value={loginDetails.email}
-                       onChange={handleChange}
-                      required={true}
+                        placeholder="sample@example.com"
+                        name="email"
+                        value={loginDetails.email}
+                        onChange={handleChange}
+                        required={true}
                       >
                       </input>
                       <label for="name">Email address</label>
