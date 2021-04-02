@@ -35,7 +35,6 @@ async function signup({ first_name,last_name,email,phone_no,password,confirm_pas
 function* handleSignup({ payload }) {
   try {
     const response = yield call(signup, payload);
-    // console.log('response', response);
     if (response) {
       yield put({
         type: SIGNUP_SUCCESS,
@@ -59,10 +58,9 @@ async function login({ email, password }) {
 function* handleLogin({ payload }) {
   try {
     const response = yield call(login, payload);
-    // console.log('response :>> ', response);
     if (response.key) {
       const options = { path: '/' };
-      Cookies.set('token', response.token, options);
+      Cookies.set('token', response.key, options);
       yield put({
         type: LOGIN_SUCCESS,
       });
