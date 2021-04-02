@@ -62,8 +62,8 @@ LOCAL_APPS = [
 THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
-    "rest_auth_custom",
-    "rest_auth_custom.registration",
+    "rest_auth",
+    "rest_auth.registration",
     "bootstrap4",
     "allauth",
     "allauth.account",
@@ -93,7 +93,6 @@ CORS_ALLOW_CREDENTIALS = True
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
-        # 'rest_framework.authentication.SessionAuthentication',
     ]
 }
 
