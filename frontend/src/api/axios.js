@@ -7,6 +7,7 @@ const cache = setupCache({
   maxAge: 24 * 60 * 60 * 1000,
 });
 
+// const baseURL = 'http://localhost:8000';
 const baseURL = process.env.REACT_APP_API_BASE_URL;
 
 const getToken = (name = 'token') => {

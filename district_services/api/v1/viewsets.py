@@ -12,6 +12,7 @@ from district_services.api.v1.serializers import DistrictSerializer, SchoolBuild
     RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer
 from district_services.models import District, SchoolBuilding, Section, Room, RoomType
 from district_services.utils import district_code_generator
+
 User = get_user_model()
 
 
@@ -32,17 +33,17 @@ class SimpleUserViewSet(viewsets.ReadOnlyModelViewSet):
 
 class DistrictViewSet(viewsets.ModelViewSet):
     serializer_class = DistrictSerializer
-    queryset = District.objects.all().prefetch_related(
-        "schools_in_district", "admins").annotate(
-        buildings=Count("schools_in_district")).annotate(
-        rooms=Count("schools_in_district__sections_in_school__rooms_in_section")).annotate(
-        sq_feet=Sum("schools_in_district__sections_in_school__rooms_in_section__square_feet")
-    )
+    queryset = District.objects.none()
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, DistrictUserPermission]
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = District.objects.all().prefetch_related(
+            "schools_in_district", "admins").annotate(
+            buildings=Count("schools_in_district")).annotate(
+            rooms=Count("schools_in_district__sections_in_school__rooms_in_section")).annotate(
+            sq_feet=Sum("schools_in_district__sections_in_school__rooms_in_section__square_feet")
+        )
         if self.request.user.is_superuser:
             queryset = queryset
         else:
@@ -61,18 +62,18 @@ class DistrictViewSet(viewsets.ModelViewSet):
 
 class SchoolBuildingViewSet(viewsets.ModelViewSet):
     serializer_class = SchoolBuildingSerializer
-    queryset = SchoolBuilding.objects.all().prefetch_related(
-        "sections_in_school", "inspectors").select_related("district").annotate(
-        total_rooms=Count("sections_in_school__rooms_in_section")).annotate(
-        total_area=Sum("sections_in_school__rooms_in_section__square_feet")).annotate(
-        estimated_time_to_clean=Sum("sections_in_school__rooms_in_section__estimated_time_to_clean")).annotate(
-        total_sections=Count("sections_in_school")
-    )
+    queryset = SchoolBuilding.objects.none()
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, SchoolBuildingPermission]
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = SchoolBuilding.objects.all().prefetch_related(
+            "sections_in_school", "inspectors").select_related("district").annotate(
+            total_rooms=Count("sections_in_school__rooms_in_section")).annotate(
+            total_area=Sum("sections_in_school__rooms_in_section__square_feet")).annotate(
+            estimated_time_to_clean=Sum("sections_in_school__rooms_in_section__estimated_time_to_clean")).annotate(
+            total_sections=Count("sections_in_school")
+        )
         user = self.request.user
         district = self.request.query_params.get("district")
         if district:
@@ -95,20 +96,20 @@ class SchoolBuildingViewSet(viewsets.ModelViewSet):
 
 class SectionViewSet(viewsets.ModelViewSet):
     serializer_class = SectionSerializer
-    queryset = Section.objects.all().prefetch_related(
-        "rooms_in_section", "people").select_related("school").annotate(
-        rooms=Count('rooms_in_section')).annotate(
-        square_feet=Sum("rooms_in_section__square_feet")).annotate(
-        desks=Sum("rooms_in_section__desks")).annotate(
-        windows=Sum("rooms_in_section__windows")).annotate(
-        trash_cans=Sum("rooms_in_section__trash_cans")).annotate(
-        estimated_time_to_clean=Sum("rooms_in_section__estimated_time_to_clean")
-    )
+    queryset = Section.objects.none()
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, SectionPermission]
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = Section.objects.all().prefetch_related(
+            "rooms_in_section", "people").select_related("school").annotate(
+            rooms=Count('rooms_in_section')).annotate(
+            square_feet=Sum("rooms_in_section__square_feet")).annotate(
+            desks=Sum("rooms_in_section__desks")).annotate(
+            windows=Sum("rooms_in_section__windows")).annotate(
+            trash_cans=Sum("rooms_in_section__trash_cans")).annotate(
+            estimated_time_to_clean=Sum("rooms_in_section__estimated_time_to_clean")
+        )
         user = self.request.user
         school = self.request.query_params.get("school")
         district = self.request.query_params.get("district")
@@ -138,19 +139,15 @@ class RoomTypeViewSet(viewsets.ModelViewSet):
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, RoomTypePermission]
 
-    def get_queryset(self):
-        queryset = self.queryset
-        return queryset
-
 
 class RoomViewSet(viewsets.ModelViewSet):
     serializer_class = RoomSerializer
-    queryset = Room.objects.all().select_related("section", "room_type", "cleaner")
+    queryset = Room.objects.none()
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, RoomPermission]
 
     def get_queryset(self):
-        queryset = self.queryset
+        queryset = Room.objects.all().select_related("section", "room_type", "cleaner")
         school = self.request.query_params.get("school")
         section = self.request.query_params.get("section")
         user = self.request.user
