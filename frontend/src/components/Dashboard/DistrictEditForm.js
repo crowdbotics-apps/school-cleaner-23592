@@ -39,12 +39,17 @@ const DistrictForm = props => {
   };
 
   const submitHandler = (e) => {
-    console.log("----------------------------")
     e.preventDefault();
     e.stopPropagation();
     const form = e.currentTarget;
     if (form.checkValidity() === true) {
-      dispatch(updateDistrict({name: districtDetails.name, logo: base64Image, code: props.district.code, admins: []}))
+      dispatch(updateDistrict({
+        id: props.district.id, 
+        name: districtDetails.name, 
+        logo: base64Image, 
+        code: props.district.code, 
+        admins: []
+      }));
       setDistrictDetails({ name: '', logo: '', code: ''})
       setBase64Image('')
     } else {
@@ -58,7 +63,7 @@ const DistrictForm = props => {
 
 
   return(
-    <div className="modal fade" id="update_District"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div className="modal fade" id="update_District"  tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div className="modal-holder">
         <div className="modal-dialog">
           <div className="modal-content">
@@ -73,7 +78,6 @@ const DistrictForm = props => {
                       name="name"
                       value={districtDetails.name}
                       onChange={handleChange}
-                      required={true}
                       id="floatingInput" 
                       placeholder="District Name" 
                     />
@@ -86,7 +90,6 @@ const DistrictForm = props => {
                       <input 
                         type="file" 
                         onChange={handleImageChange}
-                        required={true}
                         id="select-image" 
                         className="btn btn-outline-secondary" 
                         style={{ display: 'none' }}
