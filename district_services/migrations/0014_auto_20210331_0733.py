@@ -10,9 +10,5 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.AlterField(
-            model_name='room',
-            name='estimated_time_to_clean',
-            field=models.DurationField(default=0),
-        ),
+
     ]

@@ -30,12 +30,23 @@ class SchoolBuildingSerializer(serializers.ModelSerializer):
     district_name = serializers.CharField(source="district.name", read_only=True)
     total_rooms = serializers.IntegerField(read_only=True)
     total_area = serializers.IntegerField(read_only=True)
+    total_sections = serializers.IntegerField(read_only=True)
     estimated_time_to_clean = serializers.DurationField(read_only=True)
     image = Base64ImageField()
 
     class Meta:
         model = SchoolBuilding
         fields = '__all__'
+
+    def validate(self, attrs):
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        validated_data = super(SchoolBuildingSerializer, self).validate(attrs)
+        district = validated_data.get("district")
+        if not user.is_superuser:
+            if district and district.admins != user:
+                raise serializers.ValidationError({"district": "You don't have permission to perform this action."})
+        return validated_data
 
 
 class SectionSerializer(serializers.ModelSerializer):
@@ -53,6 +64,16 @@ class SectionSerializer(serializers.ModelSerializer):
         model = Section
         fields = '__all__'
 
+    def validate(self, attrs):
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        validated_data = super(SectionSerializer, self).validate(attrs)
+        school = validated_data.get("school")
+        if not user.is_superuser:
+            if school and school.district.admins != user or school.inspectors != user:
+                raise serializers.ValidationError({"school": "You don't have permission to perform this action."})
+        return validated_data
+
 
 class RoomTypeSerializer(serializers.ModelSerializer):
 
@@ -68,6 +89,16 @@ class RoomSerializer(serializers.ModelSerializer):
     class Meta:
         model = Room
         fields = '__all__'
+
+    def validate(self, attrs):
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        validated_data = super(RoomSerializer, self).validate(attrs)
+        section = validated_data.get("section")
+        if not user.is_superuser:
+            if section and section.school.district.admins != user or section.school.inspectors != user:
+                raise serializers.ValidationError({"section": "You don't have permission to perform this action."})
+        return validated_data
 
 
 class RoomSpecsSerializer(serializers.Serializer):

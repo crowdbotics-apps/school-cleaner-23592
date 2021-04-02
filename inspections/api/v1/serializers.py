@@ -1,25 +1,8 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from inspections.models import ProductType, ProductNeeded, Inspection, Parameter, ParameterImage
+from inspections.models import Inspection, Parameter, ParameterImage
 
 User = get_user_model()
-
-
-class ProductTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProductType
-        fields = '__all__'
-
-
-class ProductNeededSerializer(serializers.ModelSerializer):
-    inspector_name = serializers.CharField(source="inspector.name", read_only=True)
-    section_name = serializers.CharField(source="section.name", read_only=True)
-    product_type_title = serializers.CharField(source="product_type.title", read_only=True)
-    total_price = serializers.IntegerField(read_only=True)
-
-    class Meta:
-        model = ProductNeeded
-        fields = '__all__'
 
 
 class InspectionSerializer(serializers.ModelSerializer):
@@ -31,6 +14,16 @@ class InspectionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Inspection
         fields = '__all__'
+
+    def validate(self, attrs):
+        request = self.context.get("request")
+        user = getattr(request, "user", None)
+        validated_data = super(InspectionSerializer, self).validate(attrs)
+        room = validated_data.get("room")
+        if not user.is_superuser:
+            if room and room.section.school.district.admins != user or room.section.school.inspectors != user:
+                raise serializers.ValidationError({"room": "You don't have permission to perform this action."})
+        return validated_data
 
 
 class ParameterOnlyImageSerializer(serializers.ModelSerializer):

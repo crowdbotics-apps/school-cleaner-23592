@@ -37,6 +37,7 @@ urlpatterns = [
     path("api/v1/", include("home.api.v1.urls")),
     path("api/v1/", include("district_services.api.v1.urls")),
     path("api/v1/", include("inspections.api.v1.urls")),
+    path("api/v1/", include("products.api.v1.urls")),
     path("users/", include("users.urls", namespace="users")),
 
     path("rest-auth/", include("rest_auth_custom.urls")),

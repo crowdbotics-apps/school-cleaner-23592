@@ -56,7 +56,8 @@ LOCAL_APPS = [
     "users.apps.UsersConfig",
     "corsheaders",
     "district_services.apps.DistrictServicesConfig",
-    "inspections.apps.InspectionsConfig"
+    "inspections.apps.InspectionsConfig",
+    "products.apps.ProductsConfig"
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
