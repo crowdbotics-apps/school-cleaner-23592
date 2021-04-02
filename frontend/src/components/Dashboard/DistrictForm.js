@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createDistrict, generateCode  } from '../../modules/actions/DistrictActions';
+import CSRFToken from '../../utils/csrfToken';
 
 
 const DistrictForm = props => {
@@ -75,6 +76,7 @@ const DistrictForm = props => {
           <div className="modal-content">
             <div className="modal-body">
               <form onSubmit={submitHandler}>
+                <CSRFToken />
                 <h2 className="modal-title mb-4" id="exampleModalLabel">Add District</h2>
                 <div className="mb-4">
                   <div className="form-floating mb-3 go-bottom">
