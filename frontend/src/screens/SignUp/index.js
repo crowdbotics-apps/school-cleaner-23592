@@ -3,6 +3,7 @@ import device from "../../assets/images/device.jpg";
 import { signup } from '../../modules/actions/AuthActions';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import '../../main/App.scss';
 
 export default function SignUp() {
   const dispatch = useDispatch();
@@ -43,45 +44,45 @@ export default function SignUp() {
               <div class="mb-4">
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="floatingInput" placeholder="First Name" name="first_name" value={signUpDetails.first_name}
-                      onChange={handleChange}/>
+                      onChange={handleChange} required={true}/>
                     <label for="name">First Name</label>
                 </div>
               </div>
               <div class="mb-4">
                   <div class="form-floating">
                     <input type="text" class="form-control" id="floatingInput" placeholder="Lasr Name" name="last_name" value={signUpDetails.last_name}
-                      onChange={handleChange}/>
+                      onChange={handleChange} required={true}/>
                     <label for="name">Last Name</label>
                   </div>
               </div>
               <div class="mb-4">
                 <div class="form-floating mb-3 go-bottom">
                   <input type="email" class="form-control" id="floatingInput" placeholder="samplee@example.com" name="email" value={signUpDetails.email}
-                  onChange={handleChange}/>
+                  onChange={handleChange} required={true}/>
                   <label for="name">Email address</label>
                 </div>
               </div>
               <div class="mb-4">
                   <div class="form-floating">
-                    <input type="number" class="form-control" id="floatingInput" placeholder="Phone no" name="phone_no" value={signUpDetails.phone_no} onChange={handleChange}/>
+                    <input type="number" class="form-control" id="floatingInput" placeholder="Phone no" name="phone_no" value={signUpDetails.phone_no} onChange={handleChange} required={true}/>
                     <label for="name">Phone no.</label>
                   </div>
               </div>
               <div class="mb-4">
                     <div class="form-floating">
-                      <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" value={signUpDetails.password} onChange={handleChange}/>
+                      <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password" value={signUpDetails.password} onChange={handleChange} required={true}/>
                       <label for="floatingPassword">Password</label>
                     </div>
                 </div>
                 <div class="mb-4">
                     <div class="form-floating">
-                      <input type="password" class="form-control" id="floatingPassword" placeholder="Confirm Password" name="confirm_password" value={signUpDetails.confirm_password} onChange={handleChange}/>
+                      <input type="password" class="form-control" id="floatingPassword" placeholder="Confirm Password" name="confirm_password" value={signUpDetails.confirm_password} onChange={handleChange} required={true}/>
                       <label for="floatingPassword">Confirm Password</label>
                     </div>
                 </div>
                 <div class="mb-4">
                   <div class="form-floating">
-                    <input type="number" class="form-control" id="floatingInput" placeholder="Employer Code" name="employer_code" value={signUpDetails.employer_code} onChange={handleChange}/>
+                    <input type="number" class="form-control" id="floatingInput" placeholder="Employer Code" name="employer_code" value={signUpDetails.employer_code} onChange={handleChange} required={true}/>
                     <label for="name">Employer Code</label>
                   </div>
                 </div>
@@ -90,7 +91,7 @@ export default function SignUp() {
         </div>  
       </div>
       <div class="image-holder flex-fill">
-          <img src={device} alt="" class="image-responsive" />
+          <img src={device} alt="" class="image-responsive form-image" />
           <div class="image-caption">
               <div class="caption-head">
                 <h2>Cleaning Services</h2>

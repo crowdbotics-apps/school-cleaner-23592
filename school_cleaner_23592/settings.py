@@ -16,6 +16,8 @@ import logging
 
 env = environ.Env()
 
+# env.read_env('.env')
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool("DEBUG", default=False)
 
@@ -53,6 +55,9 @@ LOCAL_APPS = [
     "modules",
     "users.apps.UsersConfig",
     "corsheaders",
+    "district_services.apps.DistrictServicesConfig",
+    "inspections.apps.InspectionsConfig",
+    "products.apps.ProductsConfig"
 ]
 THIRD_PARTY_APPS = [
     "rest_framework",
@@ -252,3 +257,16 @@ if DEBUG or not (EMAIL_HOST_USER and EMAIL_HOST_PASSWORD):
             "You should setup `SENDGRID_USERNAME` and `SENDGRID_PASSWORD` env vars to send emails."
         )
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+if DEBUG:
+    INSTALLED_APPS += [
+        'debug_toolbar',
+    ]
+
+    MIDDLEWARE += [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+    ]
+    INTERNAL_IPS = ['127.0.0.1', ]
+    DEBUG_TOOLBAR_CONFIG = {
+        'INTERCEPT_REDIRECTS': False,
+    }

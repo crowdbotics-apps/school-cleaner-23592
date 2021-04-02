@@ -48,7 +48,7 @@ const ResetPassword = () => {
 
 
   return (
-    <div class="reset-password">
+    <div class="reset-password ">
       <div class="reset-password-holder">
         <div class="banner">
             <img src={top} alt="" class="image-responsive"/>

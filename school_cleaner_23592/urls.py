@@ -35,6 +35,9 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
     path("modules/", include("modules.urls")),
     path("api/v1/", include("home.api.v1.urls")),
+    path("api/v1/", include("district_services.api.v1.urls")),
+    path("api/v1/", include("inspections.api.v1.urls")),
+    path("api/v1/", include("products.api.v1.urls")),
     path("users/", include("users.urls", namespace="users")),
 
     path("rest-auth/", include("rest_auth_custom.urls")),
@@ -44,7 +47,6 @@ urlpatterns = [
     path("home/", include("home.urls")),
     re_path(r'', views.catchall),
 ]
-
 
 admin.site.site_header = "School cleaner"
 admin.site.site_title = "School cleaner Admin Portal"
@@ -66,6 +68,15 @@ schema_view = get_schema_view(
 urlpatterns += [
     path("api-docs/", schema_view.with_ui("swagger", cache_timeout=0), name="api_docs")
 ]
+
+if settings.DEBUG:
+    import debug_toolbar
+
+    urlpatterns += [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ]
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 urlpatterns += [path('', TemplateView.as_view(template_name='index.html'))]
 urlpatterns += [

@@ -5,3 +5,7 @@ env/
 staticfiles/
 postgres-data/
 node_modules
+db.sqlite3
+.idea/
+media/
+school_cleaner_23592/local_settings.py
