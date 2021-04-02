@@ -192,7 +192,7 @@
 }
 
 .modal {
-  &#add_District, &#update_District  {
+  &#add_District, &#update_District, &#add_admin {
     .modal-holder {
       max-width: 550px;
       margin: 0 auto;
@@ -245,7 +245,7 @@
   }
 }
 
-#info-modal {
+#info-modal, #add-admin {
   .modal-dialog {
     max-width: 290px;
     margin: 50vh auto 0;

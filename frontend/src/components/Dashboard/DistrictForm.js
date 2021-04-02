@@ -14,7 +14,7 @@ const DistrictForm = props => {
 
 
   const [ validated, setValidated] = useState(false);
-  const [ districtDetails, setDistrictDetails ] = useState({ name: '', logo: '', code: 'E4125', admins: []});
+  const [ districtDetails, setDistrictDetails ] = useState({ name: '', logo: '', code: '', admins: []});
   const [ base64Image, setBase64Image ] = useState('');
 
 
@@ -55,9 +55,10 @@ const DistrictForm = props => {
     e.stopPropagation();
     const form = e.currentTarget;
     if (form.checkValidity() === true) {
-      dispatch(createDistrict({name: districtDetails.name, logo: base64Image, code: districtDetails.code, admins: []}))
+      dispatch(createDistrict({name: districtDetails.name, logo: base64Image, code: data, admins: []}))
       setDistrictDetails({ name: '', logo: '', code: ''})
       setBase64Image('');
+      dispatch(generateCode());
     } else {
       setValidated(true);
     }
@@ -113,7 +114,7 @@ const DistrictForm = props => {
                     <input 
                       type="text"
                       name="code"
-                      value={districtDetails.code}
+                      value={data}
                       onChange={handleCodeChange}
                       className="form-control" 
                       id="floatingInput" 
