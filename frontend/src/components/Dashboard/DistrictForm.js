@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createDistrict, generateCode  } from '../../modules/actions/DistrictActions';
+import { createDistrict, generateCode, fetchDistricts } from '../../modules/actions/DistrictActions';
 import CSRFToken from '../../utils/csrfToken';
 
 
 const DistrictForm = props => {
   const dispatch = useDispatch();
   const { generateCode: { loading, success, error, data }} = useSelector(({ district }) => district);
+  const district = useSelector(({ district }) => district);
 
   useEffect(() => {
     dispatch(generateCode());
@@ -59,7 +60,6 @@ const DistrictForm = props => {
       dispatch(createDistrict({name: districtDetails.name, logo: base64Image, code: data, admins: []}))
       setDistrictDetails({ name: '', logo: '', code: ''})
       setBase64Image('');
-      dispatch(generateCode());
     } else {
       setValidated(true);
     }
