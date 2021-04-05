@@ -7,6 +7,7 @@ import District from '../../../components/Dashboard/District';
 import DistrictForm from '../../../components/Dashboard/DistrictForm';
 import DistrictEditForm from '../../../components/Dashboard/DistrictEditForm';
 import AdminList from '../../../components/Dashboard/AdminList';
+import $ from 'jquery';
 
 const Content = props => {
   const dispatch = useDispatch();

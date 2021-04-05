@@ -33,7 +33,7 @@ function* handleGetUserData({ payload }) {
 }
 
 async function fetchUsers() {
-  return await Axios.get(`/rest-auth/user/`);
+  return await Axios.get(`/rest-auth/user/`, getHeader());
 }
 
 function* handleFetchUsers({ payload }) {
