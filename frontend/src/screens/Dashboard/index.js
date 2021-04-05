@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import SidebarHeader from '../../atoms/Dashboard/District/SideBarHeader';
+import SidebarHeader from '../../components/Dashboard/SidebarHeader';
 import DistrictInformation from '../../components/Dashboard/DistrictInformation';
 import AdminInfo from '../../components/Dashboard/AdminInfo';
 import DistrictForm from '../../components/Dashboard/DistrictForm'

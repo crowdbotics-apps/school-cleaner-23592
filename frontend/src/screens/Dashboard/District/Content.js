@@ -11,14 +11,13 @@ import AdminList from '../../../components/Dashboard/AdminList';
 const Content = props => {
   const dispatch = useDispatch();
   const history = useHistory();
-  
+  const { districts: { loading, success, error, data }} = useSelector(({ district }) => district);
+
   useEffect(() => {
-    dispatch(fetchUsers());
     dispatch(fetchDistricts());
   }, []);
 
 
-  const { fetchDistricts: { loading, success, error, data }} = useSelector(({ district }) => district);
   const [ editedDistrict, setEditedDistrict ] = useState({id: '', name: '', logo: '', code: ''})
   const [ showForm, setShowForm ] = useState(false)
   const [ selectedDistrict, setSelectedDistrict ] = useState(0)
@@ -31,9 +30,12 @@ const Content = props => {
   }
 
   const editFormHandler = district => {
-
     setEditedDistrict({ id: district.id, name: district.name, logo: district.logo, code: district.code });
     setShowForm(true);
+  };
+
+  const formSubmitted = () => {
+    dispatch(fetchDistricts());
   };
 
   return (

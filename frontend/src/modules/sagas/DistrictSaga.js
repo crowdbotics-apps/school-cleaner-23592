@@ -61,7 +61,7 @@ function* handleUpdateDistrict({ payload }) {
     if (response) {
       yield put({
         type: UPDATE_DISTRICT_SUCCESS,
-        payload: response.data
+        payload: response
       });
     }
   } catch (error) {
@@ -80,11 +80,10 @@ async function deleteDistrict(id) {
 function* handleDeleteDistrict({ payload }) {
   try {
     const response = yield call(deleteDistrict, payload);
-    if (response) {
-      yield put({
-        type: DELETE_DISTRICT_SUCCESS,
-      });
-    }
+    yield put({
+      type: DELETE_DISTRICT_SUCCESS,
+      payload: payload
+    });
   } catch (error) {
     yield put({
       type: DELETE_DISTRICT_ERROR,

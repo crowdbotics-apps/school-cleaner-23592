@@ -30,7 +30,7 @@ const block = {
 };
 
 const initialState = {
-  fetchDistricts: { ...block, data: []},
+  districts: { ...block, data: []},
   getDistrict: { ...block, data: null},
   updateDistrict: { ...block, data: null },
   deleteDistrict: { ...block },
@@ -57,9 +57,12 @@ export const DistrictReducer = (state = initialState, action) => {
     case UPDATE_DISTRICT_REQUEST:
       return { ...state, updateDistrict: { ...state.updateDistrict, loading: true } };
     case UPDATE_DISTRICT_SUCCESS:
+      let all = state.districts.data.filter(obj => obj.id != action.payload.id)
+      all.push(action.payload)
       return {
         ...state,
         updateDistrict: { ...state.updateDistrict, loading: false, success: true, data: action.payload },
+        districts: { ...state.districts, loading: false, success: true, data: all },
       };
     case UPDATE_DISTRICT_ERROR:
       return {
@@ -71,9 +74,11 @@ export const DistrictReducer = (state = initialState, action) => {
     case DELETE_DISTRICT_REQUEST:
       return { ...state, deleteDistrict: { ...state.deleteDistrict, loading: true } };
     case DELETE_DISTRICT_SUCCESS:
+      let b = state.districts.data.filter(ob => ob.id != action.payload)
       return {
         ...state,
         deleteDistrict: { ...state.deleteDistrict, loading: false, success: true },
+        districts: { ...state.districts, loading: false, success: true, data: b },
       };
     case DELETE_DISTRICT_ERROR:
       return {
@@ -83,25 +88,28 @@ export const DistrictReducer = (state = initialState, action) => {
 
 
     case FETCH_DISTRICTS_REQUEST:
-      return { ...state, fetchDistricts: { ...state.fetchDistricts, loading: true } };
+      return { ...state, districts: { ...state.districts, loading: true } };
     case FETCH_DISTRICTS_SUCCESS:
       return {
         ...state,
-        fetchDistricts: { ...state.fetchDistricts, loading: false, success: true, data: action.payload },
+        districts: { ...state.districts, loading: false, success: true, data: action.payload },
       };
     case FETCH_DISTRICTS_ERROR:
       return {
         ...state,
-        fetchDistricts: { ...state.fetchDistricts, loading: false, error: action.error },
+        districts: { ...state.districts, loading: false, error: action.error },
       };
     
 
     case CREATE_DISTRICT_REQUEST:
       return { ...state, createDistrict: { ...state.createDistrict, loading: true } };
     case CREATE_DISTRICT_SUCCESS:
+      let s = state.districts.data;
+      s.push(action.payload)
       return {
         ...state,
         createDistrict: { ...state.createDistrict, loading: false, success: true, data: action.payload },
+        districts: { ...state.districts, data: s}
       };
     case CREATE_DISTRICT_ERROR:
       return {

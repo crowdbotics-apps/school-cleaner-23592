@@ -9,7 +9,7 @@ import dottenIcon from "../../assets/images/dotted-icon.svg";
 const District = props => {
   const dispatch = useDispatch();
   const { deleteDistrict: { loading, success, error } } = useSelector(({ district }) => district);
-  const { fetchDistricts } = useSelector(({ district }) => district);
+  const [dispatched, setDispatched] = useState(false);
 
   useEffect(() => {
     if(success){
@@ -18,7 +18,7 @@ const District = props => {
   }, [success]);
 
   const deleteDistrictHandler = () => {
-    dispatch(deleteDistrict(props.district.id))
+    dispatch(deleteDistrict(props.district.id));
   };
 
   const showEditFormHandler = () => {

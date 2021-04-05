@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { Route, Switch, Redirect, withRouter } from 'react-router-dom';
 
 import './App.scss';
-import "../screens/Dashboard/dashboard.scss";
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import '../../node_modules/bootstrap/dist/js/bootstrap.js';
 import routes from './routes';
