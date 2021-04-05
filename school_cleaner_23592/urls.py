@@ -48,8 +48,6 @@ urlpatterns = [
     re_path(r'', views.catchall),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
 admin.site.site_header = "School cleaner"
 admin.site.site_title = "School cleaner Admin Portal"
 admin.site.index_title = "School cleaner Admin"
