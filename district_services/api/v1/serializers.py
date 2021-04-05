@@ -1,8 +1,7 @@
-import json
 from drf_extra_fields.fields import Base64ImageField
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType
+from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType
 
 User = get_user_model()
 
@@ -108,4 +107,18 @@ class RoomSpecsSerializer(serializers.Serializer):
     estimated_time_to_clean = serializers.DurationField(source="estimated_time_to_clean__sum", read_only=True)
 
     class Meta:
+        fields = '__all__'
+
+
+class ToolTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ToolType
+        fields = '__all__'
+
+
+class EquipmentSerializer(serializers.ModelSerializer):
+    tool_title = serializers.CharField(source="tool_type.title", read_only=True)
+
+    class Meta:
+        model = Equipment
         fields = '__all__'

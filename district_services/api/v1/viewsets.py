@@ -7,10 +7,10 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from district_services.api.v1.permissions import DistrictUserPermission, SchoolBuildingPermission, SectionPermission, \
-    RoomTypePermission, RoomPermission
+    RoomTypePermission, RoomPermission, EquipmentPermission, ToolTypePermission
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
-    RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType
+    RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer, EquipmentSerializer, ToolTypeSerializer
+from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType
 from district_services.utils import district_code_generator
 
 User = get_user_model()
@@ -197,3 +197,34 @@ class RoomViewSet(viewsets.ModelViewSet):
 
         serializer = RoomSpecsSerializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class ToolTypeViewSet(viewsets.ModelViewSet):
+    serializer_class = ToolTypeSerializer
+    queryset = ToolType.objects.all()
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = [IsAuthenticated, ToolTypePermission]
+
+
+class EquipmentViewSet(viewsets.ModelViewSet):
+    serializer_class = EquipmentSerializer
+    queryset = Equipment.objects.none()
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = [IsAuthenticated, EquipmentPermission]
+
+    def get_queryset(self):
+        queryset = Equipment.objects.all().select_related("section", "tool_type")
+        school = self.request.query_params.get("school")
+        section = self.request.query_params.get("section")
+        user = self.request.user
+        if section:
+            queryset = queryset.filter(section_id=int(section))
+        if school:
+            queryset = queryset.filter(section__school_id=int(school))
+        if user.is_superuser:
+            queryset = queryset
+        elif user.role == "admin":
+            queryset = queryset.filter(section__school__district__admins_pk=user.pk)
+        elif user.role == "inspector":
+            queryset = queryset.filter(section__school__inspectors_pk=user.pk)
+        return queryset

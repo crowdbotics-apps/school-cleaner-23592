@@ -99,3 +99,36 @@ class Room(models.Model):
     class Meta:
         verbose_name_plural = '5- Rooms'
         ordering = ('-created',)
+
+
+class ToolType(models.Model):
+    title = models.CharField(max_length=255)
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name_plural = "1- Product Type"
+        ordering = ('-created',)
+
+
+class Equipment(models.Model):
+    tool_type = models.ForeignKey(ToolType, on_delete=models.PROTECT)
+    section = models.ForeignKey("district_services.Section", on_delete=models.CASCADE,
+                                related_name="section_equipments")
+    size = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField()
+    price = models.FloatField(default=0.0)
+    unit = models.CharField(max_length=10, null=True, blank=True)
+
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.tool_type
+
+    class Meta:
+        verbose_name_plural = "6- Equipments"
+        ordering = ('-created',)

@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType
+from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment
 
 
 @admin.register(District)
@@ -18,7 +18,13 @@ class SchoolBuildingAdmin(admin.ModelAdmin):
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
     list_display = ['name', 'school', 'paper_towel_dispensers', 'toiler_tissue_dispensers', 'hand_soap_dispensers',
-                    'hand_sanitizer_dispensers', 'updated', 'created']
+                    'hand_sanitizer_dispensers', 'created']
+    list_per_page = 10
+
+
+@admin.register(Equipment)
+class RoomTypeAdmin(admin.ModelAdmin):
+    list_display = ['tool_type', 'section', 'size', 'quantity', 'price', 'created']
     list_per_page = 10
 
 
@@ -31,5 +37,5 @@ class RoomTypeAdmin(admin.ModelAdmin):
 @admin.register(Room)
 class RoomAdmin(admin.ModelAdmin):
     list_display = ['name', 'section', 'room_type', 'estimated_time_to_clean', 'square_feet', 'desks', 'windows',
-                    'trash_cans', 'updated', 'created']
+                    'trash_cans', 'created']
     list_per_page = 10
