@@ -51,3 +51,20 @@ class ProductNeeded(models.Model):
     class Meta:
         verbose_name_plural = "3- Product Needed"
         ordering = ('-created',)
+
+
+class ProductUsed(models.Model):
+    section = models.ForeignKey("district_services.Section", on_delete=models.SET_NULL,
+                                related_name="product_used_in_section", null=True, blank=True)
+    quantity = models.PositiveIntegerField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name="products_used")
+
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.product)
+
+    class Meta:
+        verbose_name_plural = "3- Product Needed"
+        ordering = ('-created',)

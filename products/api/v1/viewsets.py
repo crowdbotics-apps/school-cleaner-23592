@@ -3,8 +3,9 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from products.api.v1.permissions import ProductTypePermission, ProductNeededPermission, ProductPermission
-from products.api.v1.serializers import ProductTypeSerializer, ProductNeededSerializer, ProductSerializer
-from products.models import ProductType, ProductNeeded, Product
+from products.api.v1.serializers import ProductTypeSerializer, ProductNeededSerializer, ProductSerializer, \
+    ProductUsedSerializer
+from products.models import ProductType, ProductNeeded, Product, ProductUsed
 
 
 class ProductTypeViewSet(viewsets.ModelViewSet):
@@ -52,6 +53,30 @@ class ProductNeededViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = ProductNeeded.objects.all().annotate(
             total_price=Sum(F('price_per_unit') * F('quantity'), output_field=IntegerField()))
+        user = self.request.user
+        section = self.request.query_params.get("section")
+        school = self.request.query_params.get("school")
+        if user.is_superuser:
+            queryset = queryset
+        elif user.role == "admin":
+            queryset = queryset.filter(section__school__district__admins=user)
+        elif user.role == "inspector":
+            queryset = queryset.filter(section__school__inspectors=user)
+        if section:
+            queryset = queryset.filter(section_id=int(section))
+        if school:
+            queryset = queryset.filter(section__school_id=int(school))
+        return queryset
+
+
+class ProductUsedViewSet(viewsets.ModelViewSet):
+    serializer_class = ProductUsedSerializer
+    queryset = ProductUsed.objects.none()
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = [IsAuthenticated, ProductNeededPermission]
+
+    def get_queryset(self):
+        queryset = ProductUsed.objects.all()
         user = self.request.user
         section = self.request.query_params.get("section")
         school = self.request.query_params.get("school")

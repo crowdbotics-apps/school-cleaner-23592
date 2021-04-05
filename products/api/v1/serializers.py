@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from products.models import ProductType, ProductNeeded, Product
+from products.models import ProductType, ProductNeeded, Product, ProductUsed
 
 User = get_user_model()
 
@@ -25,4 +25,13 @@ class ProductNeededSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductNeeded
+        fields = '__all__'
+
+
+class ProductUsedSerializer(serializers.ModelSerializer):
+    section_name = serializers.CharField(source="section.name", read_only=True)
+    product_name = serializers.CharField(source="product.name", read_only=True)
+
+    class Meta:
+        model = ProductUsed
         fields = '__all__'

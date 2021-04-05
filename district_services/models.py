@@ -110,12 +110,12 @@ class ToolType(models.Model):
         return self.title
 
     class Meta:
-        verbose_name_plural = "1- Product Type"
+        verbose_name_plural = "6- Tool Type for Equipments"
         ordering = ('-created',)
 
 
 class Equipment(models.Model):
-    tool_type = models.ForeignKey(ToolType, on_delete=models.PROTECT)
+    tool_type = models.ForeignKey(ToolType, on_delete=models.PROTECT, related_name="tool_type_equipments")
     section = models.ForeignKey("district_services.Section", on_delete=models.CASCADE,
                                 related_name="section_equipments")
     size = models.PositiveIntegerField()
@@ -127,8 +127,28 @@ class Equipment(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.tool_type
+        return f"{self.tool_type.title}"
 
     class Meta:
-        verbose_name_plural = "6- Equipments"
+        verbose_name_plural = "7- Equipments"
+        ordering = ('-created',)
+
+
+class EquipmentNeeded(models.Model):
+    tool_type = models.ForeignKey(ToolType, on_delete=models.PROTECT, related_name="tool_type_equipments_needed")
+    section = models.ForeignKey("district_services.Section", on_delete=models.CASCADE,
+                                related_name="section_equipments_needed")
+    # equipment = models.ForeignKey("district_services.Equipment", on_delete=models.CASCADE,
+    # related_name="equipment_needed")
+    quantity = models.PositiveIntegerField(default=0)
+    cost_per_unit = models.FloatField(default=0.0)
+
+    updated = models.DateTimeField(auto_now=True)
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.tool_type}"
+
+    class Meta:
+        verbose_name_plural = "8- Equipment Needed by section."
         ordering = ('-created',)

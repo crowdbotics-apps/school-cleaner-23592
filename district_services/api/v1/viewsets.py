@@ -9,8 +9,10 @@ from rest_framework.response import Response
 from district_services.api.v1.permissions import DistrictUserPermission, SchoolBuildingPermission, SectionPermission, \
     RoomTypePermission, RoomPermission, EquipmentPermission, ToolTypePermission
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
-    RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer, EquipmentSerializer, ToolTypeSerializer
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType
+    RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer, EquipmentSerializer, ToolTypeSerializer, \
+    EquipmentNeededSerializer, SchoolBuildingReportSerializer
+from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
+    EquipmentNeeded
 from district_services.utils import district_code_generator
 
 User = get_user_model()
@@ -85,6 +87,12 @@ class SchoolBuildingViewSet(viewsets.ModelViewSet):
         elif user.role == "inspector":
             queryset = queryset.filter(inspectors=user)
         return queryset
+
+    @action(methods=['get'], detail=True, url_path='report', url_name='report')
+    def school_report(self, request, pk):
+        instance = self.get_object()
+        serializer = SchoolBuildingReportSerializer(instance, many=False)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, context={"request": self.request})
@@ -214,6 +222,30 @@ class EquipmentViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Equipment.objects.all().select_related("section", "tool_type")
+        school = self.request.query_params.get("school")
+        section = self.request.query_params.get("section")
+        user = self.request.user
+        if section:
+            queryset = queryset.filter(section_id=int(section))
+        if school:
+            queryset = queryset.filter(section__school_id=int(school))
+        if user.is_superuser:
+            queryset = queryset
+        elif user.role == "admin":
+            queryset = queryset.filter(section__school__district__admins_pk=user.pk)
+        elif user.role == "inspector":
+            queryset = queryset.filter(section__school__inspectors_pk=user.pk)
+        return queryset
+
+
+class EquipmentNeededViewSet(viewsets.ModelViewSet):
+    serializer_class = EquipmentNeededSerializer
+    queryset = EquipmentNeeded.objects.none()
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = [IsAuthenticated, EquipmentPermission]
+
+    def get_queryset(self):
+        queryset = EquipmentNeeded.objects.all().select_related("section", "tool_type")
         school = self.request.query_params.get("school")
         section = self.request.query_params.get("section")
         user = self.request.user

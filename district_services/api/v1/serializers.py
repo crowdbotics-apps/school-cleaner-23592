@@ -1,7 +1,8 @@
 from drf_extra_fields.fields import Base64ImageField
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType
+from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
+    EquipmentNeeded
 
 User = get_user_model()
 
@@ -48,6 +49,17 @@ class SchoolBuildingSerializer(serializers.ModelSerializer):
         return validated_data
 
 
+class SchoolBuildingReportSerializer(serializers.ModelSerializer):
+    total_rooms = serializers.IntegerField(read_only=True)
+    total_area = serializers.IntegerField(read_only=True)
+    total_sections = serializers.IntegerField(read_only=True)
+    estimated_time_to_clean = serializers.DurationField(read_only=True)
+
+    class Meta:
+        model = SchoolBuilding
+        fields = ('total_rooms', 'total_area', 'total_sections', 'estimated_time_to_clean')
+
+
 class SectionSerializer(serializers.ModelSerializer):
     school_name = serializers.CharField(source="school.name", read_only=True)
     people_detail = UserSerializer(source="people", read_only=True, many=True)
@@ -84,9 +96,11 @@ class RoomTypeSerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     room_type_name = serializers.CharField(source="room_type.name", read_only=True)
     total_square_feet = serializers.IntegerField(read_only=True)
+    estimated_time_to_clean = serializers.DurationField(required=True)
 
     class Meta:
         model = Room
+        # exclude = ('estimated_time_to_clean',)
         fields = '__all__'
 
     def validate(self, attrs):
@@ -121,4 +135,13 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Equipment
+        fields = '__all__'
+
+
+class EquipmentNeededSerializer(serializers.ModelSerializer):
+    tool_title = serializers.CharField(source="tool_type.title", read_only=True)
+    section_name = serializers.CharField(source="section.name", read_only=True)
+
+    class Meta:
+        model = EquipmentNeeded
         fields = '__all__'
