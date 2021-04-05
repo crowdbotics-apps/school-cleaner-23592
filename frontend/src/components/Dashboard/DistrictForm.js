@@ -125,7 +125,7 @@ const DistrictForm = props => {
                     <label htmlFor="name">District code</label>
                   </div>
                 </div>
-                <button type="submit" className="btn btn-primary text-uppercase">Create</button>
+                <button type="submit" className="btn btn-primary text-uppercase" data-bs-toggle="modal" data-bs-target="#add_District">Create</button>
               </form>
             </div>
           </div>

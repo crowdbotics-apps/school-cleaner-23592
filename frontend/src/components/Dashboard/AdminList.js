@@ -56,8 +56,8 @@ const AdminList = () => {
                 </div>
               </div>
               <div class="d-flex justify-content-center align-items-center btn-holder">
-                <button type="button" class="btn btn-primary text-uppercase">Save</button>
-                <button type="button" class="btn btn-primary text-uppercase">Cancel</button>
+                <button type="button" class="btn btn-primary text-uppercase" data-bs-toggle="modal" data-bs-target="#add_admin">Save</button>
+                <button type="button" class="btn btn-primary text-uppercase" data-bs-toggle="modal" data-bs-target="#add_admin">Cancel</button>
               </div>
             </div>
           </div>

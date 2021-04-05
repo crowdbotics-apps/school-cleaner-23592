@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateDistrict, generateCode  } from '../../modules/actions/DistrictActions';
-
+import CSRFToken from '../../utils/csrfToken';
+import $ from 'jquery';
 
 const DistrictForm = props => {
   const dispatch = useDispatch();
@@ -50,6 +51,7 @@ const DistrictForm = props => {
         code: props.district.code, 
         admins: []
       }));
+      $('#update_District').modal('hide');
       setDistrictDetails({ name: '', logo: '', code: ''})
       setBase64Image('')
     } else {
@@ -69,6 +71,7 @@ const DistrictForm = props => {
           <div className="modal-content">
             <div className="modal-body">
               <form onSubmit={submitHandler}>
+                <CSRFToken />
                 <h2 className="modal-title mb-4" id="exampleModalLabel">Update District</h2>
                 <div className="mb-4">
                   <div className="form-floating mb-3 go-bottom">
@@ -109,7 +112,7 @@ const DistrictForm = props => {
                       value={districtDetails.code}
                       onChange={handleChange}
                       className="form-control" 
-                      id="floatingInput" 
+                      id="floatingInput2" 
                       placeholder="District code" 
                     />
                     <label htmlFor="name">District code</label>
