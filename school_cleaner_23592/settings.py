@@ -165,8 +165,6 @@ USE_TZ = True
 
 # STATIC_URL = "/static/"
 
-MIDDLEWARE += ["whitenoise.middleware.WhiteNoiseMiddleware"]
-
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
     "allauth.account.auth_backends.AuthenticationBackend",
@@ -182,6 +180,7 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "build/static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+WHITENOISE_ROOT= os.path.join(BASE_DIR, 'build', 'root')
 
 # allauth / users
 ACCOUNT_EMAIL_REQUIRED = True
