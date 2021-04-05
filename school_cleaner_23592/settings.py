@@ -176,12 +176,25 @@ AUTHENTICATION_BACKENDS = (
 # STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 # STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-STATIC_URL = "/static/"
+# STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "build", "static")]
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+# STATICFILES_DIRS = [os.path.join(BASE_DIR, "build", "static")]
+# STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedStaticFilesStorage"
+
+STATIC_URL = '/static/'
+
+MIDDLEWARE += ['whitenoise.middleware.WhiteNoiseMiddleware']
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'build'),
+    os.path.join(BASE_DIR, 'build', 'static')
+]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # allauth / users
 ACCOUNT_EMAIL_REQUIRED = True
