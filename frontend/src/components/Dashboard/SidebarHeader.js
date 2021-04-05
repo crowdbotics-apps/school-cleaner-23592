@@ -1,8 +1,8 @@
 import React from 'react';
 import '../../screens/Dashboard/dashboard.scss';
-import logo from "../../assets/images/logo.svg";
-import userbutton from "../../assets/images/user-button.svg";
-import plusicon from "../../assets/images/plus-icon.svg";
+import logo from "./assets/logo.svg";
+import userbutton from "./assets/user-button.svg";
+import plusicon from "./assets/plus-icon.svg";
 
 const SideBarHeader = () => {
   return (
