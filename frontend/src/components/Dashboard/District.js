@@ -4,21 +4,15 @@ import { deleteDistrict, fetchDistricts } from '../../modules/actions/DistrictAc
 import arrorRight from "../../assets/images/arrow-right.svg";
 import district from "../../assets/images/district.png";
 import dottenIcon from "../../assets/images/dotted-icon.svg";
-
+import $ from 'jquery';
 
 const District = props => {
   const dispatch = useDispatch();
   const { deleteDistrict: { loading, success, error } } = useSelector(({ district }) => district);
-  const { fetchDistricts } = useSelector(({ district }) => district);
-
-  useEffect(() => {
-    if(success){
-      dispatch(fetchDistricts())
-    }
-  }, [success]);
+  const [dispatched, setDispatched] = useState(false);
 
   const deleteDistrictHandler = () => {
-    dispatch(deleteDistrict(props.district.id))
+    dispatch(deleteDistrict(props.district.id));
   };
 
   const showEditFormHandler = () => {
@@ -26,6 +20,12 @@ const District = props => {
   }
   const style = {
     backgroundColor: '#B4DBDB'
+  }
+
+  const handleClick = () => {
+    props.onEditDistrict(props.district)
+    $('#update_District').modal('show');
+
   }
 
   return (
@@ -42,11 +42,11 @@ const District = props => {
             <span>{props.district.name}</span>
           </div>
           <div className="dropdown">
-            <button className="btn btn-secondary dropdown-toggle p-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            <button className="dropdown btn btn-secondary dropdown-toggle p-0" style={{ width: '25px'}} type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
               <img src={dottenIcon} alt="" className="image-responsive" />
             </button>
             <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
-              <li><p className="dropdown-item" data-bs-toggle="modal" data-bs-target="#update_District" onClick={() => props.onEditDistrict(props.district)}>Edit details</p></li>
+              <li><a className="dropdown-item" onClick={handleClick}>Edit details</a></li>
               <li><a className="dropdown-item" onClick={deleteDistrictHandler}>Delete district</a></li>
             </ul>
           </div>

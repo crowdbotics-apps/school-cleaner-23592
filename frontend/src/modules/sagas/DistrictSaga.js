@@ -2,6 +2,7 @@ import Cookies from 'js-cookie';
 import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { Axios } from '../../api/axios';
 import { getSimplifiedError } from '../../utils/error';
+import { getHeader } from '../../utils/utility';
 import {
   GET_DISTRICT_REQUEST,
   GET_DISTRICT_SUCCESS,
@@ -23,8 +24,9 @@ import {
   GENERATE_CODE_ERROR
 } from '../reducers/DistrictReducer';
 
+
 async function getDistrict({ id }) {
-  return await Axios.get(`/api/v1/district/${id}/`);
+  return await Axios.get(`/api/v1/district/${id}/`, getHeader());
 }
 
 function* handleGetDistrict({ payload }) {
@@ -33,7 +35,7 @@ function* handleGetDistrict({ payload }) {
     if (response) {
       yield put({
         type: GET_DISTRICT_SUCCESS,
-        payload: response.data
+        payload: response
       });
     }
   } catch (error) {
@@ -45,12 +47,12 @@ function* handleGetDistrict({ payload }) {
 }
 
 
-async function updateDistrict({ id, name, code, admins }) {
+async function updateDistrict({ id, name, logo, code, admins }) {
   return await Axios.patch(`/api/v1/district/${id}/`, {
     name,
     code,
     admins
-  });
+  }, getHeader());
 }
 
 function* handleUpdateDistrict({ payload }) {
@@ -59,7 +61,7 @@ function* handleUpdateDistrict({ payload }) {
     if (response) {
       yield put({
         type: UPDATE_DISTRICT_SUCCESS,
-        payload: response.data
+        payload: response
       });
     }
   } catch (error) {
@@ -72,17 +74,16 @@ function* handleUpdateDistrict({ payload }) {
 
 
 async function deleteDistrict(id) {
-  return await Axios.delete(`/api/v1/district/${id}/`, { 'headers': { 'Authorization': "Basic " + Cookies.get('token') } });
+  return await Axios.delete(`/api/v1/district/${id}/`, getHeader());
 }
 
 function* handleDeleteDistrict({ payload }) {
   try {
     const response = yield call(deleteDistrict, payload);
-    if (response) {
-      yield put({
-        type: DELETE_DISTRICT_SUCCESS,
-      });
-    }
+    yield put({
+      type: DELETE_DISTRICT_SUCCESS,
+      payload: payload
+    });
   } catch (error) {
     yield put({
       type: DELETE_DISTRICT_ERROR,
@@ -93,7 +94,7 @@ function* handleDeleteDistrict({ payload }) {
 
 
 async function fetchDistricts() {
-  return await Axios.get(`/api/v1/district/`, { 'headers': { 'Authorization': "Basic " + Cookies.get('token') } });
+  return await Axios.get(`/api/v1/district/`, getHeader());
 }
 
 function* handleFetchDistricts() {
@@ -120,7 +121,7 @@ async function createDistrict({ name, code, logo, admins }) {
     code,
     logo,
     admins,
-  });
+  }, getHeader());
 }
 
 function* handleCreateDistrict({ payload }) {
@@ -142,13 +143,12 @@ function* handleCreateDistrict({ payload }) {
 
 
 async function generateCode() {
-  return await Axios.get(`/api/v1/district/district-code/`, { 'headers': { 'Authorization': "Basic " + Cookies.get('token') } });
+  return await Axios.get(`/api/v1/district/district-code/`, getHeader());
 }
 
 function* handleGenerateCode() {
   try {
     const response = yield call(generateCode);
-    console.log(response, "GENERATE_CODE_REQUEST")
     if (response) {
       yield put({
         type: GENERATE_CODE_SUCCESS,

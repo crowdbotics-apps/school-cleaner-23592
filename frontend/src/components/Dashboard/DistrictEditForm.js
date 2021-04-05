@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { updateDistrict, generateCode  } from '../../modules/actions/DistrictActions';
-
+import CSRFToken from '../../utils/csrfToken';
+import $ from 'jquery';
 
 const DistrictForm = props => {
   const dispatch = useDispatch();
@@ -39,12 +40,18 @@ const DistrictForm = props => {
   };
 
   const submitHandler = (e) => {
-    console.log("----------------------------")
     e.preventDefault();
     e.stopPropagation();
     const form = e.currentTarget;
     if (form.checkValidity() === true) {
-      dispatch(updateDistrict({name: districtDetails.name, logo: base64Image, code: props.district.code, admins: []}))
+      dispatch(updateDistrict({
+        id: props.district.id, 
+        name: districtDetails.name, 
+        logo: base64Image, 
+        code: props.district.code, 
+        admins: []
+      }));
+      $('#update_District').modal('hide');
       setDistrictDetails({ name: '', logo: '', code: ''})
       setBase64Image('')
     } else {
@@ -58,12 +65,13 @@ const DistrictForm = props => {
 
 
   return(
-    <div className="modal fade" id="update_District"  aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div className="modal fade" id="update_District"  tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div className="modal-holder">
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-body">
               <form onSubmit={submitHandler}>
+                <CSRFToken />
                 <h2 className="modal-title mb-4" id="exampleModalLabel">Update District</h2>
                 <div className="mb-4">
                   <div className="form-floating mb-3 go-bottom">
@@ -73,7 +81,6 @@ const DistrictForm = props => {
                       name="name"
                       value={districtDetails.name}
                       onChange={handleChange}
-                      required={true}
                       id="floatingInput" 
                       placeholder="District Name" 
                     />
@@ -86,7 +93,6 @@ const DistrictForm = props => {
                       <input 
                         type="file" 
                         onChange={handleImageChange}
-                        required={true}
                         id="select-image" 
                         className="btn btn-outline-secondary" 
                         style={{ display: 'none' }}
@@ -106,7 +112,7 @@ const DistrictForm = props => {
                       value={districtDetails.code}
                       onChange={handleChange}
                       className="form-control" 
-                      id="floatingInput" 
+                      id="floatingInput2" 
                       placeholder="District code" 
                     />
                     <label htmlFor="name">District code</label>

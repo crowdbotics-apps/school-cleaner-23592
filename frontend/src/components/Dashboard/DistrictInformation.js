@@ -8,7 +8,7 @@ import plusIcon from "../../assets/images/plus-icon.svg";
 
 const DistrictInformation = props => {
 
-  const { fetchDistricts: { loading, success, error, data }} = useSelector(({ district }) => district);
+  const { districts: { loading, success, error, data }} = useSelector(({ district }) => district);
   const [ currentDistrict, setCurrentDistrict ] = useState(null)
   const [ currentTab, setCurrentTab ] = useState('Overview');
 
