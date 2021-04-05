@@ -176,7 +176,7 @@ MEDIA_URL = "/media/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "build", "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
 MEDIA_ROOT = os.path.join(BASE_DIR, "media")
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 WHITENOISE_ROOT= os.path.join(BASE_DIR, 'build', 'root')
 
 # allauth / users
