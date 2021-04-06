@@ -13,6 +13,14 @@ then
     cd frontend
 fi
 
+if [[ -d /build ]]
+then
+    echo "/build exists on your filesystem."
+    rm -rf build
+fi
+
+
+
 ## Run rest of the commands if we're already in the frontend directory
 
 # Build the frontend
