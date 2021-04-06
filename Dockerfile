@@ -17,8 +17,12 @@ RUN apt-get update \
 
 WORKDIR /opt/webapp
 COPY . .
-RUN chmod +x build.sh
-CMD ["build.sh"]
+
+#CMD npm install
+#CMD mkdir -p build/root
+#
+#RUN chmod +x build_app.sh
+#CMD build_app.sh
 
 RUN pip3 install --no-cache-dir -q 'pipenv==2018.11.26' && pipenv install --deploy --system
 # RUN npm install && npm audit fix && npm run build
