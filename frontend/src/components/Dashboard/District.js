@@ -32,7 +32,7 @@ const District = props => {
     <React.Fragment>
       <div className="district-box">
         <div className="image-holder">
-          <img src={district} alt="" className="w-100" />
+          <img src={props.district.logo} alt="" className="w-100" />
         </div> 
         <div className="d-flex district-box-footer align-items-center px-4 w-100 py-2 justify-content-between" style={ props.selected === props.district.id ? style : {}}>
           <div className="content d-flex">
