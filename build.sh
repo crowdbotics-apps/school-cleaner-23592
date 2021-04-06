@@ -13,7 +13,7 @@ then
     cd frontend
 fi
 
-if [[ -d /build ]]
+if [[ -d build ]]
 then
     echo "/build exists on your filesystem."
     rm -rf build
