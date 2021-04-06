@@ -7,7 +7,7 @@ ARG SECRET_KEY
 
 # libpq-dev and python3-dev help with psycopg2
 RUN apt-get update \
-  && apt-get install -y python3.7-dev python3-pip libpq-dev curl nodejs npm \
+  && apt-get install -y python3.7-dev python3-pip libpq-dev curl nodejs npm yarn \
   && apt-get clean all \
   && rm -rf /var/lib/apt/lists/*
   # You can add additional steps to the build by appending commands down here using the
@@ -19,6 +19,9 @@ WORKDIR /opt/webapp
 COPY . .
 RUN pip3 install --no-cache-dir -q 'pipenv==2018.11.26' && pipenv install --deploy --system
 # RUN npm install && npm audit fix && npm run build
+
+RUN chmod +x build.sh
+RUN ./build.sh
 RUN python3 manage.py collectstatic --no-input
 
 
