@@ -13,6 +13,8 @@ then
     cd frontend
 fi
 
+rm -rf build
+
 ## Run rest of the commands if we're already in the frontend directory
 
 # Build the frontend
