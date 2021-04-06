@@ -10,6 +10,7 @@ cur_dir=${PWD##*/}
 # then cd into frontend
 if [ "$cur_dir" != "frontend" ]
 then
+    # shellcheck disable=SC2164
     cd frontend
 fi
 
