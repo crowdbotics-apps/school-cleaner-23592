@@ -1,3 +1,5 @@
+import random
+
 from django.contrib.auth import get_user_model
 from django.db.models import Sum, Count
 from rest_framework import viewsets, status
@@ -53,7 +55,8 @@ class DistrictViewSet(viewsets.ModelViewSet):
     @action(methods=['get'], detail=False, url_path='district-code', url_name='district-code')
     def district_code(self, request):
         while True:
-            code = district_code_generator(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+            code = random.randint(10000, 99999)
+            # code = district_code_generator(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
             district = District.objects.filter(code__exact=code)
             if not district:
                 break
