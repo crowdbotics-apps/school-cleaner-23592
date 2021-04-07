@@ -1,6 +1,8 @@
 from drf_extra_fields.fields import Base64ImageField
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+
+from district_services.api.v1.custom_duration_field import CustomDurationField
 from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
     EquipmentNeeded
 
@@ -96,7 +98,7 @@ class RoomTypeSerializer(serializers.ModelSerializer):
 class RoomSerializer(serializers.ModelSerializer):
     room_type_name = serializers.CharField(source="room_type.name", read_only=True)
     total_square_feet = serializers.IntegerField(read_only=True)
-    estimated_time_to_clean = serializers.DurationField(required=True)
+    estimated_time_to_clean = CustomDurationField(required=True)
 
     class Meta:
         model = Room
