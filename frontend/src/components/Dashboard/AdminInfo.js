@@ -30,7 +30,7 @@ const AdminInfo = props => {
                         <img src={emailIcon} alt="" className="image-responsive" />
                       </div>
                       <div className="admin-email">
-                        johndoe21@example.com
+                        {props.admin.email}
                       </div>
                   </div>
                 </li>
@@ -40,7 +40,7 @@ const AdminInfo = props => {
                         <img src={phoneNumber} alt="" className="image-responsive" />
                       </div>
                       <div className="admin-phone">
-                        <a href="tel: 9876543210 ">9876543210</a>
+                        <a href="tel: 9876543210 ">{props.admin.phone}</a>
                       </div>
                   </div>
                 </li>

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { fetchDistricts } from '../../../modules/actions/DistrictActions';
+import { fetchAdmins } from '../../../modules/actions/AdminActions';
 import { fetchUsers } from '../../../modules/actions/UserActions';
 import District from '../../../components/Dashboard/District';
 import DistrictForm from '../../../components/Dashboard/DistrictForm';
@@ -13,9 +14,11 @@ const Content = props => {
   const dispatch = useDispatch();
   const history = useHistory();
   const { districts: { loading, success, error, data }} = useSelector(({ district }) => district);
+  const { admins: { loadingAdmins, adminSuccess, adminError, adminData }} = useSelector(({ admin }) => admin);
 
   useEffect(() => {
     dispatch(fetchDistricts());
+    dispatch(fetchAdmins());
   }, []);
 
 
@@ -58,7 +61,7 @@ const Content = props => {
       </div>
       <DistrictForm />
       {showForm && <DistrictEditForm district={editedDistrict} />}
-      <AdminList />
+      <AdminList districtId={selectedDistrict} />
     </React.Fragment>
   )
 }

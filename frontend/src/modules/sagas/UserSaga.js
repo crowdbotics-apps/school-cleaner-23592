@@ -38,7 +38,7 @@ async function fetchUsers() {
 
 function* handleFetchUsers({ payload }) {
   try {
-    debugger
+
     const response = yield call(fetchUsers, payload);
     if (response) {
       yield put({

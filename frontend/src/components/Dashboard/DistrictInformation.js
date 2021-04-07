@@ -3,11 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import errorIcon from "../../assets/images/error-icon.svg";
 import deleteIcon from "../../assets/images/delete-icon.svg";
 import plusIcon from "../../assets/images/plus-icon.svg";
-
+import { updateDistrict, fetchDistricts } from '../../modules/actions/DistrictActions';
 
 
 const DistrictInformation = props => {
-
+  const dispatch = useDispatch();
   const { districts: { loading, success, error, data }} = useSelector(({ district }) => district);
   const [ currentDistrict, setCurrentDistrict ] = useState(null)
   const [ currentTab, setCurrentTab ] = useState('Overview');
@@ -15,6 +15,19 @@ const DistrictInformation = props => {
   const setDistrict = district => {
     setCurrentDistrict(district)
   };
+
+  const handleDeleteAdmin = (admin) => {
+    let admins = props.district.admins.filter(id => id != admin.id)
+    let admin_detail = props.district.admin_detail.filter(x => x.id != admin.id)
+
+    dispatch(updateDistrict({
+      id: props.district.id,
+      admins
+    }));
+    props.district.admins = admins
+    props.district.admin_detail = admin_detail
+    setCurrentDistrict(props.district)
+  }
 
   useEffect(() => {
     setDistrict(props.district);
@@ -74,14 +87,14 @@ const DistrictInformation = props => {
     return (
       <div className="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="Admin">
         <ul className="p-0">
-          {currentDistrict.admins.map(admin => {
+          {currentDistrict.admin_detail.map(admin => {
             return (
               <li className="border-bottom d-flex justify-content-between p-2 pb-3 pt-3" key={admin.id}>
                 <div className="name">
                   <span>{admin.name}</span>
                 </div>
                 <div className="icon-holder d-flex justify-content-end">
-                  <img src={deleteIcon} alt="" className="image-responsive delete-icon" />
+                  <img src={deleteIcon} alt="" className="image-responsive delete-icon" onClick={() => handleDeleteAdmin(admin)} />
                   <a href="#" className="align-items-center border-0 d-flex m-auto text-uppercase" data-bs-toggle="modal" data-bs-target="#info-modal">
                     <img src={errorIcon} alt="" className="image-responsive error-icon" onClick={() => props.onAdminSelected(admin)}/>
                   </a>

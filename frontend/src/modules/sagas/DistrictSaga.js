@@ -58,6 +58,7 @@ async function updateDistrict({ id, name, logo, code, admins }) {
 function* handleUpdateDistrict({ payload }) {
   try {
     const response = yield call(updateDistrict, payload);
+    handleFetchDistricts()
     if (response) {
       yield put({
         type: UPDATE_DISTRICT_SUCCESS,

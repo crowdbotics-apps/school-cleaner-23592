@@ -18,8 +18,8 @@ const Dashboard = () => {
     setSelectedDistrict(district)
   };
 
-  const adminInfoHandler = ({id, name}) => {
-    setAdminInfo({id: id, name: name})
+  const adminInfoHandler = (admin) => {
+    setAdminInfo(admin)
   };
 
   return (
