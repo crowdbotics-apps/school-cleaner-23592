@@ -7,7 +7,7 @@ User = get_user_model()
 class District(models.Model):
     name = models.CharField(verbose_name=_('District Name'), max_length=255)
     logo = models.ImageField(verbose_name=_('Logo Image'), upload_to="district_logos")
-    code = models.CharField(verbose_name=_('District Code'), max_length=255)
+    code = models.CharField(verbose_name=_('District Code'), max_length=5)
 
     admins = models.ManyToManyField(User, blank=True, related_name="admins_against_district")
     created = models.DateTimeField(auto_now_add=True)
