@@ -99,3 +99,17 @@ class Room(models.Model):
     class Meta:
         verbose_name_plural = '5- Rooms'
         ordering = ('-created',)
+
+
+class EmployeeInDistrict(models.Model):
+    employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="employees_in_district")
+    district = models.ForeignKey(District, on_delete=models.CASCADE, related_name="district_employee")
+
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.employee)
+
+    class Meta:
+        verbose_name_plural = '6- Employees With District Code'
+        ordering = ('-created', )

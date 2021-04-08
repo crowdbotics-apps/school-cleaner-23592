@@ -2,7 +2,7 @@ from django.http import HttpRequest
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 
-from district_services.models import District
+from district_services.models import District, EmployeeInDistrict
 
 try:
     from allauth.account import app_settings as allauth_settings
@@ -221,7 +221,6 @@ class RegisterSerializer(serializers.Serializer):
             'employer_code':self.validated_data.get('employer_code',''),
         }
 
-
     def save(self, request):
         adapter = get_adapter()
         user = adapter.new_user(request)
@@ -233,8 +232,7 @@ class RegisterSerializer(serializers.Serializer):
         if code:
             district = District.objects.filter(code__exact=str(code)).first()
             if district:
-                print("adding to admin")
-                district.admins.add(user.pk)
+                EmployeeInDistrict.objects.create(employee=user, district=district)
         return user
 
 
