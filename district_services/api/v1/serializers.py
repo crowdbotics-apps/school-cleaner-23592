@@ -22,7 +22,6 @@ class EmployeeInDistrictSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def get_is_user(self, obj):
-        print(obj.district.admins.all().values_list("id"))
         if obj.employee.id in obj.district.admins.all().values_list("id", flat=True):
             return True
         return False
