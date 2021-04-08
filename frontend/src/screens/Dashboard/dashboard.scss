@@ -61,6 +61,27 @@
             }
           }
         }
+        .tab-admin {
+          .add-admin-link {
+            img {
+              margin-right: 10px;
+            }
+            .btn {
+              font-size: 14px;
+              font-weight: 500;
+              color: #136162;
+              &:hover {
+                background: transparent;
+                color: #136162;
+              }
+            }
+          }
+          .delete-icon {
+            cursor: pointer;
+            margin-right: 5px;
+            // display: none;
+          }
+        }
         .tab-content {
           .tab-pane {
             .add-admin-link {

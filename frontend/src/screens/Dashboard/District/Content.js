@@ -18,7 +18,7 @@ const Content = props => {
 
   useEffect(() => {
     dispatch(fetchDistricts());
-    dispatch(fetchAdmins());
+    // dispatch(fetchAdmins());
   }, []);
 
 
@@ -26,7 +26,8 @@ const Content = props => {
   const [ showForm, setShowForm ] = useState(false)
   const [ selectedDistrict, setSelectedDistrict ] = useState(0)
 
-  const selectDistrict = ({ target: {id}}) => {
+  const selectDistrict = (id) => {
+    console.log('here')
     let updatedDistrict = data.filter(district => district.id == id)[0]
 
     setSelectedDistrict(updatedDistrict.id)
