@@ -13,6 +13,7 @@ const AdminList = (props) => {
 
   const [selectedAdmins, setselectedAdmins] = useState([]);
   const [checkedValue, setCheckedValue] = useState(false);
+  const [adminUsers, setAdminUsers] = useState(false);
 
   console.log('selectedAdmins', selectedAdmins);
 
@@ -28,25 +29,34 @@ const AdminList = (props) => {
     dispatch(fetchDistricts());
   }, []);
 
+  useEffect(() => {
+    if (data) {
+      const adminUsersList = [];
+      data.forEach(d => {
+        if (d.is_user) {
+          adminUsersList.push(d.employee_detail.id);
+        }
+      });
+      setAdminUsers(adminUsersList);
+    }
+  }, [data]);
 
   const handleCheckboxChange = (event) => {
-    let admins = selectedAdmins
-    let adminId = event.target.checkedValue
-
-    if(admins.includes(adminId)) {
-      let index = admins.indexOf(adminId)
-      admins.splice(index, 1)
-      setselectedAdmins(admins)
+    const value = Number(event.target.value);
+    if(adminUsers.includes(value)) {
+      const filteredAdminUsers = adminUsers.filter(i => i !== value);
+      setAdminUsers(filteredAdminUsers);
     } else {
-      admins.push(event.target.value)
-      setselectedAdmins(admins)
+      setAdminUsers([...adminUsers, value])
     }
   }
+
+  console.log(adminUsers);
 
   const saveHandler = (e) => {
     dispatch(updateDistrict({
       id: props.districtId, 
-      admins: selectedAdmins
+      admins: adminUsers
     }));
   };
 
@@ -61,7 +71,7 @@ const AdminList = (props) => {
                   <div className="d-flex items-center justify-content-between mb-4">
                     <div>{admin.employee_detail.name}</div>
                     <div>
-                      <input type="checkbox" className="form-check-input big-checkbox" value={admin.employee_detail.id} onChange={handleCheckboxChange}/>
+                      <input type="checkbox" className="form-check-input big-checkbox" checked={adminUsers.includes(admin.employee_detail.id)} value={admin.employee_detail.id} onChange={handleCheckboxChange}/>
                     </div>
                   </div>
                 )}
