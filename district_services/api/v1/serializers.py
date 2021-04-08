@@ -15,10 +15,17 @@ class UserSerializer(serializers.ModelSerializer):
 
 class EmployeeInDistrictSerializer(serializers.ModelSerializer):
     employee_detail = UserSerializer(source="employee", read_only=True, many=False)
+    is_user = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = EmployeeInDistrict
         fields = '__all__'
+
+    def get_is_user(self, obj):
+        print(obj.district.admins.all().values_list("id"))
+        if obj.employee.id in obj.district.admins.all().values_list("id", flat=True):
+            return True
+        return False
 
 
 class DistrictSerializer(serializers.ModelSerializer):
