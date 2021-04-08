@@ -2,7 +2,7 @@ import json
 from drf_extra_fields.fields import Base64ImageField
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType
+from district_services.models import District, SchoolBuilding, Section, Room, RoomType, EmployeeInDistrict
 
 User = get_user_model()
 
@@ -11,6 +11,14 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'phone', 'email', "name", "role", "employer_code")
+
+
+class EmployeeInDistrictSerializer(serializers.ModelSerializer):
+    employee_detail = UserSerializer(source="employee", read_only=True, many=False)
+
+    class Meta:
+        model = EmployeeInDistrict
+        fields = '__all__'
 
 
 class DistrictSerializer(serializers.ModelSerializer):

@@ -1,11 +1,17 @@
 from django.contrib import admin
 
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType
+from district_services.models import District, SchoolBuilding, Section, Room, RoomType, EmployeeInDistrict
 
 
 @admin.register(District)
 class DistrictAdmin(admin.ModelAdmin):
     list_display = ['name', 'code', 'updated', 'created']
+    list_per_page = 10
+
+
+@admin.register(EmployeeInDistrict)
+class EmployeeInDistrictAdmin(admin.ModelAdmin):
+    list_display = ['district', 'employee', 'created']
     list_per_page = 10
 
 
