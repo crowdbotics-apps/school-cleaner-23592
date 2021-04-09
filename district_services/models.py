@@ -7,7 +7,7 @@ User = get_user_model()
 class District(models.Model):
     name = models.CharField(verbose_name=_('District Name'), max_length=255)
     logo = models.ImageField(verbose_name=_('Logo Image'), upload_to="district_logos")
-    code = models.CharField(verbose_name=_('District Code'), max_length=255)
+    code = models.CharField(verbose_name=_('District Code'), max_length=5)
 
     admins = models.ManyToManyField(User, blank=True, related_name="admins_against_district")
     created = models.DateTimeField(auto_now_add=True)
@@ -99,3 +99,17 @@ class Room(models.Model):
     class Meta:
         verbose_name_plural = '5- Rooms'
         ordering = ('-created',)
+
+
+class EmployeeInDistrict(models.Model):
+    employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="employees_in_district")
+    district = models.ForeignKey(District, on_delete=models.CASCADE, related_name="district_employee")
+
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.employee)
+
+    class Meta:
+        verbose_name_plural = '6- Employees With District Code'
+        ordering = ('-created', )

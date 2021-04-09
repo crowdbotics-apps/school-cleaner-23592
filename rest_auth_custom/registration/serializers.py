@@ -2,6 +2,8 @@ from django.http import HttpRequest
 from django.utils.translation import ugettext_lazy as _
 from django.contrib.auth import get_user_model
 
+from district_services.models import District, EmployeeInDistrict
+
 try:
     from allauth.account import app_settings as allauth_settings
     from allauth.utils import (email_address_exists,
@@ -203,6 +205,7 @@ class RegisterSerializer(serializers.Serializer):
         user.first_name = self.cleaned_data.get('first_name')
         user.last_name = self.cleaned_data.get('last_name')
         user.employer_code = self.cleaned_data.get('employer_code')
+        user.name = f"{self.cleaned_data.get('first_name')} { self.cleaned_data.get('last_name')}"
         user.save()
 
 
@@ -218,7 +221,6 @@ class RegisterSerializer(serializers.Serializer):
             'employer_code':self.validated_data.get('employer_code',''),
         }
 
-
     def save(self, request):
         adapter = get_adapter()
         user = adapter.new_user(request)
@@ -226,6 +228,11 @@ class RegisterSerializer(serializers.Serializer):
         adapter.save_user(request, user, self)
         self.custom_signup(request, user)
         setup_user_email(request, user, [])
+        code = user.employer_code
+        if code:
+            district = District.objects.filter(code__exact=str(code)).first()
+            if district:
+                EmployeeInDistrict.objects.create(employee=user, district=district)
         return user
 
 
