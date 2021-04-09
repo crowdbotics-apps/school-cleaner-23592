@@ -11,9 +11,8 @@ from rest_framework.response import Response
 from district_services.api.v1.permissions import DistrictUserPermission, SchoolBuildingPermission, SectionPermission, \
     RoomTypePermission, RoomPermission
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
-    RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType
-from district_services.utils import district_code_generator
+    RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer, EmployeeInDistrictSerializer
+from district_services.models import District, SchoolBuilding, Section, Room, RoomType, EmployeeInDistrict
 
 User = get_user_model()
 
@@ -21,6 +20,18 @@ User = get_user_model()
 class AdminUserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.filter(role="admin")
+
+
+class EmployeeInDistrictViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = EmployeeInDistrictSerializer
+    queryset = EmployeeInDistrict.objects.none()
+
+    def get_queryset(self):
+        queryset = self.queryset
+        district = self.request.query_params.get("district")
+        if district:
+            queryset = EmployeeInDistrict.objects.filter(district_id=int(district))
+        return queryset
 
 
 class InspectorUserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -51,6 +62,13 @@ class DistrictViewSet(viewsets.ModelViewSet):
         else:
             queryset = queryset.filter(admins=self.request.user)
         return queryset
+
+    def update(self, request, *args, **kwargs):
+        response = super(DistrictViewSet, self).update(request, *args, **kwargs)
+        admins = response.data.get("admins")
+        for admin in admins:
+            User.objects.filter(pk=int(admin)).update(role="admin")
+        return Response(response.data)
 
     @action(methods=['get'], detail=False, url_path='district-code', url_name='district-code')
     def district_code(self, request):

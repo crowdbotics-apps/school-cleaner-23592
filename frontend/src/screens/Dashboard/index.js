@@ -35,7 +35,7 @@ const Dashboard = () => {
         <Content onDistrictSelected={selectedDistrictHandler} />
       </div>
 
-      <AdminInfo admin={adminInfo}/>
+      {/* <AdminInfo admin={adminInfo}/> */}
     </React.Fragment>
   );
 }
