@@ -36,6 +36,7 @@ urlpatterns = [
     path("modules/", include("modules.urls")),
     path("api/v1/", include("home.api.v1.urls")),
     path("api/v1/", include("district_services.api.v1.urls")),
+    path("", include("district_services.urls")),
     path("api/v1/", include("inspections.api.v1.urls")),
     path("api/v1/", include("products.api.v1.urls")),
     path("users/", include("users.urls", namespace="users")),
