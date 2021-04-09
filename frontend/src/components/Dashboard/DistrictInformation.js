@@ -11,6 +11,7 @@ const DistrictInformation = props => {
   const { districts: { loading, success, error, data }} = useSelector(({ district }) => district);
   const [ currentDistrict, setCurrentDistrict ] = useState(null)
   const [ currentTab, setCurrentTab ] = useState('Overview');
+  const [activeTab, setActiveTab] = useState('Overview');
 
   const setDistrict = district => {
     setCurrentDistrict(district)
@@ -59,7 +60,7 @@ const DistrictInformation = props => {
                 <span>Buildings</span>
               </div>
               <div className="value">
-                <span>{currentDistrict.buildings || 0}</span>
+                <span>{currentDistrict.buildings}</span>
               </div>
             </li>
             <li className="border-bottom d-flex justify-content-between px-3 py-3">
@@ -67,7 +68,7 @@ const DistrictInformation = props => {
                 <span>Rooms</span>
               </div>
               <div className="value">
-                <span>{currentDistrict.rooms || 0}</span>
+                <span>{currentDistrict.rooms}</span>
               </div>
             </li>
             <li className="border-bottom d-flex justify-content-between px-3 py-3">
@@ -75,7 +76,7 @@ const DistrictInformation = props => {
                 <span>Sq. ft.</span>
               </div>
               <div className="value">
-                <span>{currentDistrict.sq_feet || 0}</span>
+                <span>{currentDistrict.sq_feet || 0 }</span>
               </div>
             </li>
           </ul>
@@ -87,7 +88,7 @@ const DistrictInformation = props => {
     return (
       <div className="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="Admin">
         <ul className="p-0">
-          {currentDistrict.admin_detail.map(admin => {
+          {currentDistrict && currentDistrict.admin_detail.map(admin => {
             return (
               <li className="border-bottom d-flex justify-content-between p-2 pb-3 pt-3" key={admin.id}>
                 <div className="name">

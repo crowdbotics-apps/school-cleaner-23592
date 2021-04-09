@@ -4,9 +4,12 @@ import {
     DELETE_DISTRICT_REQUEST,
     FETCH_DISTRICTS_REQUEST,
     CREATE_DISTRICT_REQUEST,
-    GENERATE_CODE_REQUEST
+    GENERATE_CODE_REQUEST,
+    // DISTRIC_EMPLOYEES_REQUEST
   } from '../reducers/DistrictReducer';
   
+  // export const getDistricEmployees = (payload) => ({type: DISTRIC_EMPLOYEES_REQUEST, payload});
+
   export const getDistrict = (payload) => ({ type: GET_DISTRICT_REQUEST, payload });
   
   export const updateDistrict = (payload) => ({ type: UPDATE_DISTRICT_REQUEST, payload });
