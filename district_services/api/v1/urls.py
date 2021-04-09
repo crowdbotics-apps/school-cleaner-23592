@@ -3,7 +3,7 @@ from rest_framework.routers import DefaultRouter
 
 from district_services.api.v1.viewsets import (
     DistrictViewSet, SchoolBuildingViewSet, SectionViewSet, RoomTypeViewSet, RoomViewSet, AdminUserViewSet,
-    InspectorUserViewSet, SimpleUserViewSet, EquipmentViewSet, ToolTypeViewSet, EquipmentNeededViewSet
+    InspectorUserViewSet, SimpleUserViewSet, EquipmentViewSet, ToolTypeViewSet, EquipmentNeededViewSet, EmployeeInDistrictViewSet
 )
 
 
@@ -16,7 +16,7 @@ router.register('equipment', EquipmentViewSet)
 router.register('equipment-needed', EquipmentNeededViewSet)
 router.register('room-type', RoomTypeViewSet)
 router.register('room', RoomViewSet)
-router.register('admin-users', AdminUserViewSet)
+router.register('admin-users', EmployeeInDistrictViewSet)
 router.register('inspector-users', InspectorUserViewSet)
 router.register('simple-users', SimpleUserViewSet)
 

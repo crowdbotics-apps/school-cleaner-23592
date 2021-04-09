@@ -21,9 +21,37 @@ import {
   CREATE_DISTRICT_ERROR,
   GENERATE_CODE_REQUEST,
   GENERATE_CODE_SUCCESS,
-  GENERATE_CODE_ERROR
+  GENERATE_CODE_ERROR,
+  // DISTRIC_EMPLOYEES_REQUEST,
+  // DISTRIC_EMPLOYEES_SUCCESS,
+  // DISTRIC_EMPLOYEES_FAILURE
 } from '../reducers/DistrictReducer';
 
+
+// async function getDistrictEmployeesAPI( id ) {
+//   console.log('idddddddddddddddd', id);
+//   return await Axios.get(`/api/v1/admin-users/?district=${id}`, getHeader());
+// }
+
+// function* getDistricEmployees({ payload }) {
+//   console.log('payloadddd', payload);
+//   try {
+//     const response = yield call(getDistrictEmployeesAPI, payload);
+//     console.log('responseeeee', response);
+//     if (response) {
+//       yield put({
+//         type: DISTRIC_EMPLOYEES_SUCCESS,
+//         payload: response
+//       });
+//     }
+//   } catch (error) {
+//     console.log('errrorrr', error);
+//     yield put({
+//       type: DISTRIC_EMPLOYEES_FAILURE,
+//       error: getSimplifiedError(error),
+//     });
+//   }
+// }
 
 async function getDistrict({ id }) {
   return await Axios.get(`/api/v1/district/${id}/`, getHeader());
@@ -58,6 +86,7 @@ async function updateDistrict({ id, name, logo, code, admins }) {
 function* handleUpdateDistrict({ payload }) {
   try {
     const response = yield call(updateDistrict, payload);
+    handleFetchDistricts()
     if (response) {
       yield put({
         type: UPDATE_DISTRICT_SUCCESS,
@@ -164,6 +193,7 @@ function* handleGenerateCode() {
 }
 
 export default all([
+  // takeLatest(DISTRIC_EMPLOYEES_REQUEST, getDistricEmployees),
   takeLatest(GET_DISTRICT_REQUEST, handleGetDistrict),
   takeLatest(UPDATE_DISTRICT_REQUEST, handleUpdateDistrict),
   takeLatest(DELETE_DISTRICT_REQUEST, handleDeleteDistrict),

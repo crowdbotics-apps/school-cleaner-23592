@@ -1,3 +1,4 @@
+import random
 from django.contrib.auth import get_user_model
 from django.db.models import Sum, Count
 from rest_framework import viewsets, status
@@ -10,9 +11,9 @@ from district_services.api.v1.permissions import DistrictUserPermission, SchoolB
     RoomTypePermission, RoomPermission, EquipmentPermission, ToolTypePermission
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
     RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer, EquipmentSerializer, ToolTypeSerializer, \
-    EquipmentNeededSerializer, SchoolBuildingReportSerializer
+    EquipmentNeededSerializer, SchoolBuildingReportSerializer, EmployeeInDistrictSerializer
 from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
-    EquipmentNeeded
+    EquipmentNeeded, EmployeeInDistrict
 from district_services.utils import district_code_generator
 
 User = get_user_model()
@@ -21,6 +22,18 @@ User = get_user_model()
 class AdminUserViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = UserSerializer
     queryset = User.objects.filter(role="admin")
+
+
+class EmployeeInDistrictViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = EmployeeInDistrictSerializer
+    queryset = EmployeeInDistrict.objects.none()
+
+    def get_queryset(self):
+        queryset = self.queryset
+        district = self.request.query_params.get("district")
+        if district:
+            queryset = EmployeeInDistrict.objects.filter(district_id=int(district))
+        return queryset
 
 
 class InspectorUserViewSet(viewsets.ReadOnlyModelViewSet):
@@ -52,10 +65,18 @@ class DistrictViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(admins=self.request.user)
         return queryset
 
+    def update(self, request, *args, **kwargs):
+        response = super(DistrictViewSet, self).update(request, *args, **kwargs)
+        admins = response.data.get("admins")
+        for admin in admins:
+            User.objects.filter(pk=int(admin)).update(role="admin")
+        return Response(response.data)
+
     @action(methods=['get'], detail=False, url_path='district-code', url_name='district-code')
     def district_code(self, request):
         while True:
-            code = district_code_generator(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
+            code = random.randint(10000, 99999)
+            # code = district_code_generator(5, 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')
             district = District.objects.filter(code__exact=code)
             if not district:
                 break

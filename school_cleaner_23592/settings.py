@@ -21,7 +21,7 @@ DEBUG = env.bool("DEBUG", default=False)
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-
+FRONT_END_DIR = os.path.join(BASE_DIR, "frontend")
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -98,7 +98,7 @@ ROOT_URLCONF = "school_cleaner_23592.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "build")],
+        "DIRS": [os.path.join(FRONT_END_DIR, "build")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -172,12 +172,10 @@ AUTHENTICATION_BACKENDS = (
 # STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 STATIC_URL = "/static/"
-MEDIA_URL = "/media/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "build", "static")]
+STATICFILES_DIRS = [os.path.join(FRONT_END_DIR, "build", "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 # STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
-WHITENOISE_ROOT= os.path.join(BASE_DIR, 'build', 'root')
+WHITENOISE_ROOT = os.path.join(FRONT_END_DIR, 'build', 'root')
 
 # allauth / users
 ACCOUNT_EMAIL_REQUIRED = True
@@ -228,7 +226,6 @@ USE_S3 = (
 )
 
 if USE_S3:
-    AWS_S3_CUSTOM_DOMAIN = env.str("AWS_S3_CUSTOM_DOMAIN", "")
     AWS_S3_OBJECT_PARAMETERS = {"CacheControl": "max-age=86400"}
     AWS_DEFAULT_ACL = env.str("AWS_DEFAULT_ACL", "public-read")
     AWS_MEDIA_LOCATION = env.str("AWS_MEDIA_LOCATION", "media")
@@ -236,9 +233,13 @@ if USE_S3:
     DEFAULT_FILE_STORAGE = env.str(
         "DEFAULT_FILE_STORAGE", "home.storage_backends.MediaStorage"
     )
-    MEDIA_URL = "/mediafiles/"
+    # MEDIA_URL = "/mediafiles/"
     MEDIA_ROOT = os.path.join(BASE_DIR, "mediafiles")
-
+    AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
+    MEDIA_URL = "https://%s/%s/" % (AWS_S3_CUSTOM_DOMAIN, AWS_MEDIA_LOCATION)
+else:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 # Swagger settings for api docs
 SWAGGER_SETTINGS = {

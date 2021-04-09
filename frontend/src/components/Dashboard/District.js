@@ -1,12 +1,14 @@
 import React,{ useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteDistrict, fetchDistricts } from '../../modules/actions/DistrictActions';
+import { getDistricEmployees } from '../../modules/actions/AdminActions';
 import arrorRight from "../../assets/images/arrow-right.svg";
 import district from "../../assets/images/district.png";
 import dottenIcon from "../../assets/images/dotted-icon.svg";
 import $ from 'jquery';
 
 const District = props => {
+  console.log('propssss', props);
   const dispatch = useDispatch();
   const { deleteDistrict: { loading, success, error } } = useSelector(({ district }) => district);
   const [dispatched, setDispatched] = useState(false);
@@ -28,16 +30,21 @@ const District = props => {
 
   }
 
+  const selectDistricHandler = () => {
+    props.onSelectDistrict(props.district.id)
+    dispatch(getDistricEmployees(props.district.id))
+  }
+
   return (
     <React.Fragment>
       <div className="district-box">
         <div className="image-holder">
-          <img src={district} alt="" className="w-100" />
+          <img src={props.district.logo} alt="" className="w-100" />
         </div> 
         <div className="d-flex district-box-footer align-items-center px-4 w-100 py-2 justify-content-between" style={ props.selected === props.district.id ? style : {}}>
           <div className="content d-flex">
             <div className="icon" type="button">
-              <img src={arrorRight} alt="" className="image-responsive" id={props.district.id} value={props.district.id} onClick={props.onSelectDistrict} />
+              <img src={arrorRight} alt="" className="image-responsive" id={props.district.id} value={props.district.id} onClick={() => selectDistricHandler() } />
             </div>
             <span>{props.district.name}</span>
           </div>

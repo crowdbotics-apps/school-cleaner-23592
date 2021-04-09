@@ -18,8 +18,8 @@ const Dashboard = () => {
     setSelectedDistrict(district)
   };
 
-  const adminInfoHandler = ({id, name}) => {
-    setAdminInfo({id: id, name: name})
+  const adminInfoHandler = (admin) => {
+    setAdminInfo(admin)
   };
 
   return (
@@ -35,7 +35,7 @@ const Dashboard = () => {
         <Content onDistrictSelected={selectedDistrictHandler} />
       </div>
 
-      <AdminInfo admin={adminInfo}/>
+      {/* <AdminInfo admin={adminInfo}/> */}
     </React.Fragment>
   );
 }

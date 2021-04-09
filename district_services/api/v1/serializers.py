@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from district_services.api.v1.custom_duration_field import CustomDurationField
 from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
-    EquipmentNeeded
+    EquipmentNeeded, EmployeeInDistrict
 
 User = get_user_model()
 
@@ -13,6 +13,20 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'phone', 'email', "name", "role", "employer_code")
+
+
+class EmployeeInDistrictSerializer(serializers.ModelSerializer):
+    employee_detail = UserSerializer(source="employee", read_only=True, many=False)
+    is_user = serializers.SerializerMethodField(read_only=True)
+
+    class Meta:
+        model = EmployeeInDistrict
+        fields = '__all__'
+
+    def get_is_user(self, obj):
+        if obj.employee.id in obj.district.admins.all().values_list("id", flat=True):
+            return True
+        return False
 
 
 class DistrictSerializer(serializers.ModelSerializer):
