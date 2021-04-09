@@ -22,6 +22,11 @@ export const GENERATE_CODE_REQUEST = 'GENERATE_CODE_REQUEST';
 export const GENERATE_CODE_SUCCESS = 'GENERATE_CODE_SUCCESS';
 export const GENERATE_CODE_ERROR = 'GENERATE_CODE_ERROR';
 
+// export const DISTRIC_EMPLOYEES_REQUEST = 'DISTRIC_EMPLOYEES_REQUEST'
+// export const DISTRIC_EMPLOYEES_SUCCESS = 'DISTRIC_EMPLOYEES_SUCCESS'
+// export const DISTRIC_EMPLOYEES_FAILURE = 'DISTRIC_EMPLOYEES_FAILURE'
+
+
 
 const block = {
   loading: false,
@@ -35,11 +40,29 @@ const initialState = {
   updateDistrict: { ...block, data: null },
   deleteDistrict: { ...block },
   createDistrict: { ...block, data: null },
-  generateCode: { ...block, data: null}
+  generateCode: { ...block, data: null},
+  // districEmployeesData : {...block, data: null}
 };
 
 export const DistrictReducer = (state = initialState, action) => {
   switch (action.type) {
+    // case DISTRIC_EMPLOYEES_REQUEST:
+    //   return {
+    //     ...state, districEmployeesData: {...state.districEmployeesData, loading: true}
+    //   }
+    // case DISTRIC_EMPLOYEES_SUCCESS: 
+    //   return {
+    //     ...state,
+    //     districEmployeesData: {...state.districEmployeesData, loading: false, success: true, data: action.payload}
+    //   }
+
+    // case DISTRIC_EMPLOYEES_FAILURE:
+    //   return {
+    //     ...state,
+    //     districEmployeesData: {...state.districEmployeesData, loading: false, error: action.error}
+    //   }
+
+
     case GET_DISTRICT_REQUEST:
       return { ...state, getDistrict: { ...state.getDistrict, loading: true } };
     case GET_DISTRICT_SUCCESS:
