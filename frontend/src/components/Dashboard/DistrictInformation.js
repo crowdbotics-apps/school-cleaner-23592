@@ -10,6 +10,7 @@ const DistrictInformation = props => {
   const dispatch = useDispatch();
   const { districts: { loading, success, error, data }} = useSelector(({ district }) => district);
   const [ currentDistrict, setCurrentDistrict ] = useState(null)
+  const [ currentTab, setCurrentTab ] = useState('Overview');
   const [activeTab, setActiveTab] = useState('Overview');
 
   const setDistrict = district => {
@@ -85,7 +86,7 @@ const DistrictInformation = props => {
 
   const Admins = () => {
     return (
-      <div className="tab-admin" id="" role="" aria-labelledby="">
+      <div className="tab-pane fade" id="admin" role="tabpanel" aria-labelledby="Admin">
         <ul className="p-0">
           {currentDistrict && currentDistrict.admin_detail.map(admin => {
             return (
@@ -115,57 +116,48 @@ const DistrictInformation = props => {
     );
   };
 
-  // const Details = () => {
-  //   return (
-  //     <div className="tab-content" id="myTabContent">
-  //       <Admins /> 
-  //       <Overview />
-  //     </div>
-  //   );
-  // }
-
-  const renderDetails = () => (
-    <>
-    {activeTab === "Overview" ? <Overview /> : <Admins />}
-    </>
-  )
+  const Details = () => {
+    return (
+      <div className="tab-content" id="myTabContent">
+        <Admins /> 
+        <Overview />
+      </div>
+    );
+  }
   
   return(
     <div id="side-bar-tabs" className="tabs-holder" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <ul className="nav nav-tabs" id="myTab" role="tablist">
         <li className="nav-item" role="presentation">
           <button 
-            className={`nav-link py-3 ${activeTab === 'Overview' ? 'active' : ''}`}
-            // id="Overview" 
-            // data-bs-toggle="tab" 
-            // data-bs-target="#home" 
-            // type="button" 
-            // role="tab" 
-            // aria-controls="home" 
-            // aria-selected="true"
-            onClick={() => setActiveTab('Overview')}
+            className='nav-link py-3 active'
+            id="Overview" 
+            data-bs-toggle="tab" 
+            data-bs-target="#home" 
+            type="button" 
+            role="tab" 
+            aria-controls="home" 
+            aria-selected="true"
           >
             Overview
           </button>
         </li>
         <li className="nav-item" role="presentation">
           <button 
-            className={`nav-link py-3 ${activeTab === 'Admin' ? 'active' : ''}`}
-            // id="Admin" 
-            // data-bs-toggle="tab" 
-            // data-bs-target="#admin" 
-            // type="button" 
-            // role="tab" 
-            // aria-controls="admin" 
-            // aria-selected="false"
-            onClick={() => setActiveTab('Admin')}
+            className='nav-link py-3'
+            id="Admin" 
+            data-bs-toggle="tab" 
+            data-bs-target="#admin" 
+            type="button" 
+            role="tab" 
+            aria-controls="admin" 
+            aria-selected="false"
           >
             Admins
           </button>
         </li>
       </ul>
-      {currentDistrict !== null && renderDetails()}
-      {/* {currentDistrict !== null && <Details />} */}
+      {currentDistrict !== null && <Details />}
     </div>
   );
 }
