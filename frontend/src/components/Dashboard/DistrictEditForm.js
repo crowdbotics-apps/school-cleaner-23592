@@ -58,7 +58,11 @@ const DistrictForm = props => {
       setValidated(true);
     }
   };
-
+  const hideUpdateModal = (e) =>{
+    $('#update_District').modal('hide');
+    setDistrictDetails({ name: '', logo: '', code: ''})
+    setBase64Image('')
+  }
   const handleChange = ({ target: {name, value } }) => {
     setDistrictDetails({ ...districtDetails, [name]: value });
   };
@@ -119,6 +123,7 @@ const DistrictForm = props => {
                   </div>
                 </div>
                 <button type="submit" className="btn btn-primary text-uppercase">Update</button>
+                <button type="button" className="ml-4 btn btn-primary" onClick={hideUpdateModal}>Cancel</button>
               </form>
             </div>
           </div>
