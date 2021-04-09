@@ -59,7 +59,7 @@ const DistrictInformation = props => {
                 <span>Buildings</span>
               </div>
               <div className="value">
-                <span>18</span>
+                <span>{currentDistrict.buildings}</span>
               </div>
             </li>
             <li className="border-bottom d-flex justify-content-between px-3 py-3">
@@ -67,7 +67,7 @@ const DistrictInformation = props => {
                 <span>Rooms</span>
               </div>
               <div className="value">
-                <span>157</span>
+                <span>{currentDistrict.rooms}</span>
               </div>
             </li>
             <li className="border-bottom d-flex justify-content-between px-3 py-3">
@@ -75,7 +75,7 @@ const DistrictInformation = props => {
                 <span>Sq. ft.</span>
               </div>
               <div className="value">
-                <span>341</span>
+                <span>{currentDistrict.square_feet || 0}</span>
               </div>
             </li>
           </ul>
