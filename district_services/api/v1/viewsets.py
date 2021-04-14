@@ -115,6 +115,35 @@ class SchoolBuildingViewSet(viewsets.ModelViewSet):
         serializer = SchoolBuildingReportSerializer(instance, many=False)
         return Response(serializer.data)
 
+    @action(methods=['get'], detail=True, url_path='room-specs', url_name='room-specs')
+    def room_specs(self, request, pk):
+        """ TO get rooms with total area against same room type."""
+        school = self.get_object().pk
+        section = self.request.query_params.get("section")
+        queryset = None
+        if school:
+            queryset = Room.objects.filter(
+                section__school_id=int(school)).values(
+                "room_type", "room_type__name"
+            ).annotate(
+                Sum('square_feet'),
+                Count("room_type_id"),
+                Sum("estimated_time_to_clean"),
+                Sum("section__product_used_in_section__quantity")
+            ).order_by("room_type__name")
+        elif section:
+            queryset = Room.objects.filter(
+                section_id=int(section)).values(
+                "room_type", "room_type__name"
+            ).annotate(
+                Sum('square_feet'),
+                Count("room_type_id"),
+                Sum("estimated_time_to_clean"),
+                Sum("section__product_used_in_section__quantity")
+            ).order_by("room_type")
+        serializer = RoomSpecsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data, context={"request": self.request})
         serializer.is_valid(raise_exception=True)
@@ -131,7 +160,7 @@ class SectionViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = Section.objects.all().prefetch_related(
-            "rooms_in_section", "people").select_related("school").annotate(
+            "rooms_in_section", "people", "products_in_section", "products_in_section__product").select_related("school").annotate(
             rooms=Count('rooms_in_section')).annotate(
             square_feet=Sum("rooms_in_section__square_feet")).annotate(
             desks=Sum("rooms_in_section__desks")).annotate(
@@ -198,34 +227,6 @@ class RoomViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
         headers = self.get_success_headers(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-
-    @action(methods=['get'], detail=False, url_path='room-specs', url_name='room-specs')
-    def room_specs(self, request):
-        """ TO get rooms with total area against same room type."""
-        school = self.request.query_params.get("school")
-        section = self.request.query_params.get("section")
-        queryset = None
-        if school:
-            queryset = Room.objects.filter(
-                section__school_id=int(school)).values(
-                "room_type__name", "room_type_id"
-            ).annotate(
-                Sum('square_feet'),
-                Count("room_type__name"),
-                Sum("estimated_time_to_clean"),
-            ).order_by("room_type__name")
-        elif section:
-            queryset = Room.objects.filter(
-                section_id=int(section)).values(
-                "room_type__name", "room_type_id"
-            ).annotate(
-                Sum('square_feet'),
-                Count("room_type__name"),
-                Sum("estimated_time_to_clean"),
-            ).order_by("room_type__name")
-
-        serializer = RoomSpecsSerializer(queryset, many=True)
-        return Response(serializer.data)
 
 
 class ToolTypeViewSet(viewsets.ModelViewSet):

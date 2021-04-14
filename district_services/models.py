@@ -45,10 +45,10 @@ class Section(models.Model):
     school = models.ForeignKey(
         "district_services.SchoolBuilding", on_delete=models.CASCADE, related_name="sections_in_school"
     )
-    paper_towel_dispensers = models.PositiveIntegerField(default=0)
-    toiler_tissue_dispensers = models.PositiveIntegerField(default=0)
-    hand_soap_dispensers = models.PositiveIntegerField(default=0)
-    hand_sanitizer_dispensers = models.PositiveIntegerField(default=0)
+    # paper_towel_dispensers = models.PositiveIntegerField(default=0)
+    # toiler_tissue_dispensers = models.PositiveIntegerField(default=0)
+    # hand_soap_dispensers = models.PositiveIntegerField(default=0)
+    # hand_sanitizer_dispensers = models.PositiveIntegerField(default=0)
 
     people = models.ManyToManyField(User, blank=True, related_name="people_in_section")
 

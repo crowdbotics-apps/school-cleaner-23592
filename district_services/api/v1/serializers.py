@@ -5,6 +5,7 @@ from rest_framework import serializers
 from district_services.api.v1.custom_duration_field import CustomDurationField
 from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
     EquipmentNeeded, EmployeeInDistrict
+from products.api.v1.serializers import SectionProductSerializer, SectionProductCustomizeSerializer
 
 User = get_user_model()
 
@@ -86,6 +87,7 @@ class SectionSerializer(serializers.ModelSerializer):
     windows = serializers.IntegerField(read_only=True)
     trash_cans = serializers.IntegerField(read_only=True)
     estimated_time_to_clean = serializers.DurationField(read_only=True)
+    products = SectionProductCustomizeSerializer(source="products_in_section", read_only=True, many=True)
 
     class Meta:
         model = Section
@@ -133,8 +135,9 @@ class RoomSerializer(serializers.ModelSerializer):
 class RoomSpecsSerializer(serializers.Serializer):
     room_name = serializers.CharField(source="room_type__name", read_only=True)
     square_feet = serializers.IntegerField(source="square_feet__sum", read_only=True)
-    count = serializers.IntegerField(source="room_type__name__count", read_only=True)
+    count = serializers.IntegerField(source="room_type_id__count", read_only=True)
     estimated_time_to_clean = serializers.DurationField(source="estimated_time_to_clean__sum", read_only=True)
+    product_usage = serializers.IntegerField(source="section__product_used_in_section__quantity__sum", read_only=True)
 
     class Meta:
         fields = '__all__'
