@@ -11,6 +11,7 @@ const DistrictForm = props => {
   const [ districtDetails, setDistrictDetails ] = useState({ name: '', logo: '', code: 'E4125', admins: []});
   const [ base64Image, setBase64Image ] = useState('');
 
+
   useEffect(() => {
     setDistrictDetails({ name: name, logo: logo, code: code, admins: admins })
     setBase64Image(logo)
@@ -46,7 +47,7 @@ const DistrictForm = props => {
       dispatch(updateDistrict({
         id: props.district.id, 
         name: districtDetails.name, 
-        logo: Boolean(base64Image) ? base64Image : logo, 
+        logo: base64Image, 
         code: code, 
         admins: []
       }));
