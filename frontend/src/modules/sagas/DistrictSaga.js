@@ -77,24 +77,31 @@ function* handleGetDistrict({ payload }) {
 
 async function updateDistrict({ id, name, logo, code, admins }) {
   let data;
+  let updateData;
+  console.log("admins", admins.length);
   logo && logo.startsWith("data")? 
   data = {
     name,
     code,
-    logo,
-    admins
+    logo
   }
   :
   data = {
     name,
-    code,
+    code
+  }
+  admins && admins.length > 0? 
+  updateData = {
     admins
   }
-  console.log(data);
-  return await Axios.patch(`/api/v1/district/${id}/`, data, getHeader());
+  :
+  updateData = data
+  console.log("updateData", updateData);
+  return await Axios.patch(`/api/v1/district/${id}/`, updateData, getHeader());
 }
 
 function* handleUpdateDistrict({ payload }) {
+  console.log("updating");
   try {
     const response = yield call(updateDistrict, payload);
     handleFetchDistricts()
