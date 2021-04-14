@@ -76,12 +76,21 @@ function* handleGetDistrict({ payload }) {
 
 
 async function updateDistrict({ id, name, logo, code, admins }) {
-  return await Axios.patch(`/api/v1/district/${id}/`, {
+  let data;
+  logo ? 
+  data = {
     name,
     code,
     logo,
     admins
-  }, getHeader());
+  }
+  :
+  data = {
+    name,
+    code,
+    admins
+  }
+  return await Axios.patch(`/api/v1/district/${id}/`, data, getHeader());
 }
 
 function* handleUpdateDistrict({ payload }) {

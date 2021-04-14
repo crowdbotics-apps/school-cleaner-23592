@@ -17,7 +17,6 @@ const DistrictForm = props => {
   }, [props.district]);
 
   const handleImageChange = async (e) => {
-    console.log('handleImageChange');
     const file = e.target.files[0]
     const base64 = await convertToBase64(file);
     setBase64Image(base64);
@@ -47,7 +46,7 @@ const DistrictForm = props => {
       dispatch(updateDistrict({
         id: props.district.id, 
         name: districtDetails.name, 
-        logo: base64Image, 
+        logo: Boolean(base64Image) ? base64Image : logo, 
         code: code, 
         admins: []
       }));
