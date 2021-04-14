@@ -78,7 +78,7 @@ function* handleGetDistrict({ payload }) {
 async function updateDistrict({ id, name, logo, code, admins }) {
   let data;
   let updateData;
-  console.log("admins", admins.length);
+  console.log("district data", id, name, logo, code, admins);
   logo && logo.startsWith("data")? 
   data = {
     name,
@@ -90,7 +90,7 @@ async function updateDistrict({ id, name, logo, code, admins }) {
     name,
     code
   }
-  admins && admins.length > 0? 
+  admins && !logo && !name && !code? 
   updateData = {
     admins
   }
