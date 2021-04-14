@@ -147,8 +147,16 @@
       max-width: 400px;
       min-width: 300px;
     .image-holder {
-      max-width: 126px;
-      margin: 5px auto 15px;
+      // max-width: 126px;
+      // max-height:  126px;
+      // margin: 5px auto 15px;
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      align-items: center;
+      img {
+        width: 126px !important;
+      }
     }
     .district-box-footer {
       border-top: 1px solid rgba(5, 36, 37, 0.12);
