@@ -5,13 +5,10 @@ import { getDistricEmployees } from '../../modules/actions/AdminActions';
 import arrorRight from "../../assets/images/arrow-right.svg";
 import district from "../../assets/images/district.png";
 import dottenIcon from "../../assets/images/dotted-icon.svg";
-import $ from 'jquery';
 
 const District = props => {
-  console.log('propssss', props);
   const dispatch = useDispatch();
   const { deleteDistrict: { loading, success, error } } = useSelector(({ district }) => district);
-  const [dispatched, setDispatched] = useState(false);
 
   const deleteDistrictHandler = () => {
     dispatch(deleteDistrict(props.district.id));
@@ -26,8 +23,6 @@ const District = props => {
 
   const handleClick = () => {
     props.onEditDistrict(props.district)
-    $('#update_District').modal('show');
-
   }
 
   const selectDistricHandler = () => {

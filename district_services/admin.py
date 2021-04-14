@@ -23,8 +23,7 @@ class SchoolBuildingAdmin(admin.ModelAdmin):
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
-    list_display = ['name', 'school', 'paper_towel_dispensers', 'toiler_tissue_dispensers', 'hand_soap_dispensers',
-                    'hand_sanitizer_dispensers', 'created']
+    list_display = ['name', 'school', 'created']
     list_per_page = 10
 
 

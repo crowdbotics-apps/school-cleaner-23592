@@ -3,9 +3,9 @@ from rest_framework import viewsets
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from products.api.v1.permissions import ProductTypePermission, ProductNeededPermission, ProductPermission
-from products.api.v1.serializers import ProductTypeSerializer, ProductNeededSerializer, ProductSerializer, \
-    ProductUsedSerializer
-from products.models import ProductType, ProductNeeded, Product, ProductUsed
+from products.api.v1.serializers import ProductTypeSerializer, ProductNeededSerializer, SectionProductSerializer, \
+    ProductUsedSerializer, RegisteredProductSerializer
+from products.models import ProductType, ProductNeeded, SectionProduct, ProductUsed, RegisteredProduct
 
 
 class ProductTypeViewSet(viewsets.ModelViewSet):
@@ -15,14 +15,21 @@ class ProductTypeViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, ProductTypePermission]
 
 
-class ProductViewSet(viewsets.ModelViewSet):
-    serializer_class = ProductSerializer
-    queryset = Product.objects.none()
+class RegisteredProductViewSet(viewsets.ModelViewSet):
+    serializer_class = RegisteredProductSerializer
+    queryset = RegisteredProduct.objects.all()
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = [IsAuthenticated, ProductTypePermission]
+
+
+class SectionProductViewSet(viewsets.ModelViewSet):
+    serializer_class = SectionProductSerializer
+    queryset = SectionProduct.objects.none()
     authentication_classes = (SessionAuthentication, TokenAuthentication)
     permission_classes = [IsAuthenticated, ProductPermission]
 
     def get_queryset(self):
-        queryset = Product.objects.all()
+        queryset = SectionProduct.objects.all()
         user = self.request.user
         query_params = self.request.query_params
         district = query_params.get("district")

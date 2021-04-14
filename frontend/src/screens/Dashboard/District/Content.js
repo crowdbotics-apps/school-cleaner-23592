@@ -21,13 +21,10 @@ const Content = props => {
     // dispatch(fetchAdmins());
   }, []);
 
-
-  const [ editedDistrict, setEditedDistrict ] = useState({id: '', name: '', logo: '', code: ''})
-  const [ showForm, setShowForm ] = useState(false)
+  const [ editedDistrict, setEditedDistrict] = useState({id: '', name: '', logo: '', code: ''})
   const [ selectedDistrict, setSelectedDistrict ] = useState(0)
 
   const selectDistrict = (id) => {
-    console.log('here')
     let updatedDistrict = data.filter(district => district.id == id)[0]
 
     setSelectedDistrict(updatedDistrict.id)
@@ -36,7 +33,7 @@ const Content = props => {
 
   const editFormHandler = district => {
     setEditedDistrict({ id: district.id, name: district.name, logo: district.logo, code: district.code });
-    setShowForm(true);
+    $('#update_District').modal('show');
   };
 
   const formSubmitted = () => {
@@ -49,19 +46,19 @@ const Content = props => {
         <div className="district-holder">
           {data.length > 0 && data.map(district => {
             return (
-                    <District 
-                      key={district.id}
-                      district={district} 
-                      selected={selectedDistrict}
-                      onSelectDistrict={selectDistrict} 
-                      onEditDistrict={editFormHandler}
-                    />
-                  ); 
+              <District 
+                key={district.id}
+                district={district} 
+                selected={selectedDistrict}
+                onSelectDistrict={selectDistrict} 
+                onEditDistrict={editFormHandler}
+              />
+            ); 
           })}
         </div>
       </div>
       <DistrictForm />
-      {showForm && <DistrictEditForm district={editedDistrict} />}
+      <DistrictEditForm district={editedDistrict} />
       <AdminList districtId={selectedDistrict} />
     </React.Fragment>
   )

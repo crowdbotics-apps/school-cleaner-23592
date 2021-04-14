@@ -79,6 +79,7 @@ async function updateDistrict({ id, name, logo, code, admins }) {
   return await Axios.patch(`/api/v1/district/${id}/`, {
     name,
     code,
+    logo,
     admins
   }, getHeader());
 }
