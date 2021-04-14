@@ -77,7 +77,7 @@ function* handleGetDistrict({ payload }) {
 
 async function updateDistrict({ id, name, logo, code, admins }) {
   let data;
-  logo ? 
+  logo && logo.startsWith("data")? 
   data = {
     name,
     code,
@@ -90,6 +90,7 @@ async function updateDistrict({ id, name, logo, code, admins }) {
     code,
     admins
   }
+  console.log(data);
   return await Axios.patch(`/api/v1/district/${id}/`, data, getHeader());
 }
 
