@@ -15,13 +15,9 @@ const AdminList = (props) => {
   const [checkedValue, setCheckedValue] = useState(false);
   const [adminUsers, setAdminUsers] = useState(false);
 
-  console.log('selectedAdmins', selectedAdmins);
-
   const handleChecked = () => {
     setCheckedValue(!checkedValue);
   }
-
-  console.log('roleId', data);
 
   useEffect(() => {
     // dispatch(fetchAdmins());
@@ -50,8 +46,6 @@ const AdminList = (props) => {
       setAdminUsers([...adminUsers, value])
     }
   }
-
-  console.log(adminUsers);
 
   const saveHandler = (e) => {
     dispatch(updateDistrict({

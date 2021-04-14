@@ -6,18 +6,18 @@ import $ from 'jquery';
 
 const DistrictForm = props => {
   const dispatch = useDispatch();
-  
-  useEffect(() => {
-    setDistrictDetails({name: props.district.name, logo: props.district.logo, code: props.district.code, admins: props.district.admins})
-    setBase64Image(props.district.logo)
-  }, []);
-
   const [ validated, setValidated] = useState(false);
+  const { name, logo, code, admins } = props.district
   const [ districtDetails, setDistrictDetails ] = useState({ name: '', logo: '', code: 'E4125', admins: []});
   const [ base64Image, setBase64Image ] = useState('');
 
+  useEffect(() => {
+    setDistrictDetails({ name: name, logo: logo, code: code, admins: admins })
+    setBase64Image(logo)
+  }, [props.district]);
 
   const handleImageChange = async (e) => {
+    console.log('handleImageChange');
     const file = e.target.files[0]
     const base64 = await convertToBase64(file);
     setBase64Image(base64);
@@ -48,7 +48,7 @@ const DistrictForm = props => {
         id: props.district.id, 
         name: districtDetails.name, 
         logo: base64Image, 
-        code: props.district.code, 
+        code: code, 
         admins: []
       }));
       $('#update_District').modal('hide');
@@ -58,11 +58,13 @@ const DistrictForm = props => {
       setValidated(true);
     }
   };
+
   const hideUpdateModal = (e) =>{
     $('#update_District').modal('hide');
     setDistrictDetails({ name: '', logo: '', code: ''})
     setBase64Image('')
   }
+
   const handleChange = ({ target: {name, value } }) => {
     setDistrictDetails({ ...districtDetails, [name]: value });
   };
@@ -97,11 +99,11 @@ const DistrictForm = props => {
                       <input 
                         type="file" 
                         onChange={handleImageChange}
-                        id="select-image" 
+                        id="select-image-new" 
                         className="btn btn-outline-secondary" 
                         style={{ display: 'none' }}
                        />
-                      <label for="select-image" className="btn btn-outline-secondary btn-lg d-flex align-items-center text-uppercase">Select image</label>
+                      <label for="select-image-new" className="btn btn-outline-secondary btn-lg d-flex align-items-center text-uppercase">Select image</label>
                   </div>
                   <div className="logo-uploader-area">
                     { base64Image == '' ? <p>Drag & drop the image in this section</p> : <img src={base64Image} height="100px" />
@@ -117,7 +119,8 @@ const DistrictForm = props => {
                       onChange={handleChange}
                       className="form-control" 
                       id="floatingInput2" 
-                      placeholder="District code" 
+                      placeholder="District code"
+                      readOnly
                     />
                     <label htmlFor="name">District code</label>
                   </div>
