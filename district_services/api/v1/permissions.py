@@ -65,7 +65,7 @@ class ToolTypePermission(BasePermission):
         return False
 
 
-class EquipmentPermission(BasePermission):
+class EquipmentInSectionPermission(BasePermission):
     def has_permission(self, request, view):
         if request.user.is_superuser:
             return True

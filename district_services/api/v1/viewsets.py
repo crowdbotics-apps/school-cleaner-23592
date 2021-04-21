@@ -8,12 +8,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from district_services.api.v1.permissions import DistrictUserPermission, SchoolBuildingPermission, SectionPermission, \
-    RoomTypePermission, RoomPermission, EquipmentPermission, ToolTypePermission
+    RoomTypePermission, RoomPermission, ToolTypePermission, EquipmentInSectionPermission
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
     RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer, EquipmentSerializer, ToolTypeSerializer, \
-    EquipmentNeededSerializer, SchoolBuildingReportSerializer, EmployeeInDistrictSerializer
+    EquipmentNeededSerializer, SchoolBuildingReportSerializer, EmployeeInDistrictSerializer, \
+    EquipmentInSchoolBuildingSerializer
 from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
-    EquipmentNeeded, EmployeeInDistrict
+    EquipmentNeeded, EmployeeInDistrict, EquipmentInSchoolBuilding
 from district_services.utils import district_code_generator
 
 User = get_user_model()
@@ -238,25 +239,29 @@ class ToolTypeViewSet(viewsets.ModelViewSet):
 
 class EquipmentViewSet(viewsets.ModelViewSet):
     serializer_class = EquipmentSerializer
-    queryset = Equipment.objects.none()
+    queryset = Equipment.objects.select_related("tool_type").all()
     authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = [IsAuthenticated, EquipmentPermission]
+    permission_classes = [IsAuthenticated, ToolTypePermission]
+
+
+class EquipmentInSchoolBuildingViewSet(viewsets.ModelViewSet):
+    serializer_class = EquipmentInSchoolBuildingSerializer
+    queryset = EquipmentInSchoolBuilding.objects.none()
+    authentication_classes = (SessionAuthentication, TokenAuthentication)
+    permission_classes = [IsAuthenticated, EquipmentInSectionPermission]
 
     def get_queryset(self):
-        queryset = Equipment.objects.all().select_related("section", "tool_type")
+        queryset = EquipmentInSchoolBuilding.objects.select_related("school", "equipment", "equipment__tool_type").all()
         school = self.request.query_params.get("school")
-        section = self.request.query_params.get("section")
         user = self.request.user
-        if section:
-            queryset = queryset.filter(section_id=int(section))
         if school:
-            queryset = queryset.filter(section__school_id=int(school))
+            queryset = queryset.filter(school_id=int(school))
         if user.is_superuser:
             queryset = queryset
         elif user.role == "admin":
-            queryset = queryset.filter(section__school__district__admins_pk=user.pk)
+            queryset = queryset.filter(school__district__admins_pk=user.pk)
         elif user.role == "inspector":
-            queryset = queryset.filter(section__school__inspectors_pk=user.pk)
+            queryset = queryset.filter(school__inspectors_pk=user.pk)
         return queryset
 
 
@@ -264,7 +269,7 @@ class EquipmentNeededViewSet(viewsets.ModelViewSet):
     serializer_class = EquipmentNeededSerializer
     queryset = EquipmentNeeded.objects.none()
     authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = [IsAuthenticated, EquipmentPermission]
+    permission_classes = [IsAuthenticated, EquipmentInSectionPermission]
 
     def get_queryset(self):
         queryset = EquipmentNeeded.objects.all().select_related("section", "tool_type")
