@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 from district_services.api.v1.custom_duration_field import CustomDurationField
 from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
-    EquipmentNeeded, EmployeeInDistrict
+    EquipmentNeeded, EmployeeInDistrict, EquipmentInSchoolBuilding
 from products.api.v1.serializers import SectionProductSerializer, SectionProductCustomizeSerializer
 
 User = get_user_model()
@@ -154,6 +154,16 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Equipment
+        fields = '__all__'
+
+
+class EquipmentInSchoolBuildingSerializer(serializers.ModelSerializer):
+    equipment_title = serializers.CharField(source="equipment.title", read_only=True)
+    tool_title = serializers.CharField(source="equipment.tool_type.title", read_only=True)
+    school_name = serializers.CharField(source="school.name", read_only=True)
+
+    class Meta:
+        model = EquipmentInSchoolBuilding
         fields = '__all__'
 
 
