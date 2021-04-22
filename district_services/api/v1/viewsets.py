@@ -10,10 +10,10 @@ from rest_framework.response import Response
 from district_services.api.v1.permissions import DistrictUserPermission, SchoolBuildingPermission, SectionPermission, \
     RoomTypePermission, RoomPermission, ToolTypePermission, EquipmentInSectionPermission
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
-    RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer, EquipmentSerializer, ToolTypeSerializer, \
+    RoomSerializer, UserSerializer, RoomSpecsSerializer, \
     EquipmentNeededSerializer, SchoolBuildingReportSerializer, EmployeeInDistrictSerializer, \
     EquipmentInSchoolBuildingSerializer
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
+from district_services.models import District, SchoolBuilding, Section, Room, \
     EquipmentNeeded, EmployeeInDistrict, EquipmentInSchoolBuilding
 from district_services.utils import district_code_generator
 
@@ -192,11 +192,11 @@ class SectionViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class RoomTypeViewSet(viewsets.ModelViewSet):
-    serializer_class = RoomTypeSerializer
-    queryset = RoomType.objects.all()
-    authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = [IsAuthenticated, RoomTypePermission]
+# class RoomTypeViewSet(viewsets.ModelViewSet):
+#     serializer_class = RoomTypeSerializer
+#     queryset = RoomType.objects.all()
+#     authentication_classes = (SessionAuthentication, TokenAuthentication)
+#     permission_classes = [IsAuthenticated, RoomTypePermission]
 
 
 class RoomViewSet(viewsets.ModelViewSet):
@@ -206,7 +206,7 @@ class RoomViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, RoomPermission]
 
     def get_queryset(self):
-        queryset = Room.objects.all().select_related("section", "room_type", "cleaner")
+        queryset = Room.objects.select_related("section", "cleaner").all()
         school = self.request.query_params.get("school")
         section = self.request.query_params.get("section")
         user = self.request.user
@@ -230,18 +230,18 @@ class RoomViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class ToolTypeViewSet(viewsets.ModelViewSet):
-    serializer_class = ToolTypeSerializer
-    queryset = ToolType.objects.all()
-    authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = [IsAuthenticated, ToolTypePermission]
-
-
-class EquipmentViewSet(viewsets.ModelViewSet):
-    serializer_class = EquipmentSerializer
-    queryset = Equipment.objects.select_related("tool_type").all()
-    authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = [IsAuthenticated, ToolTypePermission]
+# class ToolTypeViewSet(viewsets.ModelViewSet):
+#     serializer_class = ToolTypeSerializer
+#     queryset = ToolType.objects.all()
+#     authentication_classes = (SessionAuthentication, TokenAuthentication)
+#     permission_classes = [IsAuthenticated, ToolTypePermission]
+#
+#
+# class EquipmentViewSet(viewsets.ModelViewSet):
+#     serializer_class = EquipmentSerializer
+#     queryset = Equipment.objects.select_related("tool_type").all()
+#     authentication_classes = (SessionAuthentication, TokenAuthentication)
+#     permission_classes = [IsAuthenticated, ToolTypePermission]
 
 
 class EquipmentInSchoolBuildingViewSet(viewsets.ModelViewSet):
@@ -251,7 +251,7 @@ class EquipmentInSchoolBuildingViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, EquipmentInSectionPermission]
 
     def get_queryset(self):
-        queryset = EquipmentInSchoolBuilding.objects.select_related("school", "equipment", "equipment__tool_type").all()
+        queryset = EquipmentInSchoolBuilding.objects.select_related("school").all()
         school = self.request.query_params.get("school")
         user = self.request.user
         if school:

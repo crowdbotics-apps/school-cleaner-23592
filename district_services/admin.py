@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
+from district_services.models import District, SchoolBuilding, Section, Room, \
     EmployeeInDistrict, EquipmentInSchoolBuilding, EquipmentNeeded
 
 
@@ -30,32 +30,32 @@ class SectionAdmin(admin.ModelAdmin):
 
 @admin.register(EquipmentInSchoolBuilding)
 class EquipmentInSchoolBuildingAdmin(admin.ModelAdmin):
-    list_display = ['equipment', 'school', 'size', 'quantity', 'price', 'created']
+    list_display = ['school', 'equipment', 'size', 'quantity', 'created']
     list_per_page = 10
 
 
-@admin.register(ToolType)
-class ToolTypeAdmin(admin.ModelAdmin):
-    list_display = ['title', 'updated', 'created']
-    list_per_page = 10
+# @admin.register(ToolType)
+# class ToolTypeAdmin(admin.ModelAdmin):
+#     list_display = ['title', 'updated', 'created']
+#     list_per_page = 10
+#
 
-
-@admin.register(Equipment)
-class EquipmentAdmin(admin.ModelAdmin):
-    list_display = ['title', 'tool_type', 'created']
-    list_per_page = 10
+# @admin.register(Equipment)
+# class EquipmentAdmin(admin.ModelAdmin):
+#     list_display = ['title', 'tool_type', 'created']
+#     list_per_page = 10
 
 
 @admin.register(EquipmentNeeded)
 class EquipmentNeededAdmin(admin.ModelAdmin):
-    list_display = ['section', 'equipment', 'created']
+    list_display = ['section', 'title', 'created']
     list_per_page = 10
 
 
-@admin.register(RoomType)
-class RoomTypeAdmin(admin.ModelAdmin):
-    list_display = ['name', 'updated', 'created']
-    list_per_page = 10
+# @admin.register(RoomType)
+# class RoomTypeAdmin(admin.ModelAdmin):
+#     list_display = ['name', 'updated', 'created']
+#     list_per_page = 10
 
 
 @admin.register(Room)
