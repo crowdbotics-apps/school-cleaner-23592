@@ -28,6 +28,18 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf import settings
 
 
+# swagger
+api_info = openapi.Info(
+    title="school cleaner API",
+    default_version="v1",
+    description="API documentation for school cleaner App",
+)
+
+schema_view = get_schema_view(
+    api_info,
+    public=True,
+    permission_classes=(permissions.IsAuthenticated,),
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -46,6 +58,7 @@ urlpatterns = [
     # Override email confirm to use allauth's HTML view instead of rest_auth's API view
     path("rest-auth/registration/account-confirm-email/<str:key>/", confirm_email),
     path("home/", include("home.urls")),
+    path("api-docs/", schema_view.with_ui("swagger", cache_timeout=0), name="api_docs"),
     re_path(r'', views.catchall),
 ]
 
@@ -55,22 +68,6 @@ admin.site.site_header = "School cleaner"
 admin.site.site_title = "School cleaner Admin Portal"
 admin.site.index_title = "School cleaner Admin"
 
-# swagger
-api_info = openapi.Info(
-    title="school cleaner API",
-    default_version="v1",
-    description="API documentation for school cleaner App",
-)
-
-schema_view = get_schema_view(
-    api_info,
-    public=True,
-    permission_classes=(permissions.IsAuthenticated,),
-)
-
-urlpatterns += [
-    path("api-docs/", schema_view.with_ui("swagger", cache_timeout=0), name="api_docs")
-]
 
 if settings.DEBUG:
     import debug_toolbar
