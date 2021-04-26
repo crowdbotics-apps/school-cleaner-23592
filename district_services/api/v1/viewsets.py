@@ -10,12 +10,13 @@ from rest_framework.response import Response
 from district_services.api.v1.permissions import DistrictUserPermission, SchoolBuildingPermission, SectionPermission, \
     RoomTypePermission, RoomPermission, ToolTypePermission, EquipmentInSectionPermission
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
-    RoomSerializer, RoomTypeSerializer, UserSerializer, RoomSpecsSerializer, EquipmentSerializer, ToolTypeSerializer, \
+    RoomSerializer, UserSerializer, RoomSpecsSerializer, \
     EquipmentNeededSerializer, SchoolBuildingReportSerializer, EmployeeInDistrictSerializer, \
-    EquipmentInSchoolBuildingSerializer
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
+    EquipmentInSchoolBuildingSerializer, ReportProductNeededSerializer
+from district_services.models import District, SchoolBuilding, Section, Room, \
     EquipmentNeeded, EmployeeInDistrict, EquipmentInSchoolBuilding
 from district_services.utils import district_code_generator
+from products.models import SectionProduct
 
 User = get_user_model()
 
@@ -97,7 +98,7 @@ class SchoolBuildingViewSet(viewsets.ModelViewSet):
             total_area=Sum("sections_in_school__rooms_in_section__square_feet")).annotate(
             estimated_time_to_clean=Sum("sections_in_school__rooms_in_section__estimated_time_to_clean")).annotate(
             total_sections=Count("sections_in_school")
-        )
+        ).annotate(product_usage_estimation=Sum("sections_in_school__product_used_in_section__quantity"))
         user = self.request.user
         district = self.request.query_params.get("district")
         if district:
@@ -125,24 +126,47 @@ class SchoolBuildingViewSet(viewsets.ModelViewSet):
         if school:
             queryset = Room.objects.filter(
                 section__school_id=int(school)).values(
-                "room_type", "room_type__name"
+                "room_type"
             ).annotate(
                 Sum('square_feet'),
-                Count("room_type_id"),
+                Count("room_type"),
                 Sum("estimated_time_to_clean"),
                 Sum("section__product_used_in_section__quantity")
-            ).order_by("room_type__name")
+            ).order_by("room_type")
         elif section:
             queryset = Room.objects.filter(
                 section_id=int(section)).values(
-                "room_type", "room_type__name"
+                "room_type"
             ).annotate(
                 Sum('square_feet'),
-                Count("room_type_id"),
+                Count("room_type"),
                 Sum("estimated_time_to_clean"),
                 Sum("section__product_used_in_section__quantity")
             ).order_by("room_type")
         serializer = RoomSpecsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['get'], detail=True, url_path='product-usage', url_name='product-usage')
+    def product_usage(self, request, pk):
+        """ To get product used against type."""
+        school = self.get_object().pk
+        section = self.request.query_params.get("section")
+        queryset = None
+        if school:
+            queryset = SectionProduct.objects.filter(
+                section__school_id=int(school)).values(
+                "product__product_type_id", "product__product_type__title", "product__name"
+            ).annotate(
+                Sum("products_used__quantity")
+            ).order_by("product__product_type_id")
+        elif section:
+            queryset = SectionProduct.objects.filter(
+                section_id=int(section)).values(
+                "product__product_type_id", "product__product_type__title", "product__name"
+            ).annotate(
+                Sum("products_used__quantity")
+            ).order_by("product__product_type_id")
+        serializer = ReportProductNeededSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
@@ -192,11 +216,11 @@ class SectionViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class RoomTypeViewSet(viewsets.ModelViewSet):
-    serializer_class = RoomTypeSerializer
-    queryset = RoomType.objects.all()
-    authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = [IsAuthenticated, RoomTypePermission]
+# class RoomTypeViewSet(viewsets.ModelViewSet):
+#     serializer_class = RoomTypeSerializer
+#     queryset = RoomType.objects.all()
+#     authentication_classes = (SessionAuthentication, TokenAuthentication)
+#     permission_classes = [IsAuthenticated, RoomTypePermission]
 
 
 class RoomViewSet(viewsets.ModelViewSet):
@@ -206,7 +230,7 @@ class RoomViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, RoomPermission]
 
     def get_queryset(self):
-        queryset = Room.objects.all().select_related("section", "room_type", "cleaner")
+        queryset = Room.objects.select_related("section", "cleaner").all()
         school = self.request.query_params.get("school")
         section = self.request.query_params.get("section")
         user = self.request.user
@@ -230,18 +254,18 @@ class RoomViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class ToolTypeViewSet(viewsets.ModelViewSet):
-    serializer_class = ToolTypeSerializer
-    queryset = ToolType.objects.all()
-    authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = [IsAuthenticated, ToolTypePermission]
-
-
-class EquipmentViewSet(viewsets.ModelViewSet):
-    serializer_class = EquipmentSerializer
-    queryset = Equipment.objects.select_related("tool_type").all()
-    authentication_classes = (SessionAuthentication, TokenAuthentication)
-    permission_classes = [IsAuthenticated, ToolTypePermission]
+# class ToolTypeViewSet(viewsets.ModelViewSet):
+#     serializer_class = ToolTypeSerializer
+#     queryset = ToolType.objects.all()
+#     authentication_classes = (SessionAuthentication, TokenAuthentication)
+#     permission_classes = [IsAuthenticated, ToolTypePermission]
+#
+#
+# class EquipmentViewSet(viewsets.ModelViewSet):
+#     serializer_class = EquipmentSerializer
+#     queryset = Equipment.objects.select_related("tool_type").all()
+#     authentication_classes = (SessionAuthentication, TokenAuthentication)
+#     permission_classes = [IsAuthenticated, ToolTypePermission]
 
 
 class EquipmentInSchoolBuildingViewSet(viewsets.ModelViewSet):
@@ -251,7 +275,7 @@ class EquipmentInSchoolBuildingViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, EquipmentInSectionPermission]
 
     def get_queryset(self):
-        queryset = EquipmentInSchoolBuilding.objects.select_related("school", "equipment", "equipment__tool_type").all()
+        queryset = EquipmentInSchoolBuilding.objects.select_related("school").all()
         school = self.request.query_params.get("school")
         user = self.request.user
         if school:

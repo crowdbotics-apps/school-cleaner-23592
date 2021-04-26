@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
 from district_services.api.v1.custom_duration_field import CustomDurationField
-from district_services.models import District, SchoolBuilding, Section, Room, RoomType, Equipment, ToolType, \
+from district_services.models import District, SchoolBuilding, Section, Room, \
     EquipmentNeeded, EmployeeInDistrict, EquipmentInSchoolBuilding
 from products.api.v1.serializers import SectionProductSerializer, SectionProductCustomizeSerializer
 
@@ -70,11 +70,12 @@ class SchoolBuildingReportSerializer(serializers.ModelSerializer):
     total_rooms = serializers.IntegerField(read_only=True)
     total_area = serializers.IntegerField(read_only=True)
     total_sections = serializers.IntegerField(read_only=True)
+    product_usage_estimation = serializers.IntegerField(read_only=True)
     estimated_time_to_clean = serializers.DurationField(read_only=True)
 
     class Meta:
         model = SchoolBuilding
-        fields = ('total_rooms', 'total_area', 'total_sections', 'estimated_time_to_clean')
+        fields = ('total_rooms', 'total_area', 'total_sections', 'estimated_time_to_clean', "product_usage_estimation")
 
 
 class SectionSerializer(serializers.ModelSerializer):
@@ -104,17 +105,17 @@ class SectionSerializer(serializers.ModelSerializer):
         return validated_data
 
 
-class RoomTypeSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = RoomType
-        fields = '__all__'
+# class RoomTypeSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = RoomType
+#         fields = '__all__'
 
 
 class RoomSerializer(serializers.ModelSerializer):
     room_type_name = serializers.CharField(source="room_type.name", read_only=True)
     total_square_feet = serializers.IntegerField(read_only=True)
-    estimated_time_to_clean = CustomDurationField(required=True)
+    estimated_time_to_clean = CustomDurationField(read_only=True)
 
     class Meta:
         model = Room
@@ -133,8 +134,8 @@ class RoomSerializer(serializers.ModelSerializer):
 
 
 class RoomSpecsSerializer(serializers.Serializer):
-    room_name = serializers.CharField(source="room_type__name", read_only=True)
     square_feet = serializers.IntegerField(source="square_feet__sum", read_only=True)
+    room_type = serializers.IntegerField(read_only=True)
     count = serializers.IntegerField(source="room_type_id__count", read_only=True)
     estimated_time_to_clean = serializers.DurationField(source="estimated_time_to_clean__sum", read_only=True)
     product_usage = serializers.IntegerField(source="section__product_used_in_section__quantity__sum", read_only=True)
@@ -143,18 +144,28 @@ class RoomSpecsSerializer(serializers.Serializer):
         fields = '__all__'
 
 
-class ToolTypeSerializer(serializers.ModelSerializer):
+class ReportProductNeededSerializer(serializers.Serializer):
+    product_type_title = serializers.CharField(source="product__product_type__title", read_only=True)
+    product_type = serializers.IntegerField(source="product__product_type_id", read_only=True)
+    name = serializers.CharField(source="product__name", read_only=True)
+    product_usage = serializers.IntegerField(source="products_used__quantity__sum", read_only=True)
+
     class Meta:
-        model = ToolType
         fields = '__all__'
 
 
-class EquipmentSerializer(serializers.ModelSerializer):
-    tool_title = serializers.CharField(source="tool_type.title", read_only=True)
-
-    class Meta:
-        model = Equipment
-        fields = '__all__'
+# class ToolTypeSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = ToolType
+#         fields = '__all__'
+#
+#
+# class EquipmentSerializer(serializers.ModelSerializer):
+#     tool_title = serializers.CharField(source="tool_type.title", read_only=True)
+#
+#     class Meta:
+#         model = Equipment
+#         fields = '__all__'
 
 
 class EquipmentInSchoolBuildingSerializer(serializers.ModelSerializer):

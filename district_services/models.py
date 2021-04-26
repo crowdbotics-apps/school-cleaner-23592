@@ -1,6 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+
+from district_services.utils import EQUIPMENT_TYPE, ROOM_TYPES, get_estimated_time
+
 User = get_user_model()
 
 
@@ -18,7 +21,7 @@ class District(models.Model):
 
     class Meta:
         verbose_name_plural = '1- Districts'
-        ordering = ('-created', )
+        ordering = ('-created',)
 
 
 class SchoolBuilding(models.Model):
@@ -63,28 +66,32 @@ class Section(models.Model):
         ordering = ('-created',)
 
 
-class RoomType(models.Model):
-    name = models.CharField(max_length=255)
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name_plural = '4- Room Types'
-        ordering = ('-created',)
+# class RoomType(models.Model):
+#     name = models.CharField(max_length=255)
+#     created = models.DateTimeField(auto_now_add=True)
+#     updated = models.DateTimeField(auto_now=True)
+#
+#     def __str__(self):
+#         return self.name
+#
+#     class Meta:
+#         verbose_name_plural = '4- Room Types'
+#         ordering = ('-created',)
 
 
 class Room(models.Model):
+    section = models.ForeignKey("district_services.Section", on_delete=models.CASCADE, related_name="rooms_in_section")
+    room_type = models.PositiveIntegerField(choices=ROOM_TYPES)
+    # room_type = models.ForeignKey(RoomType, on_delete=models.PROTECT)
+
     name = models.CharField(verbose_name=_('Room Name'), max_length=255)
-    room_type = models.ForeignKey(RoomType, on_delete=models.PROTECT)
     square_feet = models.PositiveIntegerField(default=0)
     desks = models.PositiveIntegerField(default=0)
     windows = models.PositiveIntegerField(default=0)
     trash_cans = models.PositiveIntegerField(default=0)
-    section = models.ForeignKey("district_services.Section", on_delete=models.CASCADE, related_name="rooms_in_section")
-    estimated_time_to_clean = models.DurationField()
+    tables = models.PositiveIntegerField(default=0)
+    flushable = models.PositiveIntegerField(default=0)
+    estimated_time_to_clean = models.DurationField(null=True, blank=True)
 
     cleaner = models.ForeignKey(
         User, blank=True, related_name="cleaner_of_room", on_delete=models.SET_NULL,
@@ -100,6 +107,13 @@ class Room(models.Model):
         verbose_name_plural = '5- Rooms'
         ordering = ('-created',)
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.estimated_time_to_clean = get_estimated_time(
+            self.room_type, self.section.school, self.square_feet, self.tables, self.flushable)
+        super(Room, self).save(force_insert=False, force_update=False, using=None,
+                               update_fields=None)
+
 
 class EmployeeInDistrict(models.Model):
     employee = models.ForeignKey(User, on_delete=models.CASCADE, related_name="employees_in_district")
@@ -112,50 +126,49 @@ class EmployeeInDistrict(models.Model):
 
     class Meta:
         verbose_name_plural = '6- Employees With District Code'
-        ordering = ('-created', )
-
-
-class ToolType(models.Model):
-    title = models.CharField(max_length=255)
-    updated = models.DateTimeField(auto_now=True)
-    created = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.title
-
-    class Meta:
-        verbose_name_plural = "6- Tool Type for Equipments"
         ordering = ('-created',)
 
 
-class Equipment(models.Model):
-    tool_type = models.ForeignKey(ToolType, on_delete=models.PROTECT, related_name="tool_type_equipments")
-    title = models.CharField(max_length=255)
+# class ToolType(models.Model):
+#     title = models.CharField(max_length=255)
+#     updated = models.DateTimeField(auto_now=True)
+#     created = models.DateTimeField(auto_now_add=True)
+#
+#     def __str__(self):
+#         return self.title
+#
+#     class Meta:
+#         verbose_name_plural = "6- Tool Type for Equipments"
+#         ordering = ('-created',)
 
-    created = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.title}"
-
-    class Meta:
-        verbose_name_plural = "7- Registered Equipments"
-        ordering = ('-created',)
+# class Equipment(models.Model):
+#     tool_type = models.ForeignKey(ToolType, on_delete=models.PROTECT, related_name="tool_type_equipments")
+#     title = models.CharField(max_length=255)
+#
+#     created = models.DateTimeField(auto_now_add=True)
+#
+#     def __str__(self):
+#         return f"{self.title}"
+#
+#     class Meta:
+#         verbose_name_plural = "7- Registered Equipments"
+#         ordering = ('-created',)
 
 
 class EquipmentInSchoolBuilding(models.Model):
-    equipment = models.ForeignKey("district_services.Equipment", on_delete=models.CASCADE, related_name="equipments_in_section")
+    # equipment = models.ForeignKey("district_services.Equipment", on_delete=models.CASCADE,
+    # related_name="equipments_in_section")
+    equipment = models.PositiveIntegerField(choices=EQUIPMENT_TYPE)
     school = models.ForeignKey("district_services.SchoolBuilding", on_delete=models.CASCADE,
-                                related_name="section_equipments")
+                               related_name="section_equipments")
     size = models.PositiveIntegerField()
     quantity = models.PositiveIntegerField()
-    price = models.FloatField(default=0.0)
-    unit = models.CharField(verbose_name="Unit to represent with size", max_length=10, null=True, blank=True)
 
-    updated = models.DateTimeField(auto_now=True)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.equipment.title}"
+        return f"{self.school}"
 
     class Meta:
         verbose_name_plural = "8- Equipments in Sections"
@@ -165,8 +178,9 @@ class EquipmentInSchoolBuilding(models.Model):
 class EquipmentNeeded(models.Model):
     section = models.ForeignKey("district_services.Section", on_delete=models.CASCADE,
                                 related_name="section_equipments_needed")
-    equipment = models.ForeignKey("district_services.Equipment", on_delete=models.CASCADE,
-        related_name="equipment_needed")
+    # equipment = models.ForeignKey("district_services.Equipment", on_delete=models.CASCADE,
+    #                               related_name="equipment_needed")
+    title = models.CharField(max_length=255)
     quantity = models.PositiveIntegerField(default=0)
     cost_per_unit = models.FloatField(default=0.0)
 
@@ -174,7 +188,7 @@ class EquipmentNeeded(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.equipment}"
+        return f"{self.title}"
 
     class Meta:
         verbose_name_plural = "9- Equipment Needed by section."

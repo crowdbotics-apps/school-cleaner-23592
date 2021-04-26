@@ -2,8 +2,8 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 
 from district_services.api.v1.viewsets import (
-    DistrictViewSet, SchoolBuildingViewSet, SectionViewSet, RoomTypeViewSet, RoomViewSet, AdminUserViewSet,
-    InspectorUserViewSet, SimpleUserViewSet, EquipmentViewSet, ToolTypeViewSet, EquipmentNeededViewSet,
+    DistrictViewSet, SchoolBuildingViewSet, SectionViewSet, RoomViewSet, AdminUserViewSet,
+    InspectorUserViewSet, SimpleUserViewSet, EquipmentNeededViewSet,
     EmployeeInDistrictViewSet, EquipmentInSchoolBuildingViewSet
 )
 
@@ -14,11 +14,11 @@ router.register('school', SchoolBuildingViewSet)
 router.register('section', SectionViewSet)
 
 # with default data
-router.register('tool-type', ToolTypeViewSet)
-router.register('equipment', EquipmentViewSet)
-router.register('room-type', RoomTypeViewSet)
+# router.register('tool-type', ToolTypeViewSet)
+# router.register('equipment', EquipmentViewSet)
+# router.register('room-type', RoomTypeViewSet)
 
-router.register('school-equipment', EquipmentInSchoolBuildingViewSet)
+router.register('equipment', EquipmentInSchoolBuildingViewSet)
 router.register('equipment-needed', EquipmentNeededViewSet)
 router.register('room', RoomViewSet)
 router.register('admin-users', EmployeeInDistrictViewSet)
