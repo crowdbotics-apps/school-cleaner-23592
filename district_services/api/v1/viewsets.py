@@ -12,10 +12,11 @@ from district_services.api.v1.permissions import DistrictUserPermission, SchoolB
 from district_services.api.v1.serializers import DistrictSerializer, SchoolBuildingSerializer, SectionSerializer, \
     RoomSerializer, UserSerializer, RoomSpecsSerializer, \
     EquipmentNeededSerializer, SchoolBuildingReportSerializer, EmployeeInDistrictSerializer, \
-    EquipmentInSchoolBuildingSerializer
+    EquipmentInSchoolBuildingSerializer, ReportProductNeededSerializer
 from district_services.models import District, SchoolBuilding, Section, Room, \
     EquipmentNeeded, EmployeeInDistrict, EquipmentInSchoolBuilding
 from district_services.utils import district_code_generator
+from products.models import SectionProduct
 
 User = get_user_model()
 
@@ -97,7 +98,7 @@ class SchoolBuildingViewSet(viewsets.ModelViewSet):
             total_area=Sum("sections_in_school__rooms_in_section__square_feet")).annotate(
             estimated_time_to_clean=Sum("sections_in_school__rooms_in_section__estimated_time_to_clean")).annotate(
             total_sections=Count("sections_in_school")
-        )
+        ).annotate(product_usage_estimation=Sum("sections_in_school__product_used_in_section__quantity"))
         user = self.request.user
         district = self.request.query_params.get("district")
         if district:
@@ -125,24 +126,47 @@ class SchoolBuildingViewSet(viewsets.ModelViewSet):
         if school:
             queryset = Room.objects.filter(
                 section__school_id=int(school)).values(
-                "room_type", "room_type__name"
+                "room_type"
             ).annotate(
                 Sum('square_feet'),
-                Count("room_type_id"),
+                Count("room_type"),
                 Sum("estimated_time_to_clean"),
                 Sum("section__product_used_in_section__quantity")
-            ).order_by("room_type__name")
+            ).order_by("room_type")
         elif section:
             queryset = Room.objects.filter(
                 section_id=int(section)).values(
-                "room_type", "room_type__name"
+                "room_type"
             ).annotate(
                 Sum('square_feet'),
-                Count("room_type_id"),
+                Count("room_type"),
                 Sum("estimated_time_to_clean"),
                 Sum("section__product_used_in_section__quantity")
             ).order_by("room_type")
         serializer = RoomSpecsSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(methods=['get'], detail=True, url_path='product-usage', url_name='product-usage')
+    def product_usage(self, request, pk):
+        """ To get product used against type."""
+        school = self.get_object().pk
+        section = self.request.query_params.get("section")
+        queryset = None
+        if school:
+            queryset = SectionProduct.objects.filter(
+                section__school_id=int(school)).values(
+                "product__product_type_id", "product__product_type__title", "product__name"
+            ).annotate(
+                Sum("products_used__quantity")
+            ).order_by("product__product_type_id")
+        elif section:
+            queryset = SectionProduct.objects.filter(
+                section_id=int(section)).values(
+                "product__product_type_id", "product__product_type__title", "product__name"
+            ).annotate(
+                Sum("products_used__quantity")
+            ).order_by("product__product_type_id")
+        serializer = ReportProductNeededSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
