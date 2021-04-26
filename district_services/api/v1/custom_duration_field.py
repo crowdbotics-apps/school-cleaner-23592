@@ -8,13 +8,15 @@ class CustomDurationField(DurationField):
 
 
 def c_duration_string(duration):
-    days, hours, minutes, seconds, microseconds = _get_duration_components(duration)
-    string = '{:02d}:{:02d}:{:02d}'.format(hours, minutes, seconds)
-    if days:
-        string = '{} '.format(days) + string
-    if microseconds:
-        string += '.{:06d}'.format(microseconds)
-    return string
+    #
+    # days, hours, minutes, seconds, microseconds = _get_duration_components(duration)
+    # string = '{:02d}:{:02d}:{:02d}'.format(hours, minutes, seconds)
+    # if days:
+    #     string = '{} '.format(days) + string
+    # if microseconds:
+    #     string += '.{:06d}'.format(microseconds)
+    # return string
+    return duration
 
 
 def _get_duration_components(duration):
