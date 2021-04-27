@@ -20,7 +20,7 @@ const SideBarHeader = () => {
           <h3>District details</h3>
         </div>
         <div className="header-button">
-          <a href="#" className="btn btn-outline-secondary d-flex align-items-center text-uppercase" data-bs-toggle="modal" data-bs-target="#add_District">
+          <a  href="#" className="btn btn-outline-secondary d-flex align-items-center text-uppercase" data-bs-toggle="modal" data-bs-target="#add_District">
             <img src={plusicon} alt="" className="image-responsive" />
             <span>
               District

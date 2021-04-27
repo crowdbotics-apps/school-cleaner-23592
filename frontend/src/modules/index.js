@@ -5,6 +5,8 @@ import { AuthReducer } from './reducers/AuthReducer';
 import { DistrictReducer } from './reducers/DistrictReducer';
 import { UserReducer } from './reducers/UserReducer';
 import { AdminReducer } from './reducers/AdminReducer';
+import { SchoolReducer } from './reducers/SchoolReducer';
+import { SectionReducer } from './reducers/SectionReducer';
 
 export default (history) =>
   combineReducers({
@@ -13,4 +15,6 @@ export default (history) =>
     district: DistrictReducer,
     admin: AdminReducer,
     user: UserReducer,
+    school: SchoolReducer,
+    section: SectionReducer
   });

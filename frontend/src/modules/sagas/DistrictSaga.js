@@ -29,15 +29,12 @@ import {
 
 
 // async function getDistrictEmployeesAPI( id ) {
-//   console.log('idddddddddddddddd', id);
 //   return await Axios.get(`/api/v1/admin-users/?district=${id}`, getHeader());
 // }
 
 // function* getDistricEmployees({ payload }) {
-//   console.log('payloadddd', payload);
 //   try {
 //     const response = yield call(getDistrictEmployeesAPI, payload);
-//     console.log('responseeeee', response);
 //     if (response) {
 //       yield put({
 //         type: DISTRIC_EMPLOYEES_SUCCESS,
@@ -45,7 +42,6 @@ import {
 //       });
 //     }
 //   } catch (error) {
-//     console.log('errrorrr', error);
 //     yield put({
 //       type: DISTRIC_EMPLOYEES_FAILURE,
 //       error: getSimplifiedError(error),
@@ -78,7 +74,6 @@ function* handleGetDistrict({ payload }) {
 async function updateDistrict({ id, name, logo, code, admins }) {
   let data;
   let updateData;
-  console.log("district data", id, name, logo, code, admins);
   logo && logo.startsWith("data")? 
   data = {
     name,
@@ -95,13 +90,11 @@ async function updateDistrict({ id, name, logo, code, admins }) {
     admins
   }
   :
-  updateData = data
-  console.log("updateData", updateData);
+  updateData = data;
   return await Axios.patch(`/api/v1/district/${id}/`, updateData, getHeader());
 }
 
 function* handleUpdateDistrict({ payload }) {
-  console.log("updating");
   try {
     const response = yield call(updateDistrict, payload);
     handleFetchDistricts()
