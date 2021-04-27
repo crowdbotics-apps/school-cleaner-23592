@@ -2,6 +2,7 @@ import Login from '../screens/LogIn';
 import Signup from '../screens/SignUp';
 import ResetPassword from '../screens/ResetPassword';
 import Dashboard from '../screens/Dashboard';
+import Overview from "../screens/Dashboard/OverviewScreens/Overview"
 
 export default [
   {
@@ -33,6 +34,13 @@ export default [
     path: '/dashboard',
     name: 'Dashboard',
     component: Dashboard,
+    isPrivate: true,
+  },
+  {
+    exact: true,
+    path: '/overview',
+    name: "Overview",
+    component: Overview,
     isPrivate: true,
   },
 ];

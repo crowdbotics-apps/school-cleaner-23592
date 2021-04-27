@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createDistrict, generateCode, fetchDistricts } from '../../modules/actions/DistrictActions';
+import { createDistrict, generateCode } from '../../modules/actions/DistrictActions';
 import CSRFToken from '../../utils/csrfToken';
 
 
@@ -68,8 +68,10 @@ const DistrictForm = props => {
   const handleChange = ({ target: { name, value } }) => {
     setDistrictDetails({ ...districtDetails, [name]: value });
   };
+  
 
   return(
+   
     <div className="modal fade" id="add_District" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div className="modal-holder">
         <div className="modal-dialog">
@@ -132,6 +134,7 @@ const DistrictForm = props => {
         </div>
       </div>
     </div>
+    
   );
 }
 

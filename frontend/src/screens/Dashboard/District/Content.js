@@ -13,17 +13,19 @@ import $ from 'jquery';
 const Content = props => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const { districts: { loading, success, error, data }} = useSelector(({ district }) => district);
-  const { admins: { loadingAdmins, adminSuccess, adminError, adminData }} = useSelector(({ admin }) => admin);
-
+  const [sortedData, setSortedData] = useState([]);
+  const { districts: { loading, success, error, data } } = useSelector(({ district }) => district);
+  const { admins: { loadingAdmins, adminSuccess, adminError, adminData } } = useSelector(({ admin }) => admin);
   useEffect(() => {
     dispatch(fetchDistricts());
     // dispatch(fetchAdmins());
   }, []);
-
-  const [ editedDistrict, setEditedDistrict] = useState({id: '', name: '', logo: '', code: ''})
-  const [ selectedDistrict, setSelectedDistrict ] = useState(0)
-
+  useEffect(() => {
+    const sorteddata = data.sort((x, y) => x.id - y.id)
+    setSortedData(sorteddata);
+  }, [data])
+  const [editedDistrict, setEditedDistrict] = useState({ id: '', name: '', logo: '', code: '' })
+  const [selectedDistrict, setSelectedDistrict] = useState(0)
   const selectDistrict = (id) => {
     let updatedDistrict = data.filter(district => district.id == id)[0]
 
@@ -36,25 +38,31 @@ const Content = props => {
     $('#update_District').modal('show');
   };
 
+
   const formSubmitted = () => {
     dispatch(fetchDistricts());
   };
+  const handleClick = (districtId) => {
+    history.push(`/overview`, { districtId: districtId })
+  }
 
   return (
     <React.Fragment>
       <div className="main-content w-100 p-4">
         <div className="district-holder">
-          {data.length > 0 && data.map(district => {
-            return (
-              <District 
-                key={district.id}
-                district={district} 
-                selected={selectedDistrict}
-                onSelectDistrict={selectDistrict} 
-                onEditDistrict={editFormHandler}
-              />
-            ); 
-          })}
+          {
+            sortedData?.length > 0 && sortedData?.map(district => {
+              return (
+                <District
+                  key={district.id}
+                  district={district}
+                  selected={selectedDistrict}
+                  onSelectDistrict={selectDistrict}
+                  onEditDistrict={editFormHandler}
+                  handleClick={() => handleClick(district.id)}
+                />
+              );
+            })}
         </div>
       </div>
       <DistrictForm />

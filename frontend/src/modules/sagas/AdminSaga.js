@@ -17,15 +17,12 @@ async function fetchAdmin() {
 }
 
 async function getDistrictEmployeesAPI( id ) {
-  console.log('idddddddddddddddd', id);
   return await Axios.get(`/api/v1/admin-users/?district=${id}`, getHeader());
 }
 
 function* getDistricEmployees({ payload }) {
-  console.log('payloadddd', payload);
   try {
     const response = yield call(getDistrictEmployeesAPI, payload);
-    console.log('responseeeee', response);
     if (response) {
       yield put({
         type: DISTRIC_EMPLOYEES_SUCCESS,
@@ -33,7 +30,6 @@ function* getDistricEmployees({ payload }) {
       });
     }
   } catch (error) {
-    console.log('errrorrr', error);
     yield put({
       type: DISTRIC_EMPLOYEES_FAILURE,
       error: getSimplifiedError(error),
