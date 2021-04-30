@@ -11,17 +11,15 @@ import {
   CREATE_SECTION_REQUEST,
   CREATE_SECTION_SUCCESS,
   CREATE_SECTION_ERROR,
-
   FETCH_ROOM_REQUEST,
   FETCH_ROOM_SUCCESS,
   FETCH_ROOM_ERROR,
   CREATE_ROOM_REQUEST,
   CREATE_ROOM_SUCCESS,
   CREATE_ROOM_ERROR,
-
   DELETE_SECTION_REQUEST,
   DELETE_ROOM_REQUEST,
-  UPDATE_ROOM_REQUEST
+  UPDATE_ROOM_REQUEST,
 } from '../reducers/SectionReducer';
 
 async function fetchSections(schoolId) {
@@ -34,7 +32,7 @@ function* handleFetchSections(data) {
     if (response) {
       yield put({
         type: FETCH_SECTIONS_SUCCESS,
-        payload: response
+        payload: response,
       });
     }
   } catch (error) {
@@ -43,22 +41,32 @@ function* handleFetchSections(data) {
       error: getSimplifiedError(error),
     });
   }
-};
+}
 
 async function createSection({ name, school }) {
-  return await Axios.post(`/api/v1/section/`, {
-    name,
-    school
-  }, getHeader());
+  return await Axios.post(
+    `/api/v1/section/`,
+    {
+      name,
+      school,
+    },
+    getHeader()
+  );
 }
 
 function* handleCreateSection({ payload }) {
   try {
     const response = yield call(createSection, payload);
     if (response) {
+      const getSection = yield call(fetchSections, payload.school);
+      yield put({
+        type: FETCH_SECTIONS_SUCCESS,
+        payload: getSection,
+      });
+
       yield put({
         type: CREATE_SECTION_SUCCESS,
-        payload: response
+        payload: response,
       });
     }
   } catch (error) {
@@ -75,12 +83,23 @@ async function createRoom(data) {
 
 function* handleCreateRoom({ payload }) {
   try {
-    const response = yield call(createRoom, payload);
+    const response = yield call(createRoom, payload.roomDetail);
     if (response) {
+      const newRoom = yield call(fetchRoom, payload.sectionDetails.id);
+      yield put({
+        type: FETCH_ROOM_SUCCESS,
+        payload: newRoom,
+      });
+      // yield put(handleFetchRoom(response.id));
       yield put({
         type: CREATE_ROOM_SUCCESS,
-        payload: response
+        payload: response,
       });
+
+      // yield put({
+      //   type: FETCH_ROOM_SUCCESS,
+      //   payload: response,
+      // });
     }
   } catch (error) {
     yield put({
@@ -89,7 +108,6 @@ function* handleCreateRoom({ payload }) {
     });
   }
 }
-
 
 async function fetchRoom(id) {
   return await Axios.get(`/api/v1/room/?section=${id}`, getHeader());
@@ -101,7 +119,7 @@ function* handleFetchRoom(data) {
     if (response) {
       yield put({
         type: FETCH_ROOM_SUCCESS,
-        payload: response
+        payload: response,
       });
     }
   } catch (error) {
@@ -110,7 +128,7 @@ function* handleFetchRoom(data) {
       error: getSimplifiedError(error),
     });
   }
-};
+}
 
 async function deleteSection(id) {
   return await Axios.delete(`/api/v1/section/${id}/`, getHeader());
@@ -118,7 +136,12 @@ async function deleteSection(id) {
 
 function* handleDeleteSection(data) {
   try {
-    const response = yield call(deleteSection, data.payload);
+    const response = yield call(deleteSection, data.payload.sectionId);
+    const getSection = yield call(fetchSections, data.payload.school);
+    yield put({
+      type: FETCH_SECTIONS_SUCCESS,
+      payload: getSection,
+    });
     // if (response) {
     //   yield put({
     //     type: FETCH_ROOM_SUCCESS,
@@ -131,7 +154,7 @@ function* handleDeleteSection(data) {
     //   error: getSimplifiedError(error),
     // });
   }
-};
+}
 
 async function deleteRoom(id) {
   return await Axios.delete(`/api/v1/room/${id}/`, getHeader());
@@ -139,7 +162,12 @@ async function deleteRoom(id) {
 
 function* handleDeleteRoom(data) {
   try {
-    const response = yield call(deleteRoom, data.payload);
+    const response = yield call(deleteRoom, data.payload.roomId);
+    const newRoom = yield call(fetchRoom, data.payload.sectionDetails.id);
+    yield put({
+      type: FETCH_ROOM_SUCCESS,
+      payload: newRoom,
+    });
     // if (response) {
     //   yield put({
     //     type: FETCH_ROOM_SUCCESS,
@@ -152,7 +180,7 @@ function* handleDeleteRoom(data) {
     //   error: getSimplifiedError(error),
     // });
   }
-};
+}
 
 async function updateRoom(data) {
   return await Axios.patch(`/api/v1/room/${data.id}/`, data.data, getHeader());
@@ -161,6 +189,11 @@ async function updateRoom(data) {
 function* handleUpdateRoom(data) {
   try {
     const response = yield call(updateRoom, data.payload);
+    const newRoom = yield call(fetchRoom, data.payload.sectionDetail.id);
+    yield put({
+      type: FETCH_ROOM_SUCCESS,
+      payload: newRoom,
+    });
     // if (response) {
     //   yield put({
     //     type: FETCH_ROOM_SUCCESS,
@@ -173,7 +206,7 @@ function* handleUpdateRoom(data) {
     //   error: getSimplifiedError(error),
     // });
   }
-};
+}
 
 export default all([
   takeLatest(FETCH_SECTIONS_REQUEST, handleFetchSections),
@@ -183,6 +216,5 @@ export default all([
   takeLatest(FETCH_ROOM_REQUEST, handleFetchRoom),
   takeLatest(DELETE_SECTION_REQUEST, handleDeleteSection),
   takeLatest(DELETE_ROOM_REQUEST, handleDeleteRoom),
-  takeLatest(UPDATE_ROOM_REQUEST, handleUpdateRoom)
-
+  takeLatest(UPDATE_ROOM_REQUEST, handleUpdateRoom),
 ]);

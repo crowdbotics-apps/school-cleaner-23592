@@ -20,7 +20,7 @@ import {
   RESET_PASSWORD_ERROR,
 } from '../reducers/AuthReducer';
 
-async function signup({ first_name,last_name,email,phone_no,password,confirm_password,employer_code }) {
+async function signup({ first_name, last_name, email, phone_no, password, confirm_password, employer_code }) {
   return await Axios.post('rest-auth/registration/', {
     first_name,
     last_name,
@@ -28,7 +28,7 @@ async function signup({ first_name,last_name,email,phone_no,password,confirm_pas
     phone: phone_no,
     password1: password,
     password2: confirm_password,
-    employer_code
+    employer_code,
   });
 }
 
@@ -75,13 +75,13 @@ function* handleLogin({ payload }) {
 
 async function forgotPassword({ email }) {
   return await Axios.post('rest-auth/password/reset/', {
-    email
+    email,
   });
 }
 
 function* handleForgotPassword({ payload }) {
   try {
-    const { data, status } = yield call(forgotPassword, {email: payload});
+    const { data, status } = yield call(forgotPassword, { email: payload });
     if (status === 200 && data.status === 'OK') {
       yield put({
         type: FORGOT_PASSWORD_SUCCESS,
@@ -102,16 +102,14 @@ async function changePassword({ token, password }) {
   });
 }
 
-
-async function resetPassword({ uuid, token , password, confirm_password }) {
+async function resetPassword({ uuid, token, password, confirm_password }) {
   return await Axios.post('/rest-auth/password/reset/confirm/', {
     uuid,
     token,
     new_password1: password,
-    new_password2: confirm_password
+    new_password2: confirm_password,
   });
 }
-
 
 function* handleResetPassword({ payload }) {
   try {

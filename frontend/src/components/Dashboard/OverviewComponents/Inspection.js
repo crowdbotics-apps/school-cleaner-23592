@@ -19,8 +19,6 @@ export default function Inspection({ date, code, name, grade }) {
                             grade="86%"
                             handleClick={handleClick}
                         />
-
-
                     </div>
                 </div>
                 <div className="tabs-inner-block">
