@@ -6,11 +6,13 @@ import SectionsCard from './OverviewComponents/SectionCard';
 import SectionsDetails from './OverviewComponents/SectionDetails';
 import UnselectSection from './OverviewComponents/UnselectSection';
 import SectionForm from '../Dashboard/SectionForm';
+import CleaningDetailForm from '../Dashboard/OverviewComponents/CleaningDeatlsForm';
 import DeleteModal from '../../components/Dashboard/OverviewComponents/DeleteModal';
 
-export default function Section({ sectionNumber, noOfRooms, noOfPeople, school, sections, handleDeleteSection, fetchSection }) {
+export default function Section({ sectionNumber, noOfRooms, district, school, sections, handleDeleteSection, fetchSection }) {
   const dispatch = useDispatch();
   const [openSectionModal, setOpenSectionModal] = useState(false);
+  const [editSectionModal, setEditSectionModal] = useState(false);
   const store = useSelector((store) => console.log('store rooom', store));
   const [showDetails, setShowDetails] = useState(true);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
@@ -20,12 +22,15 @@ export default function Section({ sectionNumber, noOfRooms, noOfPeople, school, 
   const rooms = useSelector((store) => store.section.room.data);
   const onOpenModal = () => setOpenSectionModal(true);
   const onCloseModal = () => setOpenSectionModal(false);
+  const openEditModal = () => setEditSectionModal(true);
+  const closeEditModal = () => setEditSectionModal(false);
   const [sectionId, setSectionId] = useState(null);
 
   const handleClick = async (sectionDetail) => {
     setShowDetails(false);
     setShowIcon(true);
     setSectionDetails(sectionDetail);
+    setSectionId(sectionDetail.id);
     dispatch(fetchRoom(sectionDetail.id));
     setRoomData(sectionDetail.id);
   };
@@ -38,7 +43,13 @@ export default function Section({ sectionNumber, noOfRooms, noOfPeople, school, 
   const onCloseDeleteModal = () => setOpenDeleteModal(false);
 
   function HandelDeleteSchool(id, openDeleteModal) {
-    dispatch(deleteSection(id));
+    const obj = {
+      id: id,
+      sectionDetails: sectionDetails,
+      school: school,
+      district: district,
+    };
+    dispatch(deleteSection(obj));
     handleDeleteSection();
     openDeleteModal(false);
   }
@@ -46,7 +57,8 @@ export default function Section({ sectionNumber, noOfRooms, noOfPeople, school, 
   function handelDeleteSection() {
     const obj = {
       school: school,
-      sectionId: sectionId,
+      sectionId: sectionDetails.id,
+      district: district,
     };
     dispatch(deleteSection(obj));
     handleDeleteSection();
@@ -62,10 +74,15 @@ export default function Section({ sectionNumber, noOfRooms, noOfPeople, school, 
             <div className="d-flex header-button justify-content-between">
               {showIcon ? (
                 <>
-                  <a href="#" className="btn btn-outline-secondary d-flex align-items-center text-uppercase" data-bs-toggle="modal" data-bs-target="#add_Building">
+                  <a
+                    className="btn btn-outline-secondary d-flex align-items-center text-uppercase"
+                    data-bs-toggle="modal"
+                    data-bs-target="#add_Building"
+                    onClick={() => setEditSectionModal(true)}
+                  >
                     <img src="assets/edit-icon.svg" alt="" className="image-responsive" />
                   </a>
-                  <a href="#" className="mx-3 btn btn-outline-secondary d-flex align-items-center text-uppercase" onClick={onOpenDeleteModal}>
+                  <a className="mx-3 btn btn-outline-secondary d-flex align-items-center text-uppercase" onClick={onOpenDeleteModal}>
                     <img src="assets/delete-icon.svg" alt="" className="image-responsive" />
                   </a>{' '}
                 </>
@@ -88,6 +105,9 @@ export default function Section({ sectionNumber, noOfRooms, noOfPeople, school, 
                 fetchSection={fetchSection}
                 fetchRoomData={fetchRoomData}
                 setSectionId={setSectionId}
+                item={item}
+                district={district}
+                school={school}
               />
             ))}
           </div>
@@ -103,11 +123,27 @@ export default function Section({ sectionNumber, noOfRooms, noOfPeople, school, 
               sections={sections}
               fetchSection={fetchSection}
               fetchRoomData={fetchRoomData}
+              district={district}
+              school={school}
             />
           )}
         </div>
       </div>
-      {openSectionModal ? <SectionForm school={school} open={openSectionModal} onOpenModal={onOpenModal} onCloseModal={onCloseModal} fetchSection={fetchSection} /> : null}
+      {openSectionModal ? (
+        <SectionForm district={district} school={school} open={openSectionModal} onOpenModal={onOpenModal} onCloseModal={onCloseModal} fetchSection={fetchSection} />
+      ) : // <CleaningDetailForm open={openSectionModal} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />
+      null}
+
+      {editSectionModal ? (
+        <SectionForm
+          sectionDetails={sectionDetails}
+          school={school}
+          open={editSectionModal}
+          onOpenModal={openEditModal}
+          onCloseModal={closeEditModal}
+          fetchSection={fetchSection}
+        />
+      ) : null}
 
       {openDeleteModal ? (
         <DeleteModal open={openDeleteModal} onOpenModal={onOpenDeleteModal} onCloseModal={onCloseDeleteModal} onDelete={handelDeleteSection} message=" Section" />

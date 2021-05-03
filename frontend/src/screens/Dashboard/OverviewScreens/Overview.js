@@ -18,6 +18,7 @@ import Budgeting from '../../../components/Dashboard/OverviewComponents/Budgetin
 import SchoolForm from '../../../components/Dashboard/SchoolForm';
 import { fetchSections } from '../../../modules/actions/SectionActions';
 import { getUserData, fetchUsers } from '../../../modules/actions/UserActions';
+import CleaningDeatlsForm from '../../../components/Dashboard/OverviewComponents/CleaningDeatlsForm';
 import './Styles/overview.scss';
 import '../dashboard.scss';
 import '../margin_and_padding_helpers.scss';
@@ -71,7 +72,7 @@ function Overview(props) {
         <div className="d-flex flex-column justify-content-between p-3 section-header">
           <div className="d-flex justify-content-between top-header">
             <div className="logo-holder">
-              <img src="assets/logo.svg" alt="" className="image-responsive" />
+              <img src="assets/logo1.png" alt="" className="image-responsive" />
             </div>
             <div className="user-button">
               <img src="assets/user-button.svg" alt="" className="image-responsive" />
@@ -88,7 +89,8 @@ function Overview(props) {
               </h3>
             </div>
             <div className="header-button">
-              <a className="btn btn-outline-secondary d-flex align-items-center text-uppercase" onClick={onOpenModal}>
+              {/* <a className="btn btn-outline-secondary d-flex align-items-center text-uppercase" > */}
+              <a className="btn btn-outline-secondary d-flex align-items-center text-uppercase" data-bs-toggle="modal" data-bs-target="#add_School">
                 <img src="assets/plus-icon.svg" alt="" className="mr5 image-responsive" />
                 <span>Building</span>
               </a>
@@ -105,6 +107,7 @@ function Overview(props) {
                 roomno={school.total_rooms}
                 id={school.id}
                 handleClick={() => handleClick(school)}
+                district={props?.location?.state?.districtId}
               />
             );
           })}
@@ -116,7 +119,13 @@ function Overview(props) {
           <Navbar />
 
           <div className="tab-content" id="nav-tabContent">
-            <Section school={selectedSchool?.id} sections={sections} handleDeleteSection={handleDeleteSection} fetchSection={fetchSection} />
+            <Section
+              district={props?.location?.state?.districtId}
+              school={selectedSchool?.id}
+              sections={sections}
+              handleDeleteSection={handleDeleteSection}
+              fetchSection={fetchSection}
+            />
             <Reports report={report} />
             <Inspection />
             <People />
@@ -127,9 +136,8 @@ function Overview(props) {
           </div>
         </div>
       </div>
-      {openAddBulidingModal ? (
-        <SchoolForm district={props?.location?.state?.districtId} open={openAddBulidingModal} onOpenModal={onOpenModal} onCloseModal={onCloseModal} fetchSchool={fetchSchool} />
-      ) : null}
+      <SchoolForm district={props?.location?.state?.districtId} fetchSchool={fetchSchool} setOpenAddBulidingModal={setOpenAddBulidingModal} />
+      {openAddBulidingModal ? <CleaningDeatlsForm open={openAddBulidingModal} onOpenModal={onOpenModal} onCloseModal={onCloseModal} /> : null}
     </div>
   );
 }

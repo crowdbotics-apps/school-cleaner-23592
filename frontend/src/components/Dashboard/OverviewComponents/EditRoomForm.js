@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import { useDispatch, useSelector } from 'react-redux';
-import { editRoom } from '../../../modules/actions/SectionActions';
+import { editRoom, getSpecificRoom } from '../../../modules/actions/SectionActions';
 const roomType = [
   {
     id: 1,
@@ -64,13 +64,20 @@ const roomType = [
 export default function RoomEditForm(props) {
   const dispatch = useDispatch();
 
+  const [validated, setValidated] = useState(false);
+  // const [roomDetails, setRoomDetails] = useState({ name: '', logo: '', code: '', admins: [] });
+  const [roomDetails, setRoomDetails] = useState({});
+
   useEffect(() => {
     // dispatch(generateCode());
     // districtCodeHandler();
-  }, []);
-
-  const [validated, setValidated] = useState(false);
-  const [roomDetails, setRoomDetails] = useState({ name: '', logo: '', code: '', admins: [] });
+    // const obj = {
+    //   setRoomDetails: setRoomDetails,
+    //   id: props.id,
+    // };
+    // dispatch(getSpecificRoom(obj));
+    setRoomDetails(props.roomDetail);
+  }, [props.id]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -91,6 +98,7 @@ export default function RoomEditForm(props) {
       dispatch(editRoom({ data: obj, id: props.id, sectionDetail }));
       setRoomDetails({ name: '', logo: '', code: '' });
       props.setOpenRoomEditForm(false);
+      props.setRoomDetail({});
     } else {
       setValidated(true);
     }
@@ -108,11 +116,21 @@ export default function RoomEditForm(props) {
         <form onSubmit={submitHandler}>
           <div className="mb-4">
             <div className="form-floating mb-3 go-bottom">
-              <input type="text" className="form-control" name="name" id="floatingInput" placeholder="Room Name" onChange={handleChange} />
+              <input value={roomDetails.name} type="text" className="form-control" name="name" id="floatingInput" placeholder="Room Name" onChange={handleChange} />
               <label htmlFor="name">Room Name</label>
             </div>
             <div className="form-floating mb-3 go-bottom">
-              <input type="text" name="room_type" className="form-control" onChange={handleChange} list="room_type" required={true} id="floatingInput" placeholder="Room Type s" />
+              <input
+                value={roomDetails.room_type}
+                type="text"
+                name="room_type"
+                className="form-control"
+                onChange={handleChange}
+                list="room_type"
+                required={true}
+                id="floatingInput"
+                placeholder="Room Type s"
+              />
               <i class="fa fa-sort-desc"></i>
 
               <datalist id="room_type">
@@ -148,15 +166,31 @@ export default function RoomEditForm(props) {
               <label htmlFor="square_feet">Section</label>
             </div>
             <div className="form-floating mb-3 go-bottom">
-              <input type="text" className="form-control" name="square_feet" id="floatingInput" placeholder="Room Area(Sq. ft.)" onChange={handleChange} />
+              <input
+                value={roomDetails.square_feet}
+                type="text"
+                className="form-control"
+                name="square_feet"
+                id="floatingInput"
+                placeholder="Room Area(Sq. ft.)"
+                onChange={handleChange}
+              />
               <label htmlFor="square_feet">Room Area(Sq. ft.)</label>
             </div>
             <div className="form-floating mb-3 go-bottom">
-              <input type="text" className="form-control" name="desks" id="floatingInput" placeholder="Desks " onChange={handleChange} />
+              <input value={roomDetails.desks} type="text" className="form-control" name="desks" id="floatingInput" placeholder="Desks " onChange={handleChange} />
               <label htmlFor="desks">Desks</label>
             </div>
             <div className="form-floating mb-3 go-bottom">
-              <input type="number" className="form-control" name="cleaner" id="floatingInput" placeholder="Cleaner " onChange={handleChange} />
+              <input
+                value={roomDetails.estimated_time_to_clean}
+                type="number"
+                className="form-control"
+                name="cleaner"
+                id="floatingInput"
+                placeholder="Cleaner "
+                onChange={handleChange}
+              />
               <label htmlFor="cleaner">Cleaner</label>
             </div>
           </div>

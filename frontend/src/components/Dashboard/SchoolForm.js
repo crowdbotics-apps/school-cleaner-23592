@@ -24,11 +24,9 @@ const SchoolForm = (props) => {
     return new Promise((resolve, reject) => {
       const fileReader = new FileReader();
       fileReader.readAsDataURL(file);
-
       fileReader.onload = () => {
         resolve(fileReader.result);
       };
-
       fileReader.onerror = (error) => {
         reject(error);
       };
@@ -44,7 +42,7 @@ const SchoolForm = (props) => {
     if (form.checkValidity() === true) {
       await dispatch(createSchool({ name: buildingDetail.name, image: buildingDetail.logo, district: props.district }));
       await props.fetchSchool();
-      props.onCloseModal();
+      props.setOpenAddBulidingModal(true);
       setBuildingDetail({ name: '', logo: '' });
       setBase64Image('');
     } else {
@@ -62,19 +60,15 @@ const SchoolForm = (props) => {
     }
   };
 
-  // const handleImageChange = (e) => {
-  //   console.log(e.target.value);
-  // };
-
   return (
-    <Modal className="deleteModal" center open={props.open} onClose={props.onCloseModal}>
+    <div className="modal fade" id="add_School" tabIndex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
       <div className="modal-holder">
         <div className="modal-dialog">
-          <div className="modal-content">
+          <div style={{ border: 'none' }} className="modal-content">
             <div className="modal-body">
-              <CSRFToken />
               <form onSubmit={submitHandler}>
-                <h2 className="modal-title mb-4" id="add_buildingLabel">
+                <CSRFToken />
+                <h2 className="modal-title mb-4" id="ModalLabel">
                   Add Building
                 </h2>
                 <div className="mb-4">
@@ -89,41 +83,28 @@ const SchoolForm = (props) => {
                       id="floatingInput"
                       placeholder="Building Name"
                     />
-                    <label htmlFor="name">Building Name</label>
+                    <label htmlFor="name">School Name</label>
                   </div>
                 </div>
                 <div className="logo-uploader mb-4">
                   <div className="logo-uploader-header d-flex align-items-center justify-content-between mb-3">
-                    <div>Building logo</div>
-                    <input
-                      // value={buildingDetail.logo}
-                      type="file"
-                      onChange={handleChange}
-                      required={false}
-                      id="select-image"
-                      className="btn btn-outline-secondary"
-                      style={{ display: 'none' }}
-                      name="logo"
-                    />
-                    <label style={{ color: '#136162' }} for="select-image" className="btn btn-outline-secondary btn-lg d-flex align-items-center text-uppercase">
+                    <div>Building Image</div>
+                    <input type="file" onChange={handleImageChange} required={true} id="select-image" className="btn btn-outline-secondary" style={{ display: 'none' }} />
+                    <label for="select-image" className="btn btn-outline-secondary btn-lg d-flex align-items-center text-uppercase">
                       Select image
                     </label>
                   </div>
-                  <div className="logo-uploader-area-school">
-                    {buildingDetail.logo == '' ? <p>Drag & drop the image in this section</p> : <img src={buildingDetail.logo} height="100px" />}
-                  </div>
+                  <div className="logo-uploader-area logo-uploader-area-school">{base64Image == '' ? <p>Building Image</p> : <img src={base64Image} height="100px" />}</div>
                 </div>
-                <div className="btnContainer">
-                  <button type="submit" className="btn btn-primary text-uppercase">
-                    Create
-                  </button>
-                </div>
+                <button type="submit" className="btn btn-primary text-uppercase" data-bs-toggle="modal" data-bs-target="#add_School">
+                  Create
+                </button>
               </form>
             </div>
           </div>
         </div>
       </div>
-    </Modal>
+    </div>
   );
 };
 

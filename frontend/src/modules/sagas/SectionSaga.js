@@ -20,7 +20,17 @@ import {
   DELETE_SECTION_REQUEST,
   DELETE_ROOM_REQUEST,
   UPDATE_ROOM_REQUEST,
+  GET_SPECIFIC_ROOM_FAIL,
+  GET_SPECIFIC_ROOM_SUCCESS,
+  GET_SPECIFIC_ROOM_REQUEST,
+  EDIT_SECTION_REQUEST,
 } from '../reducers/SectionReducer';
+
+import { FETCH_SCHOOLS_SUCCESS } from '../reducers/SchoolReducer';
+
+async function fetchSchools(districtId) {
+  return await Axios.get(`/api/v1/school/?district=${districtId}`, getHeader());
+}
 
 async function fetchSections(schoolId) {
   return await Axios.get(`/api/v1/section/?school=${schoolId}`, getHeader());
@@ -64,6 +74,12 @@ function* handleCreateSection({ payload }) {
         payload: getSection,
       });
 
+      const school = yield call(fetchSchools, payload.district);
+      yield put({
+        type: FETCH_SCHOOLS_SUCCESS,
+        payload: school,
+      });
+
       yield put({
         type: CREATE_SECTION_SUCCESS,
         payload: response,
@@ -74,6 +90,32 @@ function* handleCreateSection({ payload }) {
       type: CREATE_SECTION_ERROR,
       error: getSimplifiedError(error),
     });
+  }
+}
+
+async function updateSection(data) {
+  return await Axios.patch(`/api/v1/section/${data.id}/`, { name: data.name }, getHeader());
+}
+
+function* handleUpdateSection(data) {
+  try {
+    const response = yield call(updateSection, data.payload);
+    const newSection = yield call(fetchSections, data.payload.school);
+    yield put({
+      type: FETCH_SECTIONS_SUCCESS,
+      payload: newSection,
+    });
+    // if (response) {
+    //   yield put({
+    //     type: FETCH_ROOM_SUCCESS,
+    //     payload: response
+    //   });
+    // }
+  } catch (error) {
+    // yield put({
+    //   type: FETCH_ROOM_ERROR,
+    //   error: getSimplifiedError(error),
+    // });
   }
 }
 
@@ -91,9 +133,17 @@ function* handleCreateRoom({ payload }) {
         payload: newRoom,
       });
       // yield put(handleFetchRoom(response.id));
+
+      const getSection = yield call(fetchSections, payload.school);
       yield put({
-        type: CREATE_ROOM_SUCCESS,
-        payload: response,
+        type: FETCH_SECTIONS_SUCCESS,
+        payload: getSection,
+      });
+
+      const school = yield call(fetchSchools, payload.district);
+      yield put({
+        type: FETCH_SCHOOLS_SUCCESS,
+        payload: school,
       });
 
       // yield put({
@@ -142,6 +192,11 @@ function* handleDeleteSection(data) {
       type: FETCH_SECTIONS_SUCCESS,
       payload: getSection,
     });
+    const school = yield call(fetchSchools, data.payload.district);
+    yield put({
+      type: FETCH_SCHOOLS_SUCCESS,
+      payload: school,
+    });
     // if (response) {
     //   yield put({
     //     type: FETCH_ROOM_SUCCESS,
@@ -167,6 +222,16 @@ function* handleDeleteRoom(data) {
     yield put({
       type: FETCH_ROOM_SUCCESS,
       payload: newRoom,
+    });
+    const getSection = yield call(fetchSections, data.payload.school);
+    yield put({
+      type: FETCH_SECTIONS_SUCCESS,
+      payload: getSection,
+    });
+    const school = yield call(fetchSchools, data.payload.district);
+    yield put({
+      type: FETCH_SCHOOLS_SUCCESS,
+      payload: school,
     });
     // if (response) {
     //   yield put({
@@ -208,13 +273,35 @@ function* handleUpdateRoom(data) {
   }
 }
 
+async function getSpecificRoom(id) {
+  return await Axios.get(`/api/v1/room/${id}`, getHeader());
+}
+
+function* handleSpecificRoom(data) {
+  try {
+    const response = yield call(getSpecificRoom(data.payload.id));
+    data.payload.setRoomDetails(response);
+    yield put({
+      type: GET_SPECIFIC_ROOM_SUCCESS,
+      payload: response,
+    });
+  } catch (error) {
+    yield put({
+      type: GET_SPECIFIC_ROOM_FAIL,
+      error: getSimplifiedError(error),
+    });
+  }
+}
+
 export default all([
   takeLatest(FETCH_SECTIONS_REQUEST, handleFetchSections),
   takeLatest(CREATE_SECTION_REQUEST, handleCreateSection),
+  takeLatest(EDIT_SECTION_REQUEST, handleUpdateSection),
 
   takeLatest(CREATE_ROOM_REQUEST, handleCreateRoom),
   takeLatest(FETCH_ROOM_REQUEST, handleFetchRoom),
   takeLatest(DELETE_SECTION_REQUEST, handleDeleteSection),
   takeLatest(DELETE_ROOM_REQUEST, handleDeleteRoom),
   takeLatest(UPDATE_ROOM_REQUEST, handleUpdateRoom),
+  takeLatest(GET_SPECIFIC_ROOM_REQUEST, handleSpecificRoom),
 ]);

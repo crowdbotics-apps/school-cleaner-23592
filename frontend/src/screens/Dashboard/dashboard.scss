@@ -1,263 +1,370 @@
 .dashboard {
-	display: flex;
-	height: 100%;
-	#siderbar {
-		border-right: 1px solid rgba(5, 36, 37, 0.12);
-		min-width: 420px;
-		width: 100%;
-		.section-header {
-			min-height: 180px;
-			border-bottom: 1px solid rgba(5, 36, 37, 0.12);
-			.user-button {
-				margin-left: 15px;
-			}
-		}
-		.bottom-header {
-			.header-content {
-				h3 {
-					font-size: 24px;
-					font-weight: 300;
-					color: rgba(5, 36, 37, 0.87);
-					margin: 0;
-				}
-			}
-			.header-button {
-				.btn {
-					color: #136162;
-					border: 1px solid rgba(5, 36, 37, 0.12);
-					img {
-						margin-right: 10px;
-					}
-					&:hover {
-						border: 1px solid #136162;
-						background-color: #fff;
-					}
-				}
-			}
-		}
+  display: flex;
+  height: 100%;
+  #siderbar {
+    border-right: 1px solid rgba(5, 36, 37, 0.12);
+    min-width: 420px;
+    width: 100%;
+    .section-header {
+      min-height: 180px;
+      border-bottom: 1px solid rgba(5, 36, 37, 0.12);
+      .user-button {
+        margin-left: 15px;
+      }
+    }
+    .bottom-header {
+      .header-content {
+        h3 {
+          font-size: 24px;
+          font-weight: 300;
+          color: rgba(5, 36, 37, 0.87);
+          margin: 0;
+        }
+      }
+      .header-button {
+        .btn {
+          color: #136162;
+          border: 1px solid rgba(5, 36, 37, 0.12);
+          img {
+            margin-right: 10px;
+          }
+          &:hover {
+            border: 1px solid #136162;
+            background-color: #fff;
+          }
+        }
+      }
+    }
 
-		.inner-section {
-			color: rgba(5, 36, 37, 0.87);
-			letter-spacing: 0.18px;
-			max-height: 100vh;
-			overflow: scroll;
-			.tabs-holder {
-				.nav-tabs {
-					.nav-item {
-						flex: 1;
-						.nav-link {
-							font-size: 14px;
-							color: rgba(5, 36, 37, 0.38);
-							text-transform: uppercase;
-							width: 100%;
-							&:hover,
-							&.active {
-								border-color: #fff #fff #dee2e6;
-								color: #136162;
-
-							}
-						}
-					}
-				}
-				.tab-content {
-					.tab-pane {
-						.add-admin-link {
-							img {
-								margin-right: 10px;
-							}
-							.btn {
-								font-size: 14px;
-								font-weight: 500;
-								color: #136162;
-								&:hover {
-									background: transparent;
-									color: #136162;
-								}
-							}
-						}
-						&#admin{
-							.icon-holder {
-								.error-icon,
-								.delete-icon {
-									cursor: pointer;
-									margin-right: 5px;
-									display: none;
-								}
-							}
-							ul {
-								li {
-									min-height: 59px;
-									&:hover {
-										background: rgba(5, 36, 37, 0.08);
-										.icon-holder {
-											max-width: 65px;
-											.error-icon,
-											.delete-icon {
-												display: block;
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-				}
-			}
-			
-		}
-	}
+    .inner-section {
+      color: rgba(5, 36, 37, 0.87);
+      letter-spacing: 0.18px;
+      max-height: 100vh;
+      overflow: scroll;
+      .tabs-holder {
+        .nav-tabs {
+          .nav-item {
+            flex: 1;
+            .nav-link {
+              font-size: 14px;
+              color: rgba(5, 36, 37, 0.38);
+              text-transform: uppercase;
+              width: 100%;
+              &:hover,
+              &.active {
+                border-color: #fff #fff #dee2e6;
+                color: #136162;
+              }
+            }
+          }
+        }
+        .tab-content {
+          .tab-pane {
+            .add-admin-link {
+              img {
+                margin-right: 10px;
+              }
+              .btn {
+                font-size: 14px;
+                font-weight: 500;
+                color: #136162;
+                &:hover {
+                  background: transparent;
+                  color: #136162;
+                }
+              }
+            }
+            &#admin {
+              .icon-holder {
+                .error-icon,
+                .delete-icon {
+                  cursor: pointer;
+                  margin-right: 5px;
+                  display: none;
+                }
+              }
+              ul {
+                li {
+                  min-height: 59px;
+                  &:hover {
+                    background: rgba(5, 36, 37, 0.08);
+                    .icon-holder {
+                      max-width: 65px;
+                      .error-icon,
+                      .delete-icon {
+                        display: block;
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 .district-holder {
-	display: flex;
-	flex-wrap: wrap;
-	margin: 0 -15px;
-	.district-box {
-		background: #FFFFFF;
-		border: 1px solid rgba(5, 36, 37, 0.12);
-		box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-		border-radius: 12px;
-		min-height: 214px;
-		display: inline-flex;
-	    flex-direction: column;
-	    justify-content: space-between;
-	    margin: 0 15px 15px;
-	    max-width: 400px;
-	    min-width: 250px;
-		.image-holder {
-			max-width: 126px;
-			margin: 5px auto 15px;
-		}
-		.district-box-footer {
-			border-top: 1px solid rgba(5, 36, 37, 0.12);
-			border-bottom-left-radius: 10px;
-			border-bottom-right-radius: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0 -15px;
+  .district-box {
+    background: #ffffff;
+    border: 1px solid rgba(5, 36, 37, 0.12);
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 12px;
+    min-height: 214px;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0 15px 15px;
+    max-width: 400px;
+    min-width: 250px;
+    .image-holder {
+      max-width: 126px;
+      margin: 5px auto 15px;
+    }
+    .district-box-footer {
+      border-top: 1px solid rgba(5, 36, 37, 0.12);
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
 
-			&:hover {
-				background: #B4DBDB;
-			}
-			.content {
-				text-transform: uppercase;
-				color: #136162;
-				font-size: 14px;
-				.icon {
-					margin-right: 10px;
-				}
-			}
-			.dropdown {
-				.btn {
-					background: transparent;
-					border: 0;
-					&:after {
-						display:none;
-					}
-					&:focus {
-						box-shadow: none;
-					}
-				}
-				.dropdown-menu {
-					border: 1px solid #DFDFDF;
-					transform: translate3d(-156px, -3px, 0px) !important;
-					ul {
-						li {
-							a {
-								font-size: 14px;
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+      &:hover {
+        background: #b4dbdb;
+      }
+      .content {
+        text-transform: uppercase;
+        color: #136162;
+        font-size: 14px;
+        .icon {
+          margin-right: 10px;
+        }
+      }
+      .dropdown {
+        .btn {
+          background: transparent;
+          border: 0;
+          &:after {
+            display: none;
+          }
+          &:focus {
+            box-shadow: none;
+          }
+        }
+        .dropdown-menu {
+          border: 1px solid #dfdfdf;
+          transform: translate3d(-156px, -3px, 0px) !important;
+          ul {
+            li {
+              a {
+                font-size: 14px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
-#add_admin{
-	.admin-list {
-		list-style: none;
-		padding: 15px;
-		li {
-			padding-right: 10px;
-			.form-check-label {
-				color: rgba(5, 36, 37, 0.87);
-			}
-		}
-	}
-	.btn-holder {
-		margin-bottom: 40px;
-		.btn{
-			min-width: 100px;
-			margin-right: 10px;
-		}
-	}
+#add_admin {
+  .admin-list {
+    list-style: none;
+    padding: 15px;
+    li {
+      padding-right: 10px;
+      .form-check-label {
+        color: rgba(5, 36, 37, 0.87);
+      }
+    }
+  }
+  .btn-holder {
+    margin-bottom: 40px;
+    .btn {
+      min-width: 100px;
+      margin-right: 10px;
+    }
+  }
 }
 
 .modal {
-	&#add_District {
-		.modal-holder {
-			max-width: 550px;
-			margin: 0 auto;
-			.modal-content {
-				 border-radius: 12px;
-				 box-shadow: 0px 12px 17px #00000024, 0px 5px 22px #0000001f, 0px 7px 8px #00000033;
-				.modal-body {
-			       max-width: 550px;
-					padding: 40px;
-					.modal-title {
-						color: rgba(5, 36, 37, 0.87);
-						font-weight: normal;
-						font-size: 34px;
-						margin-bottom: 15px;
-						text-align: center !important;
-					}
-					.modal-details {
-						max-width: 335px;
-						text-align: center;
-						color: rgba(5, 36, 37, 0.87);
-						margin-bottom: 30px;
-					}
-					.logo-uploader {
-						.logo-uploader-header {
-							color: rgba(5, 36, 37, 0.6);
-							.btn{
-								font-size: 14px;
-								color: #136162;
-								border: 1px solid rgba(5, 36, 37, 0.12);
-							}
-						}
-						.logo-uploader-area{
-							background: #F2F6F6;
-							border-radius: 8px;
-							padding: 10px;
-							min-height: 148px;
-							display: flex;
-							align-items: center;
-							justify-content: center;
-							color: rgba(5, 36, 37, 0.6);
-						}
-					}
-					.btn.btn-primary{
-						min-width: 100px;
-					}
-				}
-			}
-			
-		}
-	}
+  &#add_District {
+    .modal-holder {
+      max-width: 550px;
+      margin: 0 auto;
+      .modal-content {
+        border-radius: 12px;
+        box-shadow: 0px 12px 17px #00000024, 0px 5px 22px #0000001f, 0px 7px 8px #00000033;
+        .modal-body {
+          max-width: 550px;
+          padding: 40px;
+          .modal-title {
+            color: rgba(5, 36, 37, 0.87);
+            font-weight: normal;
+            font-size: 34px;
+            margin-bottom: 15px;
+            text-align: center !important;
+          }
+          .modal-details {
+            max-width: 335px;
+            text-align: center;
+            color: rgba(5, 36, 37, 0.87);
+            margin-bottom: 30px;
+          }
+          .logo-uploader {
+            .logo-uploader-header {
+              color: rgba(5, 36, 37, 0.6);
+              .btn {
+                font-size: 14px;
+                color: #136162;
+                border: 1px solid rgba(5, 36, 37, 0.12);
+              }
+            }
+            .logo-uploader-area {
+              background: #f2f6f6;
+              border-radius: 8px;
+              padding: 10px;
+              min-height: 148px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: rgba(5, 36, 37, 0.6);
+            }
+          }
+          .btn.btn-primary {
+            min-width: 100px;
+          }
+        }
+      }
+    }
+  }
 }
 
-
-.logo-uploader-area-school{
-	background: #F2F6F6;
-	border-radius: 8px;
-	padding: 10px;
-	min-height: 148px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: rgba(5, 36, 37, 0.6);
+.logo-uploader-area-school {
+  background: #f2f6f6;
+  border-radius: 8px;
+  padding: 10px;
+  min-height: 148px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(5, 36, 37, 0.6);
 }
 
+.rafy {
+}
 
 .modal {
-	&#add_District {
+  &#add_District {
+    .modal-holder {
+      max-width: 550px;
+      margin: 0 auto;
+      .modal-content {
+        border-radius: 12px;
+        box-shadow: 0px 12px 17px #00000024, 0px 5px 22px #0000001f, 0px 7px 8px #00000033;
+        .modal-body {
+          max-width: 550px;
+          padding: 40px;
+          .modal-title {
+            color: rgba(5, 36, 37, 0.87);
+            font-weight: normal;
+            font-size: 34px;
+            margin-bottom: 15px;
+            text-align: center !important;
+          }
+          .modal-details {
+            max-width: 335px;
+            text-align: center;
+            color: rgba(5, 36, 37, 0.87);
+            margin-bottom: 30px;
+          }
+          .logo-uploader {
+            .logo-uploader-header {
+              color: rgba(5, 36, 37, 0.6);
+              .btn {
+                font-size: 14px;
+                color: #136162;
+                border: 1px solid rgba(5, 36, 37, 0.12);
+              }
+            }
+            .logo-uploader-area {
+              background: #f2f6f6;
+              border-radius: 8px;
+              padding: 10px;
+              min-height: 148px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: rgba(5, 36, 37, 0.6);
+            }
+          }
+          .btn.btn-primary {
+            min-width: 100px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.modal {
+  &#add_School {
+    .modal-holder {
+      max-width: 550px;
+      margin: 0 auto;
+      .modal-content {
+        border-radius: 12px;
+        box-shadow: 0px 12px 17px #00000024, 0px 5px 22px #0000001f, 0px 7px 8px #00000033;
+        .modal-body {
+          max-width: 550px;
+          padding: 40px;
+          .modal-title {
+            color: rgba(5, 36, 37, 0.87);
+            font-weight: normal;
+            font-size: 34px;
+            margin-bottom: 15px;
+            text-align: center !important;
+          }
+          .modal-details {
+            max-width: 335px;
+            text-align: center;
+            color: rgba(5, 36, 37, 0.87);
+            margin-bottom: 30px;
+          }
+          .logo-uploader {
+            .logo-uploader-header {
+              color: rgba(5, 36, 37, 0.6);
+              .btn {
+                font-size: 14px;
+                color: #136162;
+                border: 1px solid rgba(5, 36, 37, 0.12);
+              }
+            }
+            .logo-uploader-area {
+              background: #f2f6f6;
+              border-radius: 8px;
+              padding: 10px;
+              min-height: 148px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              color: rgba(5, 36, 37, 0.6);
+            }
+          }
+          .btn.btn-primary {
+            min-width: 100px;
+          }
+        }
+      }
+    }
+  }
+}
+
+.deleteModal {
+  width: 1000px;
+}
+.modal {
+	&#add_Section {
 		.modal-holder {
 			max-width: 550px;
 			margin: 0 auto;
@@ -311,28 +418,28 @@
 }
 
 #info-modal {
-	.modal-dialog {
-		max-width: 290px;
-		margin: 50vh auto 0;
-		.modal-content {
-			border: 1px solid rgba(5, 36, 37, 0.12);
-			.admin-info {
-				list-style: none;
-				color: rgba(5, 36, 37, 0.87);
-				padding-left: 15px;
-				.icon-holder {
-					margin-right: 15px;
-				}
-				.admin-email {
-					text-decoration: underline;
-				}
-				.admin-phone {
-					a{
-						color: rgba(5, 36, 37, 0.87);
-						text-decoration: none;
-					}
-				}
-			}
-		}
-	}
+  .modal-dialog {
+    max-width: 290px;
+    margin: 50vh auto 0;
+    .modal-content {
+      border: 1px solid rgba(5, 36, 37, 0.12);
+      .admin-info {
+        list-style: none;
+        color: rgba(5, 36, 37, 0.87);
+        padding-left: 15px;
+        .icon-holder {
+          margin-right: 15px;
+        }
+        .admin-email {
+          text-decoration: underline;
+        }
+        .admin-phone {
+          a {
+            color: rgba(5, 36, 37, 0.87);
+            text-decoration: none;
+          }
+        }
+      }
+    }
+  }
 }

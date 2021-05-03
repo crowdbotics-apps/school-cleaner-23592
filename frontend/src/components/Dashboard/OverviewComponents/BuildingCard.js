@@ -16,7 +16,11 @@ export default function BuildingCard(props) {
   const onOpenDeleteModal = () => setOpenDeleteModal(true);
   const onCloseDeleteModal = () => setOpenDeleteModal(false);
   function HandelDeleteSchool() {
-    dispatch(deleteSchool(props.id));
+    const obj = {
+      id: props.id,
+      district: props.district,
+    };
+    dispatch(deleteSchool(obj));
     setOpenDeleteModal(false);
   }
   useEffect(() => {

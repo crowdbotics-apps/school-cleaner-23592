@@ -5,13 +5,14 @@ import { deleteRoom } from '../../../modules/actions/SectionActions';
 import RoomForm from './RoomForm';
 import EditRoomForm from './EditRoomForm';
 
-export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSchool, fetchSection, sections, fetchRoomData }) {
+export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSchool, fetchSection, sections, fetchRoomData, school, district }) {
   const dispatch = useDispatch();
   const onOpenDeleteModal = () => setOpenDeleteModal(true);
   const onCloseDeleteModal = () => setOpenDeleteModal(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [tabValue, setTabValue] = useState('');
   const [roomId, setRoomId] = useState();
+  const [roomDetail, setRoomDetail] = useState({});
   const [hideBtn, setHideBtn] = useState(false);
   const [openSectionModal, setOpenSectionModal] = useState(false);
   const [openRoomEditForm, setOpenRoomEditForm] = useState(false);
@@ -23,6 +24,8 @@ export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSch
     const obj = {
       roomId: roomId,
       sectionDetails: sectionDetails,
+      school: school,
+      district: district,
     };
     dispatch(deleteRoom(obj));
     setOpenDeleteModal(false);
@@ -57,12 +60,12 @@ export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSch
                   <a className="btn btn-outline-secondary d-flex align-items-center text-uppercase" onClick={onOpenRoonEditModal}>
                     <img src="assets/edit-icon.svg" alt="" className="image-responsive" />
                   </a>
-                  <a href="#" className="mx-3 btn btn-outline-secondary d-flex align-items-center text-uppercase" onClick={onOpenDeleteModal}>
+                  <a className="mx-3 btn btn-outline-secondary d-flex align-items-center text-uppercase" onClick={onOpenDeleteModal}>
                     <img src="assets/delete-icon.svg" alt="" className="image-responsive" />
                   </a>
                 </>
               ) : null}
-              <a href="#" className="btn btn-outline-secondary d-flex align-items-center text-uppercase" onClick={onOpenModal}>
+              <a className="btn btn-outline-secondary d-flex align-items-center text-uppercase" onClick={onOpenModal}>
                 <img src="assets/plus-icon.svg" alt="" className="mr5 image-responsive" />
                 <span>Rooms</span>
               </a>{' '}
@@ -168,6 +171,7 @@ export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSch
                   {rooms.map((room) => (
                     <li
                       onClick={() => {
+                        setRoomDetail(room);
                         setRoomId(room.id);
                         setHideBtn(true);
                       }}
@@ -219,6 +223,8 @@ export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSch
           onDelete={tabValue === 'rooms' ? handleDelete : () => HandelDeleteSchool(sectionDetails?.id, setOpenDeleteModal)}
           message="Room"
           sectionDetails={sectionDetails}
+          school={school}
+          district={district}
         />
       ) : null}
 
@@ -231,6 +237,8 @@ export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSch
           onCloseModal={onCloseModal}
           fetchSection={fetchSection}
           sectionDetails={sectionDetails}
+          school={school}
+          district={district}
         />
       ) : null}
       {openRoomEditForm ? (
@@ -241,6 +249,10 @@ export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSch
           sectionDetails={sectionDetails}
           setOpenRoomEditForm={setOpenRoomEditForm}
           id={roomId}
+          roomDetail={roomDetail}
+          setRoomDetail={setRoomDetail}
+          school={school}
+          district={district}
         />
       ) : null}
     </>

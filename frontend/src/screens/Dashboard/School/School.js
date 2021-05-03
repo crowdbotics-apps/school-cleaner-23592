@@ -24,7 +24,7 @@ const School = (props) => {
                 <div className="d-flex flex-column justify-content-between p-3 section-header">
                     <div className="d-flex justify-content-between top-header">
                         <div className="logo-holder">
-                            <img src="assets/logo.svg" alt="" className="image-responsive" />
+                            <img src="assets/logo1.png" alt="" className="image-responsive" />
                         </div>
                         <div className="user-button">
                             <img src="assets/user-button.svg" alt="" className="image-responsive" />

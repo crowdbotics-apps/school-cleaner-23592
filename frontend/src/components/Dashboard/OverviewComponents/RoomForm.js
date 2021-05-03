@@ -4,7 +4,7 @@ import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import { createRoom } from '../../../modules/actions/SectionActions';
 
-const roomType = [
+const roomsType = [
   {
     id: 1,
     name: 'Small classroom',
@@ -77,6 +77,8 @@ const RoomForm = (props) => {
       const obj = {
         roomDetail: roomDetail,
         sectionDetails: props.sectionDetails,
+        school: props.school,
+        district: props.district,
       };
       await dispatch(createRoom(obj));
       await props.fetchSection();
@@ -89,13 +91,14 @@ const RoomForm = (props) => {
   };
 
   const handleChange = ({ target: { name, value } }) => {
+    // console.log(value);
     setRoomDetail({ ...roomDetail, [name]: value });
   };
   return (
     <Modal className="deleteModal" center open={props.open} onClose={props.onCloseModal}>
       <div className="modal-holder">
         <div className="modal-dialog">
-          <div className="modal-content">
+          <div style={{ border: 'none' }} className="modal-content">
             <div className="modal-body">
               <form onSubmit={submitHandler}>
                 <h2 className="modal-title mb-4" id="add_sectionLabel">
@@ -105,6 +108,29 @@ const RoomForm = (props) => {
                   <div className="form-floating mb-3 go-bottom">
                     <input type="text" className="form-control" name="name" required={true} id="floatingInput" placeholder="Room Name" onChange={handleChange} />
                     <label htmlFor="name">Room Name</label>
+                  </div>
+                  <div className="form-floating mb-3 go-bottom">
+                    {/* <input
+                      type="text"
+                      name="room_type"
+                      className="form-control"
+                      onChange={handleChange}
+                      list="room_type"
+                      required={true}
+                      id="floatingInput"
+                      placeholder="Room Type"
+                    />
+                    <i class="fa fa-sort-desc"></i> */}
+
+                    <select name="room_type" className="form-control" list="room_type" onChange={handleChange} id="room_type">
+                      <option hidden selected></option>
+                      {roomsType?.map((item) => (
+                        <option id={item.id} value={item.id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                    <label htmlFor="name">Room Type</label>
                   </div>
                   <div className="form-floating mb-3 go-bottom">
                     <input type="text" name="section" className="form-control" onChange={handleChange} list="sections" required={true} id="floatingInput" placeholder=" Section" />
@@ -127,37 +153,16 @@ const RoomForm = (props) => {
                     <input type="text" className="form-control" name="desks" required={true} id="floatingInput" placeholder="Desk" onChange={handleChange} />
                     <label htmlFor="name">Desk</label>
                   </div>
-                  <div className="form-floating mb-3 go-bottom">
+                  {/* <div className="form-floating mb-3 go-bottom">
                     <input type="text" className="form-control" name="windows" required={true} id="floatingInput" placeholder="Windows" onChange={handleChange} />
                     <label htmlFor="name">Windows</label>
-                  </div>
+                  </div> */}
                   {/* <div className="form-floating mb-3 go-bottom">
                     <input type="number" className="form-control" name="room_type" required={true} id="floatingInput" placeholder="Room Type" onChange={handleChange} />
                     <label htmlFor="name">Room Type</label>
                   </div> */}
-                  <div className="form-floating mb-3 go-bottom">
-                    <input
-                      type="text"
-                      name="room_type"
-                      className="form-control"
-                      onChange={handleChange}
-                      list="room_type"
-                      required={true}
-                      id="floatingInput"
-                      placeholder="Room Type s"
-                    />
-                    <i class="fa fa-sort-desc"></i>
 
-                    <datalist id="room_type">
-                      {roomType?.map((item) => (
-                        <option id={item.id} value={item.id}>
-                          {item.name}
-                        </option>
-                      ))}
-                    </datalist>
-                    <label htmlFor="name">Room Type</label>
-                  </div>
-                  <div className="form-floating mb-3 go-bottom">
+                  {/* <div className="form-floating mb-3 go-bottom">
                     <input
                       type="number"
                       className="form-control"
@@ -168,7 +173,7 @@ const RoomForm = (props) => {
                       onChange={handleChange}
                     />
                     <label htmlFor="name">Estimated Time To Clean</label>
-                  </div>
+                  </div> */}
                 </div>
                 <button type="submit" className="btn btn-primary text-uppercase">
                   Create

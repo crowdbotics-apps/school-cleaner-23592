@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import RoomForm from './RoomForm';
 
-export default function SectionsCard({ sectionNumber, noOfRooms, noOfPeople, handleClick, sections, fetchRoomData, fetchSection, setSectionId, id }) {
+export default function SectionsCard({ sectionNumber, noOfRooms, noOfPeople, handleClick, sections, fetchRoomData, fetchSection, setSectionId, id, item, school, district }) {
   const [openRoomModal, setOpenRoomModal] = useState(false);
   const onOpenModal = () => setOpenRoomModal(true);
   const onCloseModal = () => setOpenRoomModal(false);
@@ -37,7 +37,17 @@ export default function SectionsCard({ sectionNumber, noOfRooms, noOfPeople, han
           </div>
         </div>
         {openRoomModal ? (
-          <RoomForm sections={sections} fetchRoomData={fetchRoomData} open={openRoomModal} onOpenModal={onOpenModal} onCloseModal={onCloseModal} fetchSection={fetchSection} />
+          <RoomForm
+            sectionDetails={item}
+            sections={sections}
+            fetchRoomData={fetchRoomData}
+            open={openRoomModal}
+            onOpenModal={onOpenModal}
+            onCloseModal={onCloseModal}
+            fetchSection={fetchSection}
+            school={school}
+            district={district}
+          />
         ) : null}
       </div>
     </>
