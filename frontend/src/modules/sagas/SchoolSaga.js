@@ -17,7 +17,7 @@ import {
   FETCH_REPORT_ERROR,
   DELETE_SCHOOL_REQUEST,
   DELETE_SCHOOL_SUCCESS,
-  DELETE_SCHOOL_ERROR
+  DELETE_SCHOOL_ERROR,
 } from '../reducers/SchoolReducer';
 
 async function fetchSchools(districtId) {
@@ -30,7 +30,7 @@ function* handleFetchSchools(data) {
     if (response) {
       yield put({
         type: FETCH_SCHOOLS_SUCCESS,
-        payload: response
+        payload: response,
       });
     }
   } catch (error) {
@@ -39,23 +39,32 @@ function* handleFetchSchools(data) {
       error: getSimplifiedError(error),
     });
   }
-};
+}
 
 async function createSchool({ name, image, district }) {
-  return await Axios.post(`/api/v1/school/`, {
-    name,
-    image,
-    district
-  }, getHeader());
-};
+  return await Axios.post(
+    `/api/v1/school/`,
+    {
+      name,
+      image,
+      district,
+    },
+    getHeader()
+  );
+}
 
 function* handleCreateSchool({ payload }) {
   try {
     const response = yield call(createSchool, payload);
     if (response) {
+      const school = yield call(fetchSchools, payload.district);
+      // yield put({
+      //   type: CREATE_SCHOOL_SUCCESS,
+      //   payload: response,
+      // });
       yield put({
-        type: CREATE_SCHOOL_SUCCESS,
-        payload: response
+        type: FETCH_SCHOOLS_SUCCESS,
+        payload: school,
       });
     }
   } catch (error) {
@@ -64,7 +73,7 @@ function* handleCreateSchool({ payload }) {
       error: getSimplifiedError(error),
     });
   }
-};
+}
 
 async function fetchReports(schoolId) {
   return await Axios.get(`/api/v1/school/${schoolId}/report/`, getHeader());
@@ -76,7 +85,7 @@ function* handleFetchReports(data) {
     if (response) {
       yield put({
         type: FETCH_REPORT_SUCCESS,
-        payload: response
+        payload: response,
       });
     }
   } catch (error) {
@@ -85,20 +94,24 @@ function* handleFetchReports(data) {
       error: getSimplifiedError(error),
     });
   }
-};
+}
 
 async function deleteSchool(schoolId) {
   return await Axios.delete(`/api/v1/school/${schoolId}/`, getHeader());
 }
 function* handelDeleteSchool(data) {
   try {
-    const response = yield call(deleteSchool, data.payload);
-    if (response) {
-      yield put({
-        type: DELETE_SCHOOL_SUCCESS,
-        payload: response
-      });
-    }
+    const response = yield call(deleteSchool, data.payload.id);
+
+    const school = yield call(fetchSchools, data.payload.district);
+    // yield put({
+    //   type: CREATE_SCHOOL_SUCCESS,
+    //   payload: response,
+    // });
+    yield put({
+      type: FETCH_SCHOOLS_SUCCESS,
+      payload: school,
+    });
   } catch (error) {
     yield put({
       type: DELETE_SCHOOL_ERROR,
@@ -112,7 +125,4 @@ export default all([
   takeLatest(CREATE_SCHOOL_REQUEST, handleCreateSchool),
   takeLatest(FETCH_REPORT_REQUEST, handleFetchReports),
   takeLatest(DELETE_SCHOOL_REQUEST, handelDeleteSchool),
-
 ]);
-
-

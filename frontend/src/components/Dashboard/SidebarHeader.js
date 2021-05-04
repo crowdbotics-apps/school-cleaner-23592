@@ -1,6 +1,6 @@
 import React from 'react';
 import '../../screens/Dashboard/dashboard.scss';
-import logo from "./assets/logo.svg";
+import logo from "./assets/logo1.png";
 import userbutton from "./assets/user-button.svg";
 import plusicon from "./assets/plus-icon.svg";
 

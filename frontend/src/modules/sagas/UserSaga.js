@@ -2,26 +2,22 @@ import { all, call, put, takeLatest } from 'redux-saga/effects';
 import { Axios } from '../../api/axios';
 import { getSimplifiedError } from '../../utils/error';
 import { getHeader } from '../../utils/utility';
-import {
-  GET_USER_REQUEST,
-  GET_USER_SUCCESS,
-  GET_USER_ERROR,
-  FETCH_USERS_REQUEST,
-  FETCH_USERS_SUCCESS,
-  FETCH_USERS_ERROR,
-} from '../reducers/UserReducer';
+import { GET_USER_REQUEST, GET_USER_SUCCESS, GET_USER_ERROR, FETCH_USERS_REQUEST, FETCH_USERS_SUCCESS, FETCH_USERS_ERROR } from '../reducers/UserReducer';
 
 async function getUserData({ id }) {
+  // debugger;
   return await Axios.get(`/rest-auth/user/${id}/`, getHeader());
 }
 
 function* handleGetUserData({ payload }) {
+  // debugger;
   try {
     const response = yield call(getUserData, payload);
+    // debugger;
     if (response) {
       yield put({
         type: GET_USER_SUCCESS,
-        payload: response
+        payload: response,
       });
     }
   } catch (error) {
@@ -38,12 +34,12 @@ async function fetchUsers() {
 
 function* handleFetchUsers({ payload }) {
   try {
-
     const response = yield call(fetchUsers, payload);
+    // debugger;
     if (response) {
       yield put({
         type: FETCH_USERS_SUCCESS,
-        payload: response
+        payload: response,
       });
     }
   } catch (error) {
@@ -54,7 +50,4 @@ function* handleFetchUsers({ payload }) {
   }
 }
 
-export default all(
-  [takeLatest(GET_USER_REQUEST, handleGetUserData)],
-  [takeLatest(FETCH_USERS_REQUEST, handleFetchUsers)]
-);
+export default all([takeLatest(GET_USER_REQUEST, handleGetUserData)], [takeLatest(FETCH_USERS_REQUEST, handleFetchUsers)]);
