@@ -136,7 +136,7 @@ class RoomSerializer(serializers.ModelSerializer):
 class RoomSpecsSerializer(serializers.Serializer):
     square_feet = serializers.IntegerField(source="square_feet__sum", read_only=True)
     room_type = serializers.IntegerField(read_only=True)
-    count = serializers.IntegerField(source="room_type_id__count", read_only=True)
+    count = serializers.IntegerField(source="room_type__count", read_only=True)
     estimated_time_to_clean = serializers.DurationField(source="estimated_time_to_clean__sum", read_only=True)
     product_usage = serializers.IntegerField(source="section__product_used_in_section__quantity__sum", read_only=True)
 
