@@ -1,6 +1,8 @@
 import random
 import string
 
+from django.db.models import Q
+
 
 def district_code_generator(size=5, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
@@ -21,6 +23,42 @@ def duration_string(mint):
     hours, minutes, seconds = get_duration_components(mint)
     du_string = '{:02d}:{:02d}:{:02d}'.format(hours, minutes, seconds)
     return du_string
+
+
+DUST_CLEANING = (
+    # Dust cleaning
+    (1, "Dust MOP"),
+    (2, "Ride on Sweeper"),
+
+)
+
+
+FLOOR_MOPPING = (
+    # floor cleaning
+    (3, "Flat mop"),
+    (4, "String mop"),
+    (5, "Ride on scrubber"),
+)
+
+
+FLOOR_BURNISHING = (
+    # Floor burnishing
+    (6, "Ride on burnisher"),
+    (7, "Electric burnisher"),
+)
+
+
+CLEANING_TABLES = (
+    # Cleaning tables
+    (8, "spray and wipe"),
+    (9, "pretreat"),
+    (10, "pads"),
+)
+
+MISTING_TABLES = (
+    # Misting Tables
+    (11, "Electostatic sprayer (if they do it)"),
+)
 
 
 EQUIPMENT_TYPE = (
@@ -77,22 +115,24 @@ def get_estimated_time(room_type, school_id, square_feet, tables, flushable):
     if room_type == 8:
         burnisher = 0
         for item in HALLWAYS_ID:
-            equipment = school_equipments.filter(equipment=item).first()
+            equipment = school_equipments.filter(
+                Q(dust_cleaning=item) | Q(floor_mopping=item) | Q(floor_burnishing=item) | Q(cleaning_table=item) | 
+                Q(misting_table=item)).first()
             if equipment:
                 if item == 5:
-                    time_in_minute += square_feet / (275 * equipment.size/12)
+                    time_in_minute += square_feet / (275 * equipment.floor_mopping_size/12)
                 elif item == 2:
-                    time_in_minute += square_feet / (378 * equipment.size/12)
+                    time_in_minute += square_feet / (378 * equipment.dust_cleaning_size/12)
                 elif item == 7:
-                    burnisher += square_feet / (100 * equipment.size/12)
+                    burnisher += square_feet / (100 * equipment.floor_burnishing_size/12)
                 elif item == 1:
-                    time_in_minute += square_feet / (200 * equipment.size/12)
+                    time_in_minute += square_feet / (200 * equipment.dust_cleaning_size/12)
                 elif item == 4:
                     time_in_minute += square_feet / (200 * 12/12)
                 elif item == 3:
                     time_in_minute += square_feet / (200 * 18/12)
                 elif item == 6:
-                    burnisher += square_feet / (200 * equipment.size/12)
+                    burnisher += square_feet / (200 * equipment.floor_burnishing_size/12)
         if burnisher > 0:
             time_in_minute += burnisher / 7
 
@@ -100,16 +140,18 @@ def get_estimated_time(room_type, school_id, square_feet, tables, flushable):
     elif room_type == 9:
         burnisher = 0
         for item in CAFETERIA_ID:
-            equipment = school_equipments.filter(equipment=item).first()
+            equipment = school_equipments.filter(
+                Q(dust_cleaning=item) | Q(floor_mopping=item) | Q(floor_burnishing=item) | Q(cleaning_table=item) |
+                Q(misting_table=item)).first()
             if equipment:
                 if item == 5:
-                    time_in_minute += square_feet / (275 * equipment.size/12)
+                    time_in_minute += square_feet / (275 * equipment.floor_mopping_size/12)
                 elif item == 2:
-                    time_in_minute += square_feet / (378 * equipment.size/12)
+                    time_in_minute += square_feet / (378 * equipment.dust_cleaning_size/12)
                 elif item == 6:
-                    burnisher += square_feet / (200 * equipment.size / 12)
+                    burnisher += square_feet / (200 * equipment.floor_burnishing_size / 12)
                 elif item == 7:
-                    burnisher += square_feet / (100 * equipment.size/12)
+                    burnisher += square_feet / (100 * equipment.floor_burnishing_size/12)
                 elif item == 8:
                     time_in_minute += tables * 2
                 elif item == 9:
@@ -119,7 +161,7 @@ def get_estimated_time(room_type, school_id, square_feet, tables, flushable):
                 elif item == 11:
                     time_in_minute += tables * 0.2
                 elif item == 1:
-                    time_in_minute += square_feet / (200 * equipment.size/12)
+                    time_in_minute += square_feet / (200 * equipment.dust_cleaning_size/12)
                 elif item == 4:
                     time_in_minute += square_feet / (200 * 12/12)
                 elif item == 3:
@@ -131,14 +173,20 @@ def get_estimated_time(room_type, school_id, square_feet, tables, flushable):
     # Gym passed
     elif room_type == 12:
         for item in GYM_ID:
-            equipment = school_equipments.filter(equipment=item).first()
+            equipment = school_equipments.filter(
+                Q(dust_cleaning=item) | Q(floor_mopping=item) | Q(floor_burnishing=item) | Q(cleaning_table=item) |
+                Q(misting_table=item)).first()
             if equipment:
                 if item == 5:
-                    time_in_minute += square_feet / (275 * equipment.size/12)
+                    time_in_minute += square_feet / (275 * equipment.floor_mopping_size/12)
                 elif item == 2:
-                    time_in_minute += square_feet / (378 * equipment.size/12)
-                else:
-                    time_in_minute += square_feet / (200 * equipment.size/12)
+                    time_in_minute += square_feet / (378 * equipment.dust_cleaning_size/12)
+                elif item == 1:
+                    time_in_minute += square_feet / (200 * equipment.dust_cleaning_size/12)
+                elif item == 4:
+                    time_in_minute += square_feet / (200 * equipment.floor_mopping_size/12)
+                elif item == 3:
+                    time_in_minute += square_feet / (200 * equipment.floor_mopping_size/12)
 
     # Office passed
     elif room_type == 11:
@@ -155,24 +203,24 @@ def get_estimated_time(room_type, school_id, square_feet, tables, flushable):
         sw_or_pt_or_pa = 0.1
         misting = 1
 
-        equipment_string_mop = school_equipments.filter(equipment=4).first()
-        equipment_flat_mop = school_equipments.filter(equipment=3).first()
-        equipment_spray_or_wipe = school_equipments.filter(equipment=8).first()
-        equipment_pre_treat = school_equipments.filter(equipment=9).first()
-        equipment_pad = school_equipments.filter(equipment=10).first()
-        equipment_misting = school_equipments.filter(equipment=11).first()
+        equipment_string_mop = school_equipments.filter(floor_mopping=4).first()
+        equipment_flat_mop = school_equipments.filter(floor_mopping=3).first()
+        equipment_spray_or_wipe = school_equipments.filter(cleaning_table=8).first()
+        equipment_pre_treat = school_equipments.filter(cleaning_table=9).first()
+        equipment_pad = school_equipments.filter(cleaning_table=10).first()
+        equipment_misting = school_equipments.filter(misting_table=11).first()
 
-        if equipment_string_mop and equipment_string_mop.size > 0:
+        if equipment_string_mop and equipment_string_mop.floor_mopping_size > 0:
             sm_or_fm = 6.6
-        elif equipment_flat_mop and equipment_flat_mop.size > 0:
+        elif equipment_flat_mop and equipment_flat_mop.floor_mopping_size > 0:
             sm_or_fm = 3.6
-        if equipment_spray_or_wipe and equipment_spray_or_wipe.size > 0:
+        if equipment_spray_or_wipe and equipment_spray_or_wipe.cleaning_table_size > 0:
             sw_or_pt_or_pa = 0.25
-        elif equipment_pre_treat and equipment_pre_treat.size > 0:
+        elif equipment_pre_treat and equipment_pre_treat.cleaning_table_size > 0:
             sw_or_pt_or_pa = 0.166
-        elif equipment_pad and equipment_pad.size > 0:
+        elif equipment_pad and equipment_pad.cleaning_table_size > 0:
             sw_or_pt_or_pa = 0.1
-        if equipment_misting and equipment_misting.size > 0:
+        if equipment_misting and equipment_misting.misting_table_size > 0:
             misting = 0.02
 
         if room_type == 1:
@@ -187,8 +235,8 @@ def get_estimated_time(room_type, school_id, square_feet, tables, flushable):
         if flushable == 0:
             flushable = 1
         cd_sm_or_cd_mt = 1
-        equipment_flat_mop = school_equipments.filter(equipment=3).first()
-        equipment_string_mop = school_equipments.filter(equipment=4).first()
+        equipment_flat_mop = school_equipments.filter(floor_mopping=3).first()
+        equipment_string_mop = school_equipments.filter(floor_mopping=4).first()
         if equipment_flat_mop:
             cd_sm_or_cd_mt = 2.983
         elif equipment_string_mop:
