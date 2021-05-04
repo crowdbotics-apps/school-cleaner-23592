@@ -2,7 +2,8 @@ from django.contrib.auth import get_user_model
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
 
-from district_services.utils import EQUIPMENT_TYPE, ROOM_TYPES, get_estimated_time
+from district_services.utils import EQUIPMENT_TYPE, ROOM_TYPES, get_estimated_time, DUST_CLEANING, FLOOR_MOPPING, \
+    FLOOR_BURNISHING, CLEANING_TABLES, MISTING_TABLES
 
 User = get_user_model()
 
@@ -157,15 +158,27 @@ class EmployeeInDistrict(models.Model):
 
 
 class EquipmentInSchoolBuilding(models.Model):
-    # equipment = models.ForeignKey("district_services.Equipment", on_delete=models.CASCADE,
-    # related_name="equipments_in_section")
-    equipment = models.PositiveIntegerField(choices=EQUIPMENT_TYPE)
     school = models.ForeignKey("district_services.SchoolBuilding", on_delete=models.CASCADE,
                                related_name="section_equipments")
-    size = models.PositiveIntegerField()
-    quantity = models.PositiveIntegerField()
 
-    created = models.DateTimeField(auto_now_add=True)
+    # equipment = models.PositiveIntegerField(choices=EQUIPMENT_TYPE)
+
+    dust_cleaning = models.PositiveIntegerField(choices=DUST_CLEANING)  # 1, 2
+    dust_cleaning_size = models.PositiveIntegerField(default=1)
+
+    floor_mopping = models.PositiveIntegerField(choices=FLOOR_MOPPING)  # 3, 4, 5
+    floor_mopping_size = models.PositiveIntegerField(default=1)
+
+    floor_burnishing = models.PositiveIntegerField(choices=FLOOR_BURNISHING)  # 6, 7
+    floor_burnishing_size = models.PositiveIntegerField(default=1)
+
+    cleaning_table = models.PositiveIntegerField(choices=CLEANING_TABLES)  # 8, 9, 10
+    cleaning_table_size = models.PositiveIntegerField(default=1)
+
+    misting_table = models.PositiveIntegerField(choices=MISTING_TABLES)  # 11
+    misting_table_size = models.PositiveIntegerField(default=1)
+
+    created = models.DateTimeField(auto_now_add=True, editable=False)
 
     def __str__(self):
         return f"{self.school}"

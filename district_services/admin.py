@@ -30,7 +30,7 @@ class SectionAdmin(admin.ModelAdmin):
 
 @admin.register(EquipmentInSchoolBuilding)
 class EquipmentInSchoolBuildingAdmin(admin.ModelAdmin):
-    list_display = ['school', 'equipment', 'size', 'quantity', 'created']
+    list_display = ['school', 'created']
     list_per_page = 10
 
 
