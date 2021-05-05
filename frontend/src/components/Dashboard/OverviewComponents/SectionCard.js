@@ -6,12 +6,12 @@ export default function SectionsCard({ sectionNumber, noOfRooms, noOfPeople, han
   const onOpenModal = () => setOpenRoomModal(true);
   const onCloseModal = () => setOpenRoomModal(false);
 
-  useEffect(() => {
-    setSectionId(id);
-  });
+  // useEffect(() => {
+  //   setSectionId(id);
+  // });
   return (
     <>
-      <div className="section-list-item" onClick={handleClick}>
+      <div id={`section-list-item-${id}`} className="section-list-item" onClick={handleClick}>
         <div className="section-list-header d-flex justify-content-between mb20">
           <h5>{sectionNumber}</h5>
           <div className="d-flex icon-holder">

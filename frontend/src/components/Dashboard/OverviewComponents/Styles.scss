@@ -7,8 +7,14 @@
   display: none;
 }
 .react-responsive-modal-modal {
-  width: 50% !important;
-  border-radius: 5%;
+  width: 50%;
+  border-radius: 12px;
+  text-align: center !important;
+}
+
+.deleteBuildingModal {
+  width: 30% !important;
+  border-radius: 12px;
   text-align: center !important;
 }
 

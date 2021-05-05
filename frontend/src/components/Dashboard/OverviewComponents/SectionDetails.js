@@ -5,20 +5,27 @@ import { deleteRoom } from '../../../modules/actions/SectionActions';
 import RoomForm from './RoomForm';
 import EditRoomForm from './EditRoomForm';
 
-export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSchool, fetchSection, sections, fetchRoomData, school, district }) {
+export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSchool, fetchSection, sections, fetchRoomData, school, district, setRoomId, roomId }) {
   const dispatch = useDispatch();
   const onOpenDeleteModal = () => setOpenDeleteModal(true);
   const onCloseDeleteModal = () => setOpenDeleteModal(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [tabValue, setTabValue] = useState('');
-  const [roomId, setRoomId] = useState();
+
   const [roomDetail, setRoomDetail] = useState({});
   const [hideBtn, setHideBtn] = useState(false);
   const [openSectionModal, setOpenSectionModal] = useState(false);
   const [openRoomEditForm, setOpenRoomEditForm] = useState(false);
   const onOpenRoonEditModal = () => setOpenRoomEditForm(true);
   const onCloseRoomEditModalModal = () => setOpenRoomEditForm(false);
-  const onOpenModal = () => setOpenSectionModal(true);
+  const onOpenModal = () => {
+    if (roomId === 0) {
+      setOpenSectionModal(true);
+    } else {
+      document.getElementById(`inner-tab-section-list-item-${roomId}`).style.background = '#f2f6f6';
+      setOpenSectionModal(true);
+    }
+  };
   const onCloseModal = () => setOpenSectionModal(false);
   const handleDelete = () => {
     const obj = {
@@ -27,8 +34,27 @@ export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSch
       school: school,
       district: district,
     };
+    if (roomId !== 0) {
+      document.getElementById(`inner-tab-section-list-item-${roomId}`).style.background = '#f2f6f6';
+    }
+    setRoomId(0);
     dispatch(deleteRoom(obj));
     setOpenDeleteModal(false);
+  };
+
+  const handleClick = (room, cardId) => {
+    if (roomId === 0) {
+      document.getElementById(`inner-tab-section-list-item-${cardId}`).style.background = '#b4dbdb';
+      setRoomDetail(room);
+      setRoomId(room.id);
+      setHideBtn(true);
+    } else {
+      document.getElementById(`inner-tab-section-list-item-${roomId}`).style.background = '#f2f6f6';
+      document.getElementById(`inner-tab-section-list-item-${cardId}`).style.background = '#b4dbdb';
+      setRoomDetail(room);
+      setRoomId(room.id);
+      setHideBtn(true);
+    }
   };
   return (
     <>
@@ -166,14 +192,14 @@ export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSch
               </div>
             </div>
             <div className="tab-pane fade" id="Rooms" role="tabpanel" aria-labelledby="Rooms-tab">
-              <div className="inner-tab-section-list-holder room-block">
+              <div className="inner-tab-section-list-holder-without-scroll room-block">
                 <ul className="section-list-block p-0 m-0">
                   {rooms.map((room) => (
                     <li
+                      id={`inner-tab-section-list-item-${room.id}`}
+                      style={{ cursor: 'pointer' }}
                       onClick={() => {
-                        setRoomDetail(room);
-                        setRoomId(room.id);
-                        setHideBtn(true);
+                        handleClick(room, room.id);
                       }}
                       className="border d-flex flex-column inner-tab-section-list-item justify-content-between m15"
                     >
@@ -189,7 +215,7 @@ export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSch
               </div>
             </div>
             <div className="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-              <div className="inner-tab-section-list-holder">
+              <div className="inner-tab-section-list-holder-without-scroll">
                 <ul className="section-list-block p-0 m-0">
                   <li className="inner-tab-section-list-item d-flex justify-content-between">
                     <div className="list-label">Abe Doe</div>

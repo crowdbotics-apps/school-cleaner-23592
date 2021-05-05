@@ -1,21 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import emailIcon from "../../assets/images/email-icon.svg";
-import phoneNumber from "../../assets/images/phone-number.svg";
+import emailIcon from '../../assets/images/email-icon.svg';
+import phoneNumber from '../../assets/images/phone-number.svg';
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 
-const AdminInfo = props => {
-
-  const [admin, setAdmin] = useState()
+const AdminInfo = (props) => {
+  const [admin, setAdmin] = useState();
 
   useEffect(() => {
     setAdmin(props.admindetails);
-    console.log("detail admin", props.admindetails)
   }, [props]);
 
   return (
     <Modal id="adimnModal" center open={props.open} onClose={props.onCloseModal}>
-      <div style={{ textAlign: "left" }}>
+      <div style={{ textAlign: 'left' }}>
         <div className="mb-2">
           <div>
             <h4 className="m-0">{props.admindetails.name}</h4>
@@ -24,9 +22,7 @@ const AdminInfo = props => {
             <div className="icon-holder">
               <img src={emailIcon} alt="" className="image-responsive" />
             </div>
-            <div className="admin-email">
-              {props.admindetails.email}
-            </div>
+            <div className="admin-email">{props.admindetails.email}</div>
           </div>
           <div className="mb-2 d-flex">
             <div className="icon-holder">
@@ -37,7 +33,6 @@ const AdminInfo = props => {
             </div>
           </div>
         </div>
-
       </div>
       {/* <div className="modal-holder">
         <div className="modal-dialog">
@@ -80,6 +75,6 @@ const AdminInfo = props => {
       </div> */}
     </Modal>
   );
-}
+};
 
 export default AdminInfo;

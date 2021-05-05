@@ -120,7 +120,7 @@ export default function RoomEditForm(props) {
               <label htmlFor="name">Room Name</label>
             </div>
             <div className="form-floating mb-3 go-bottom">
-              <input
+              {/* <input
                 value={roomDetails.room_type}
                 type="text"
                 name="room_type"
@@ -131,15 +131,25 @@ export default function RoomEditForm(props) {
                 id="floatingInput"
                 placeholder="Room Type s"
               />
-              <i class="fa fa-sort-desc"></i>
+              <i class="fa fa-sort-desc"></i> */}
 
-              <datalist id="room_type">
+              <select
+                name="room_type"
+                value={roomDetails.room_type}
+                className="form-control"
+                onChange={handleChange}
+                list="room_type"
+                required={true}
+                id="floatingInput"
+                placeholder="Room Type"
+                id="room_type"
+              >
                 {roomType?.map((item) => (
                   <option id={item.id} value={item.id}>
                     {item.name}
                   </option>
                 ))}
-              </datalist>
+              </select>
               <label htmlFor="name">Room Type</label>
             </div>
             {/* <div className="form-floating mb-3 go-bottom">
@@ -153,7 +163,7 @@ export default function RoomEditForm(props) {
                             />
                             <label htmlFor="room_type">Room Type</label>
                         </div> */}
-            <div className="form-floating mb-3 go-bottom">
+            {/* <div className="form-floating mb-3 go-bottom">
               <input
                 type="number"
                 className="form-control"
@@ -164,6 +174,19 @@ export default function RoomEditForm(props) {
                 onChange={handleChange}
               />
               <label htmlFor="square_feet">Section</label>
+            </div> */}
+            <div className="form-floating mb-3 go-bottom">
+              {/* <input type="text"  onChange={handleChange} list="sections" required={true} id="floatingInput" placeholder=" Section" />
+                    <i class="fa fa-sort-desc"></i> */}
+
+              <select name="section" className="form-control" list="sections" placeholder=" Section" id="sections">
+                {/* {props?.sections?.map((item) => ( */}
+                <option id={props.sectionDetails.id} value={props.sectionDetails.id}>
+                  {props.sectionDetails.name}
+                </option>
+                {/* // ))} */}
+              </select>
+              <label htmlFor="name">Section</label>
             </div>
             <div className="form-floating mb-3 go-bottom">
               <input

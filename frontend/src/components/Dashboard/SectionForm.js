@@ -25,6 +25,14 @@ const SchoolForm = (props) => {
     e.preventDefault();
     e.stopPropagation();
     const form = e.currentTarget;
+    if (props.roomId !== 0) {
+      document.getElementById(`inner-tab-section-list-item-${props.roomId}`).style.background = '#f2f6f6';
+      props.setRoomId(0);
+    }
+    if (props.sectionId !== 0) {
+      document.getElementById(`section-list-item-${props.sectionId}`).style.background = '#f2f6f6';
+      props.setSectionId(0);
+    }
 
     if (form.checkValidity() === true) {
       await dispatch(createSection({ name: sectionDetail.name, school: props.school, district: props.district }));

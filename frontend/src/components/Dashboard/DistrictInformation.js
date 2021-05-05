@@ -1,58 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import errorIcon from "../../assets/images/error-icon.svg";
-import deleteIcon from "../../assets/images/delete-icon.svg";
-import plusIcon from "../../assets/images/plus-icon.svg";
+import errorIcon from '../../assets/images/error-icon.svg';
+import deleteIcon from '../../assets/images/delete-icon.svg';
+import plusIcon from '../../assets/images/plus-icon.svg';
 import { updateDistrict, fetchDistricts } from '../../modules/actions/DistrictActions';
-import AdminInfo from "./AdminInfo";
-import DeleteModal from "./OverviewComponents/DeleteModal";
+import AdminInfo from './AdminInfo';
+import DeleteModal from './OverviewComponents/DeleteModal';
 
-
-const DistrictInformation = props => {
+const DistrictInformation = (props) => {
   const dispatch = useDispatch();
-  const { districts: { loading, success, error, data } } = useSelector(({ district }) => district);
-  const [currentDistrict, setCurrentDistrict] = useState(null)
+  const {
+    districts: { loading, success, error, data },
+  } = useSelector(({ district }) => district);
+  const [currentDistrict, setCurrentDistrict] = useState(null);
   const [activeTab, setActiveTab] = useState('Overview');
-  const [editAdminModal, setEditAdminModal] = useState(false)
-  const [adminDetails, setAdminDetails] = useState()
-  const [deleteModal, setDeleteModal] = useState(false)
-  const [deleteAdminData, setDeleteAdminData] = useState()
+  const [editAdminModal, setEditAdminModal] = useState(false);
+  const [adminDetails, setAdminDetails] = useState();
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [deleteAdminData, setDeleteAdminData] = useState();
   const onOpenModal = () => setEditAdminModal(true);
   const onCloseModal = () => setEditAdminModal(false);
   const onOpenDeleteModal = (admin) => {
-    setDeleteModal(true)
-    setDeleteAdminData(admin)
+    setDeleteModal(true);
+    setDeleteAdminData(admin);
   };
   const onCloseDeleteModal = () => setDeleteModal(false);
-  const setDistrict = district => {
-    setCurrentDistrict(district)
+  const setDistrict = (district) => {
+    setCurrentDistrict(district);
   };
 
   const handleDeleteAdmin = () => {
-    console.log("mmm", deleteAdminData)
-    let admins = props.district.admins.filter(id => id != deleteAdminData.id)
-    let admin_detail = props.district.admin_detail.filter(x => x.id != deleteAdminData.id)
+    let admins = props.district.admins.filter((id) => id != deleteAdminData.id);
+    let admin_detail = props.district.admin_detail.filter((x) => x.id != deleteAdminData.id);
 
-    dispatch(updateDistrict({
-      id: props.district.id,
-      admins
-    }));
-    props.district.admins = admins
-    props.district.admin_detail = admin_detail
-    setCurrentDistrict(props.district)
-    setDeleteAdminData(false)
-    setDeleteModal(false)
-  }
+    dispatch(
+      updateDistrict({
+        id: props.district.id,
+        admins,
+      })
+    );
+    props.district.admins = admins;
+    props.district.admin_detail = admin_detail;
+    setCurrentDistrict(props.district);
+    setDeleteAdminData(false);
+    setDeleteModal(false);
+  };
   const handleClick = (admin) => {
-    setAdminDetails(admin)
+    setAdminDetails(admin);
     onOpenModal();
-
-  }
+  };
   useEffect(() => {
     setDistrict(props.district);
-
   }, [props]);
-
 
   const Overview = () => {
     return (
@@ -107,50 +106,33 @@ const DistrictInformation = props => {
     return (
       <div className="tab-admin" id="" role="" aria-labelledby="">
         <ul className="p-0">
-          {currentDistrict && currentDistrict.admin_detail.map(admin => {
-            return (
-              <li className="border-bottom d-flex justify-content-between p-2 pb-3 pt-3" key={admin.id}>
-                <div className="name">
-                  <span>{admin.name}</span>
-                </div>
-                <div className="icon-holder d-flex justify-content-end">
-                  <img src={deleteIcon} alt="" className="image-responsive delete-icon" onClick={() => onOpenDeleteModal(admin)} />
-                  <a className="align-items-center border-0 d-flex m-auto text-uppercase" onClick={() => handleClick(admin)}>
-                    <img src={errorIcon} alt="" className="image-responsive error-icon" />
-                    {/* onClick={() => props.onAdminSelected(admin)} */}
-                    {/* onClick={() => handleDeleteAdmin(admin)} */}
-                  </a>
-                </div>
-              </li>
-            );
-          })}
+          {currentDistrict &&
+            currentDistrict.admin_detail.map((admin) => {
+              return (
+                <li className="border-bottom d-flex justify-content-between p-2 pb-3 pt-3" key={admin.id}>
+                  <div className="name">
+                    <span>{admin.name}</span>
+                  </div>
+                  <div className="icon-holder d-flex justify-content-end">
+                    <img src={deleteIcon} alt="" className="image-responsive delete-icon" onClick={() => onOpenDeleteModal(admin)} />
+                    <a className="align-items-center border-0 d-flex m-auto text-uppercase" onClick={() => handleClick(admin)}>
+                      <img src={errorIcon} alt="" className="image-responsive error-icon" />
+                      {/* onClick={() => props.onAdminSelected(admin)} */}
+                      {/* onClick={() => handleDeleteAdmin(admin)} */}
+                    </a>
+                  </div>
+                </li>
+              );
+            })}
           <li className="d-flex justify-content-between p-2 pb-3 pt-3 add-admin-link">
             <a href="#" className="align-items-center border-0 btn btn-outline-secondary d-flex m-auto text-uppercase" data-bs-toggle="modal" data-bs-target="#add_admin">
               <img src={plusIcon} alt="" className="image-responsive" />
-              <span>
-                ADD ADMIN
-              </span>
+              <span>ADD ADMIN</span>
             </a>
           </li>
         </ul>
-        {
-          editAdminModal ? <AdminInfo
-            open={editAdminModal}
-            admindetails={adminDetails}
-            onOpenModal={onOpenModal}
-            onCloseModal={onCloseModal}
-            admin={adminDetails}
-          /> : null
-        }
-        {
-          deleteModal ? <DeleteModal
-            open={deleteModal}
-            onCloseModal={onCloseDeleteModal}
-            onOpenModal={onOpenDeleteModal}
-            onDelete={handleDeleteAdmin}
-          /> : null
-
-        }
+        {editAdminModal ? <AdminInfo open={editAdminModal} admindetails={adminDetails} onOpenModal={onOpenModal} onCloseModal={onCloseModal} admin={adminDetails} /> : null}
+        {deleteModal ? <DeleteModal open={deleteModal} onCloseModal={onCloseDeleteModal} onOpenModal={onOpenDeleteModal} onDelete={handleDeleteAdmin} /> : null}
       </div>
     );
   };
@@ -164,11 +146,7 @@ const DistrictInformation = props => {
   //   );
   // }
 
-  const renderDetails = () => (
-    <>
-      {activeTab === "Overview" ? <Overview /> : <Admins />}
-    </>
-  )
+  const renderDetails = () => <>{activeTab === 'Overview' ? <Overview /> : <Admins />}</>;
 
   return (
     <div id="side-bar-tabs" className="tabs-holder" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -208,6 +186,6 @@ const DistrictInformation = props => {
       {/* {currentDistrict !== null && <Details />} */}
     </div>
   );
-}
+};
 
 export default DistrictInformation;

@@ -9,30 +9,49 @@ import SectionForm from '../Dashboard/SectionForm';
 import CleaningDetailForm from '../Dashboard/OverviewComponents/CleaningDeatlsForm';
 import DeleteModal from '../../components/Dashboard/OverviewComponents/DeleteModal';
 
-export default function Section({ sectionNumber, noOfRooms, district, school, sections, handleDeleteSection, fetchSection }) {
+export default function Section({ sectionNumber, noOfRooms, district, school, sections, handleDeleteSection, fetchSection, setShowDetails, showDetails, setSectionId, sectionId }) {
   const dispatch = useDispatch();
   const [openSectionModal, setOpenSectionModal] = useState(false);
   const [editSectionModal, setEditSectionModal] = useState(false);
+  const [roomId, setRoomId] = useState(0);
   const store = useSelector((store) => console.log('store rooom', store));
-  const [showDetails, setShowDetails] = useState(true);
+
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const [showIcon, setShowIcon] = useState(false);
+  const [activeColor, setActiveColor] = useState(false);
   const [sectionDetails, setSectionDetails] = useState({});
+
   const [roomData, setRoomData] = useState();
   const rooms = useSelector((store) => store.section.room.data);
   const onOpenModal = () => setOpenSectionModal(true);
   const onCloseModal = () => setOpenSectionModal(false);
   const openEditModal = () => setEditSectionModal(true);
   const closeEditModal = () => setEditSectionModal(false);
-  const [sectionId, setSectionId] = useState(null);
 
-  const handleClick = async (sectionDetail) => {
-    setShowDetails(false);
-    setShowIcon(true);
-    setSectionDetails(sectionDetail);
-    setSectionId(sectionDetail.id);
-    dispatch(fetchRoom(sectionDetail.id));
-    setRoomData(sectionDetail.id);
+  const handleClick = async (sectionDetail, cardId) => {
+    if (sectionId === 0) {
+      document.getElementById(`section-list-item-${cardId}`).style.background = '#b4dbdb';
+      setShowDetails(false);
+      setShowIcon(true);
+      setSectionDetails(sectionDetail);
+      setSectionId(sectionDetail.id);
+      dispatch(fetchRoom(sectionDetail.id));
+      setRoomData(sectionDetail.id);
+      setRoomId(0);
+    } else {
+      document.getElementById(`section-list-item-${sectionId}`).style.background = '#f2f6f6';
+      document.getElementById(`section-list-item-${cardId}`).style.background = '#b4dbdb';
+      if (roomId !== 0) {
+        document.getElementById(`inner-tab-section-list-item-${roomId}`).style.background = '#f2f6f6';
+        setRoomId(0);
+      }
+      setShowDetails(false);
+      setShowIcon(true);
+      setSectionDetails(sectionDetail);
+      setSectionId(sectionDetail.id);
+      dispatch(fetchRoom(sectionDetail.id));
+      setRoomData(sectionDetail.id);
+    }
   };
 
   const fetchRoomData = () => {
@@ -60,6 +79,15 @@ export default function Section({ sectionNumber, noOfRooms, district, school, se
       sectionId: sectionDetails.id,
       district: district,
     };
+    if (roomId !== 0) {
+      document.getElementById(`inner-tab-section-list-item-${roomId}`).style.background = '#f2f6f6';
+      setRoomId(0);
+    }
+    if (sectionId !== 0) {
+      document.getElementById(`section-list-item-${sectionId}`).style.background = '#f2f6f6';
+      setSectionId(0);
+    }
+
     dispatch(deleteSection(obj));
     handleDeleteSection();
     setOpenDeleteModal(false);
@@ -93,14 +121,14 @@ export default function Section({ sectionNumber, noOfRooms, district, school, se
               </a>
             </div>
           </div>
-          <div className="section-list-holder">
+          <div className="section-list-holder-without-overflow">
             {sections.map((item) => (
               <SectionsCard
                 id={item.id}
                 sectionNumber={`${item?.name}`}
                 noOfRooms={item?.rooms}
                 noOfPeople={item.people?.length}
-                handleClick={() => handleClick(item)}
+                handleClick={() => handleClick(item, item.id)}
                 sections={sections}
                 fetchSection={fetchSection}
                 fetchRoomData={fetchRoomData}
@@ -108,6 +136,7 @@ export default function Section({ sectionNumber, noOfRooms, district, school, se
                 item={item}
                 district={district}
                 school={school}
+                sectionId={sectionId}
               />
             ))}
           </div>
@@ -125,12 +154,25 @@ export default function Section({ sectionNumber, noOfRooms, district, school, se
               fetchRoomData={fetchRoomData}
               district={district}
               school={school}
+              setRoomId={setRoomId}
+              roomId={roomId}
             />
           )}
         </div>
       </div>
       {openSectionModal ? (
-        <SectionForm district={district} school={school} open={openSectionModal} onOpenModal={onOpenModal} onCloseModal={onCloseModal} fetchSection={fetchSection} />
+        <SectionForm
+          district={district}
+          school={school}
+          open={openSectionModal}
+          onOpenModal={onOpenModal}
+          onCloseModal={onCloseModal}
+          fetchSection={fetchSection}
+          roomId={roomId}
+          setRoomId={setRoomId}
+          sectionId={sectionId}
+          setSectionId={setSectionId}
+        />
       ) : // <CleaningDetailForm open={openSectionModal} onOpenModal={onOpenModal} onCloseModal={onCloseModal} />
       null}
 

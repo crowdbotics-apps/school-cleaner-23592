@@ -27,33 +27,52 @@ function Overview(props) {
   const dispatch = useDispatch();
   const history = useHistory();
   const [openAddBulidingModal, setOpenAddBulidingModal] = useState(false);
+  const [activeTab, setActiveTab] = useState(false);
   const onOpenModal = () => setOpenAddBulidingModal(true);
   const onCloseModal = () => setOpenAddBulidingModal(false);
-  const [sectionData, setSectionData] = useState();
+  const [showDetails, setShowDetails] = useState(true);
+  const [sectionData, setSectionData] = useState(0);
+  const [sectionId, setSectionId] = useState(0);
+  const [newSchoolId, setNewSchoolId] = useState('');
   useEffect(() => {
     dispatch(fetchSchools(props?.location?.state?.districtId));
 
     const token = Cookies.get('token');
-    console.log(token);
     dispatch(getUserData(token));
     dispatch(fetchUsers(token));
     // dispatch(fetchSections(selectedSchool?.id));
   }, []);
   const [schoolId, setSchoolId] = useState(null);
   const schools = useSelector(({ school }) => school.schools.data);
-  console.log('selectedSchool?.id', schools);
   const sections = useSelector((store) => store.section.sections.data);
   const report = useSelector((store) => store.school.reports.data);
-  const user = useSelector((store) => console.log('store', store));
 
   const [selectedSchool, setSelectedSchool] = useState(schools[0]);
   const [selectedSections, setSelectedSections] = useState();
-  const handleClick = (data) => {
-    setSelectedSchool(data);
-    dispatch(fetchSections(data?.id));
-    dispatch(fetchReport(data?.id));
-    setSectionData(data?.id);
-    setSchoolId(data?.id);
+  const handleClick = (data, cardId) => {
+    if (sectionData === 0) {
+      document.getElementById(`building-card-holder-${cardId}`).style.background = '#b4dbdb';
+      setSelectedSchool(data);
+      dispatch(fetchSections(data?.id));
+      dispatch(fetchReport(data?.id));
+      setSectionData(data?.id);
+      setSchoolId(data?.id);
+      setShowDetails(true);
+      setSectionId(0);
+    } else {
+      document.getElementById(`building-card-holder-${sectionData}`).style.background = '#f2f6f6';
+      document.getElementById(`building-card-holder-${cardId}`).style.background = '#b4dbdb';
+      if (sectionId !== 0) {
+        document.getElementById(`section-list-item-${sectionId}`).style.background = '#f2f6f6';
+        setSectionId(0);
+      }
+      setSelectedSchool(data);
+      dispatch(fetchSections(data?.id));
+      dispatch(fetchReport(data?.id));
+      setSectionData(data?.id);
+      setSchoolId(data?.id);
+      setShowDetails(true);
+    }
   };
   const fetchSchool = () => {
     dispatch(fetchSchools(props?.location?.state?.districtId));
@@ -74,9 +93,9 @@ function Overview(props) {
             <div className="logo-holder">
               <img src="assets/logo1.png" alt="" className="image-responsive" />
             </div>
-            <div className="user-button">
+            {/* <div className="user-button">
               <img src="assets/user-button.svg" alt="" className="image-responsive" />
-            </div>
+            </div> */}
           </div>
           <div className="align-items-end bottom-header d-flex justify-content-between">
             <div className="align-items-end d-flex header-content ">
@@ -106,8 +125,12 @@ function Overview(props) {
                 sectionno={school.total_sections}
                 roomno={school.total_rooms}
                 id={school.id}
-                handleClick={() => handleClick(school)}
+                handleClick={() => handleClick(school, school.id)}
                 district={props?.location?.state?.districtId}
+                setSectionId={setSectionId}
+                sectionId={sectionId}
+                setSectionData={setSectionData}
+                sectionData={sectionData}
               />
             );
           })}
@@ -125,6 +148,10 @@ function Overview(props) {
               sections={sections}
               handleDeleteSection={handleDeleteSection}
               fetchSection={fetchSection}
+              setShowDetails={setShowDetails}
+              showDetails={showDetails}
+              setSectionId={setSectionId}
+              sectionId={sectionId}
             />
             <Reports report={report} />
             <Inspection />
@@ -136,8 +163,8 @@ function Overview(props) {
           </div>
         </div>
       </div>
-      <SchoolForm district={props?.location?.state?.districtId} fetchSchool={fetchSchool} setOpenAddBulidingModal={setOpenAddBulidingModal} />
-      {openAddBulidingModal ? <CleaningDeatlsForm open={openAddBulidingModal} onOpenModal={onOpenModal} onCloseModal={onCloseModal} /> : null}
+      <SchoolForm setNewSchoolId={setNewSchoolId} district={props?.location?.state?.districtId} fetchSchool={fetchSchool} setOpenAddBulidingModal={setOpenAddBulidingModal} />
+      {openAddBulidingModal ? <CleaningDeatlsForm open={openAddBulidingModal} onOpenModal={onOpenModal} onCloseModal={onCloseModal} newSchoolId={newSchoolId} /> : null}
     </div>
   );
 }

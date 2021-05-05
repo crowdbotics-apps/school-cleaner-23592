@@ -4,10 +4,13 @@ import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import SchoolEdit from './SchoolEditForm';
 import DeleteModal from './DeleteModal';
+import CleaningDeatlsForm from '../../../components/Dashboard/OverviewComponents/CleaningDeatlsForm';
 import { deleteSchool } from '../../../modules/actions/SchoolActions';
+
 export default function BuildingCard(props) {
   const [openEditModal, setOpenEditModal] = useState(false);
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
+  const [openCleaningModal, setOpenCleaningModal] = useState(false);
   const [emptyImage, setEmptyImage] = useState('');
   const dispatch = useDispatch();
 
@@ -16,6 +19,14 @@ export default function BuildingCard(props) {
   const onOpenDeleteModal = () => setOpenDeleteModal(true);
   const onCloseDeleteModal = () => setOpenDeleteModal(false);
   function HandelDeleteSchool() {
+    if (props.sectionId !== 0) {
+      document.getElementById(`section-list-item-${props.sectionId}`).style.background = '#f2f6f6';
+      props.setSectionId(0);
+    }
+    if (props.sectionData !== 0) {
+      document.getElementById(`building-card-holder-${props.sectionData}`).style.background = '#f2f6f6';
+      props.setSectionData(0);
+    }
     const obj = {
       id: props.id,
       district: props.district,
@@ -29,27 +40,36 @@ export default function BuildingCard(props) {
     }
   });
   return (
-    <div class="building-card-holder mb15">
+    <div id={`building-card-holder-${props.id}`} class="building-card-holder mb15">
       <div class="building-image" onClick={props.handleClick}>
-        {emptyImage ? <img src={props.image} alt="" className="image-responsive w-100" /> : <img src="assets/empty-image.png" alt="" className="image-responsive w-100" />}
-        <div class="building-caption p10">
+        <div style={{ height: '180px' }}>
+          {emptyImage ? <img src={props.image} alt="" className="image-responsive w-100 h-100" /> : <img src="assets/empty-image.png" alt="" className="image-responsive w-100" />}
+        </div>
+        <div style={{ marginBottom: '10px' }} class="building-caption p10">
           <div class="caption-holder p10">
             <div class="building-heading-holder d-flex justify-content-between">
-              <h5 class="m-0">{props.name}</h5>
+              <h5 style={{ cursor: 'pointer' }} class="m-0">
+                {props.name}
+              </h5>
               <div class="icon-holder">
                 <div className="dropdown">
                   <button className="dropdown btn " type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                     <img src="assets/dotted-icon-white.svg" alt="" />
                   </button>
-                  <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton1">
+                  <ul className="dropdown-menu dropdown-menu-end tans" aria-labelledby="dropdownMenuButton1">
                     <li>
-                      <a className="dropdown-item" data-toggle="modal" onClick={onOpenEditModal}>
+                      <a style={{ cursor: 'pointer' }} className="dropdown-item" data-toggle="modal" onClick={onOpenEditModal}>
                         Edit details
                       </a>
                     </li>
                     <li>
-                      <a className="dropdown-item" onClick={onOpenDeleteModal}>
+                      <a style={{ cursor: 'pointer' }} className="dropdown-item" onClick={onOpenDeleteModal}>
                         Delete School
+                      </a>
+                    </li>
+                    <li>
+                      <a style={{ cursor: 'pointer' }} className="dropdown-item" onClick={() => setOpenCleaningModal(true)}>
+                        Edit Cleaning Details
                       </a>
                     </li>
                   </ul>
@@ -74,9 +94,25 @@ export default function BuildingCard(props) {
           show details
         </h6>
       </div>
-      {openEditModal ? <SchoolEdit open={openEditModal} onOpenModal={onOpenEditModal} onCloseModal={onCloseEditModal} /> : null}
+      {openEditModal ? (
+        <SchoolEdit
+          district={props.district}
+          id={props.id}
+          name={props.name}
+          image={props.image}
+          open={openEditModal}
+          onOpenModal={onOpenEditModal}
+          onCloseModal={onCloseEditModal}
+          setOpenEditModal={setOpenEditModal}
+        />
+      ) : null}
       {openDeleteModal ? (
-        <DeleteModal open={openDeleteModal} onOpenModal={onOpenDeleteModal} onCloseModal={onCloseDeleteModal} onDelete={HandelDeleteSchool} message="School" />
+        <div>
+          <DeleteModal open={openDeleteModal} onOpenModal={onOpenDeleteModal} onCloseModal={onCloseDeleteModal} onDelete={HandelDeleteSchool} message="School" />
+        </div>
+      ) : null}
+      {openCleaningModal ? (
+        <CleaningDeatlsForm open={openCleaningModal} onOpenModal={() => setOpenCleaningModal(true)} onCloseModal={() => setOpenCleaningModal(false)} schoolId={props.id} />
       ) : null}
     </div>
   );

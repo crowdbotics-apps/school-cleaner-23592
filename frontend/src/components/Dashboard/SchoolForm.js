@@ -34,15 +34,16 @@ const SchoolForm = (props) => {
   };
 
   const submitHandler = async (e) => {
-    console.log('props.district', props.district);
     e.preventDefault();
     e.stopPropagation();
     const form = e.currentTarget;
 
     if (form.checkValidity() === true) {
-      await dispatch(createSchool({ name: buildingDetail.name, image: buildingDetail.logo, district: props.district }));
+      await dispatch(
+        createSchool({ name: buildingDetail.name, image: buildingDetail.logo, district: props.district, modal: props.setOpenAddBulidingModal, schoolId: props.setNewSchoolId })
+      );
       await props.fetchSchool();
-      props.setOpenAddBulidingModal(true);
+      // props.setOpenAddBulidingModal(true);
       setBuildingDetail({ name: '', logo: '' });
       setBase64Image('');
     } else {

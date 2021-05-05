@@ -11,19 +11,11 @@ import {
 } from '../reducers/SectionReducer';
 
 export const fetchSections = (payload) => ({ type: FETCH_SECTIONS_REQUEST, payload });
-
 export const createSection = (payload) => ({ type: CREATE_SECTION_REQUEST, payload });
-
 export const deleteSection = (payload) => ({ type: DELETE_SECTION_REQUEST, payload });
-
 export const editSection = (payload) => ({ type: EDIT_SECTION_REQUEST, payload });
-
 export const fetchRoom = (payload) => ({ type: FETCH_ROOM_REQUEST, payload });
-
 export const createRoom = (payload) => ({ type: CREATE_ROOM_REQUEST, payload });
-
 export const deleteRoom = (payload) => ({ type: DELETE_ROOM_REQUEST, payload });
-
 export const editRoom = (payload) => ({ type: UPDATE_ROOM_REQUEST, payload });
-
 export const getSpecificRoom = (payload) => ({ type: GET_SPECIFIC_ROOM_REQUEST, payload });
