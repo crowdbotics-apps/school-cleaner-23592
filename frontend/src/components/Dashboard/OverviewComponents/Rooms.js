@@ -1,6 +1,67 @@
 import React from 'react';
 import RoomForm from './RoomForm';
-export default function Rooms({ heading, name, count, unit, sections }) {
+
+const roomsType = [
+  {
+    id: 1,
+    name: 'Small classroom',
+  },
+  {
+    id: 2,
+    name: 'Medium classroom',
+  },
+  {
+    id: 3,
+    name: 'Large classroom',
+  },
+  {
+    id: 4,
+    name: 'Single bathroom',
+  },
+  {
+    id: 5,
+    name: 'Double bathroom',
+  },
+  {
+    id: 6,
+    name: 'Triple bathroom',
+  },
+  {
+    id: 7,
+    name: 'Quad bathroom',
+  },
+  {
+    id: 8,
+    name: 'Hallway',
+  },
+  {
+    id: 9,
+    name: 'Cafeteria',
+  },
+  {
+    id: 10,
+    name: 'Kitchen',
+  },
+  {
+    id: 11,
+    name: 'Office',
+  },
+  {
+    id: 12,
+    name: 'Gym',
+  },
+  {
+    id: 13,
+    name: 'Auditorium',
+  },
+  {
+    id: 14,
+    name: 'Locker room',
+  },
+];
+
+export default function Rooms({ heading, name, count, unit, sections, roomSpecs }) {
+  console.log('roomSpecs', roomSpecs, unit);
   return (
     <>
       <div className="section-details">
@@ -25,7 +86,34 @@ export default function Rooms({ heading, name, count, unit, sections }) {
             <div className="tab-pane fade show active" id="Details" role="tabpanel" aria-labelledby="Details-tab">
               <div className="inner-tab-section-list-holder">
                 <ul className="section-list-block p-0 m-0">
-                  <li className="inner-tab-section-list-item d-flex justify-content-between">
+                  {roomsType?.map((i, index) => (
+                    <>
+                      {roomSpecs?.map((j, index) => (
+                        <>
+                          {i.id === j.room_type ? (
+                            <li className="inner-tab-section-list-item d-flex justify-content-between">
+                              <div className="list-label">{i.name}</div>
+                              <div className="list-content">
+                                {unit === 'sq. ft'
+                                  ? j.square_feet
+                                  : unit === 'hrs'
+                                  ? j.estimated_time_to_clean
+                                  : unit === 'products'
+                                  ? j.product_usage !== null
+                                    ? j.product_usage
+                                    : '0'
+                                  : unit === 'rooms'
+                                  ? j.count
+                                  : null}
+                              </div>
+                            </li>
+                          ) : null}
+                        </>
+                      ))}
+                    </>
+                  ))}
+
+                  {/* <li className="inner-tab-section-list-item d-flex justify-content-between">
                     <div className="list-label">classrooms</div>
                     <div className="list-content">32</div>
                   </li>
@@ -78,7 +166,7 @@ export default function Rooms({ heading, name, count, unit, sections }) {
                       <span>21 desks</span>
                       <span>08 windows</span>
                     </div>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>

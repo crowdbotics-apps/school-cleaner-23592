@@ -207,7 +207,7 @@ export default function SectionsDetails({ sectionDetails, rooms, HandelDeleteSch
                       <div className="room-details">
                         <span>{room.square_feet} sq. ft.</span>
                         <span>{room.desks} desks</span>
-                        <span>{room.windows} windows</span>
+                        <span>{room.estimated_time_to_clean} hrs</span>
                       </div>
                     </li>
                   ))}

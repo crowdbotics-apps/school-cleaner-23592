@@ -1,3 +1,5 @@
+import { FETCH_ROOM_SUCCESS } from './SectionReducer';
+
 export const FETCH_SCHOOLS_REQUEST = 'FETCH_SCHOOLS_REQUEST';
 export const FETCH_SCHOOLS_SUCCESS = 'FETCH_SCHOOLS_SUCCESS';
 export const FETCH_SCHOOLS_ERROR = 'FETCH_SCHOOLS_ERROR';
@@ -14,6 +16,10 @@ export const UPDATE_SCHOOL_REQUEST = 'UPDATE_SCHOOL_REQUEST';
 export const UPDATE_SCHOOL_SUCCESS = 'UPDATE_SCHOOL_SUCCESS';
 export const UPDATE_SCHOOL_ERROR = 'UPDATE_SCHOOL_ERROR';
 
+export const UPDATE_CLEANUP_REQUEST = 'UPDATE_CLEANUP_REQUEST';
+export const UPDATE_CLEANUP_SUCCESS = 'UPDATE_CLEANUP_SUCCESS';
+export const UPDATE_CLEANUP_ERROR = 'UPDATE_CLEANUP_ERROR';
+
 export const FETCH_REPORT_REQUEST = 'FETCH_REPORT_REQUEST';
 export const FETCH_REPORT_SUCCESS = 'FETCH_REPORT_SUCCESS';
 export const FETCH_REPORT_ERROR = 'FETCH_REPORT_ERROR';
@@ -26,6 +32,10 @@ export const FETCH_SCHOOLS_CLEANING_DETAILS = 'FETCH_SCHOOLS_CLEANING_DETAILS';
 export const FETCH_SCHOOLS_CLEANING_DETAILS_SUCCESS = 'FETCH_SCHOOLS_CLEANING_DETAILS_SUCCESS';
 export const FETCH_SCHOOLS_CLEANING_DETAILS_ERROR = 'FETCH_SCHOOLS_CLEANING_DETAILS_ERROR';
 
+export const FETCH_ROOM_SPECS_REQUEST = 'FETCH_ROOM_SPECS_REQUEST';
+export const FETCH_ROOM_SPECS_SUCCESS = 'FETCH_ROOM_SPECS_SUCCESS';
+export const FETCH_ROOM_SPECS_ERROR = 'FETCH_ROOM_SPECS_ERROR';
+
 const block = {
   loading: false,
   error: '',
@@ -35,6 +45,7 @@ const block = {
 const initialState = {
   schools: { ...block, data: [] },
   reports: { ...block, data: [] },
+  room_specs: { ...block, data: [] },
   deleteschool: { ...block, data: [] },
   schoolCleaningDetails: { ...block, data: null },
 };
@@ -98,6 +109,36 @@ export const SchoolReducer = (state = initialState, action) => {
         loading: false,
         error: action.error,
       };
+    }
+
+    case FETCH_ROOM_SPECS_REQUEST: {
+      return {
+        ...state,
+        room_specs: { room_specs: action.payload, loading: true },
+      };
+    }
+    case FETCH_ROOM_SPECS_SUCCESS: {
+      return {
+        ...state,
+        room_specs: { ...state.room_specs, loading: false, success: true, data: action.payload },
+      };
+    }
+
+    case FETCH_ROOM_SPECS_ERROR: {
+      return {
+        ...state,
+        room_specs: { ...state.room_specs, loading: false, error: action.error },
+      };
+    }
+
+    case UPDATE_CLEANUP_REQUEST: {
+      return { ...state, loading: true };
+    }
+    case UPDATE_CLEANUP_SUCCESS: {
+      return { ...state, update: action.payload, loading: false };
+    }
+    case UPDATE_CLEANUP_ERROR: {
+      return { ...state, loading: false, error: action.error };
     }
 
     case FETCH_REPORT_REQUEST:

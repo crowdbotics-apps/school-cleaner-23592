@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Cookies from 'js-cookie';
 import { useHistory } from 'react-router-dom';
 
-import { fetchSchools, fetchReport } from '../../../modules/actions/SchoolActions';
+import { fetchSchools, fetchReport, fetchRoomSpecs } from '../../../modules/actions/SchoolActions';
 import BuildingCard from '../../../components/Dashboard/OverviewComponents/BuildingCard';
 import Section from '../../../components/Dashboard/Section';
 import SelectedBuilding from '../../../components/Dashboard/OverviewComponents/SelectedBuilding';
@@ -46,6 +46,7 @@ function Overview(props) {
   const schools = useSelector(({ school }) => school.schools.data);
   const sections = useSelector((store) => store.section.sections.data);
   const report = useSelector((store) => store.school.reports.data);
+  const roomSpecs = useSelector((store) => store.school.room_specs.data);
 
   const [selectedSchool, setSelectedSchool] = useState(schools[0]);
   const [selectedSections, setSelectedSections] = useState();
@@ -55,6 +56,7 @@ function Overview(props) {
       setSelectedSchool(data);
       dispatch(fetchSections(data?.id));
       dispatch(fetchReport(data?.id));
+      dispatch(fetchRoomSpecs(data?.id));
       setSectionData(data?.id);
       setSchoolId(data?.id);
       setShowDetails(true);
@@ -69,6 +71,7 @@ function Overview(props) {
       setSelectedSchool(data);
       dispatch(fetchSections(data?.id));
       dispatch(fetchReport(data?.id));
+      dispatch(fetchRoomSpecs(data?.id));
       setSectionData(data?.id);
       setSchoolId(data?.id);
       setShowDetails(true);
@@ -87,7 +90,7 @@ function Overview(props) {
   };
   return (
     <div className="dashboard overveiw">
-      <div id="siderbar" className="d-flex flex-column col">
+      <div style={{ height: '100vh' }} id="siderbar" className="d-flex flex-column col">
         <div className="d-flex flex-column justify-content-between p-3 section-header">
           <div className="d-flex justify-content-between top-header">
             <div className="logo-holder">
@@ -153,7 +156,7 @@ function Overview(props) {
               setSectionId={setSectionId}
               sectionId={sectionId}
             />
-            <Reports report={report} />
+            <Reports roomSpecs={roomSpecs} school={selectedSchool?.id} report={report} />
             <Inspection />
             <People />
             <Budgeting />

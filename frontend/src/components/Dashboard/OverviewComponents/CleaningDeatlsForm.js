@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createCleanUp, fetchSchoolsCleaningDetails } from '../../../modules/actions/SchoolActions';
+import { createCleanUp, fetchSchoolsCleaningDetails, updateCleanupDetail } from '../../../modules/actions/SchoolActions';
 // import { createSection, editSection } from '../../modules/actions/SectionActions';
 import CSRFToken from '../../../utils/csrfToken';
 import 'react-responsive-modal/styles.css';
@@ -19,12 +19,24 @@ const CleaningDetailsForm = (props) => {
   }, [props.sectionDetails]);
 
   const [validated, setValidated] = useState(false);
-  const [sectionDetail, setSectionDetail] = useState({});
+  const [sectionDetail, setSectionDetail] = useState({
+    dust_cleaning: '',
+    dust_cleaning_size: '',
+    floor_mopping: '',
+    floor_mopping_size: '',
+    floor_burnishing: '',
+    floor_burnishing_size: '',
+    cleaning_table: '',
+    misting_table: '',
+  });
   const [closeModal, setCloseModal] = useState(false);
 
   useEffect(() => {
-    debugger;
-    dispatch(fetchSchoolsCleaningDetails(props?.schoolId));
+    const obj = {
+      cleanupDetail: setSectionDetail,
+      schoolId: props?.schoolId,
+    };
+    dispatch(fetchSchoolsCleaningDetails(obj));
   }, []);
 
   const submitHandler = async (e) => {
@@ -51,15 +63,26 @@ const CleaningDetailsForm = (props) => {
   };
 
   const updateHandler = async (e) => {
-    debugger;
     e.preventDefault();
     e.stopPropagation();
+    console.log(sectionDetail);
     const form = e.currentTarget;
 
     if (form.checkValidity() === true) {
-      // await dispatch(editSection({ id: props.sectionDetails.id, name: sectionDetail.name, school: props.school }));
-      await props.fetchSection();
-      setSectionDetail({ name: '' });
+      const cleaningDetails = {
+        dust_cleaning: parseInt(sectionDetail.dust_cleaning),
+        dust_cleaning_size: parseInt(sectionDetail.dust_cleaning_size),
+        floor_mopping: parseInt(sectionDetail.floor_mopping),
+        floor_mopping_size: parseInt(sectionDetail.floor_mopping_size),
+        floor_burnishing: parseInt(sectionDetail.floor_burnishing),
+        floor_burnishing_size: parseInt(sectionDetail.floor_burnishing_size),
+        cleaning_table: parseInt(sectionDetail.cleaning_table),
+        misting_table: parseInt(sectionDetail.misting_table),
+        cleanupId: sectionDetail.id,
+      };
+      await dispatch(updateCleanupDetail(cleaningDetails));
+      // await props.fetchSection();
+      setSectionDetail({});
       props.onCloseModal();
       setCloseModal(true);
     } else {
@@ -79,14 +102,14 @@ const CleaningDetailsForm = (props) => {
             <div style={{ border: 'none' }} className="modal-content">
               <div className="modal-body">
                 <CSRFToken />
-                <form onSubmit={props.sectionDetails ? updateHandler : submitHandler}>
+                <form onSubmit={props.edit ? updateHandler : submitHandler}>
                   <h2 className="modal-title mb-4" id="add_sectionLabel">
                     Cleaning details
                   </h2>
                   <div className="row">
                     <div className="col-8 mb-4">
                       <div className="form-floating mb-3 go-bottom">
-                        <select name="dust_cleaning" className="form-control" list="dust_cleaning" onChange={handleChange} id="room_type">
+                        <select value={sectionDetail.dust_cleaning} name="dust_cleaning" className="form-control" list="dust_cleaning" onChange={handleChange} id="room_type">
                           <option hidden></option>
                           <option style={{ fontWeight: 'bolder' }} id={1} value={1}>
                             Dust MOP
@@ -104,7 +127,7 @@ const CleaningDetailsForm = (props) => {
                           type="number"
                           className="form-control"
                           name="dust_cleaning_size"
-                          value={sectionDetail.name}
+                          value={sectionDetail.dust_cleaning_size}
                           onChange={handleChange}
                           required={true}
                           id="floatingInput"
@@ -118,7 +141,7 @@ const CleaningDetailsForm = (props) => {
                   <div className="row">
                     <div className="col-8 mb-4">
                       <div className="form-floating mb-3 go-bottom">
-                        <select name="floor_mopping" className="form-control" list="floor_mopping" onChange={handleChange} id="room_type">
+                        <select value={sectionDetail.floor_mopping} name="floor_mopping" className="form-control" list="floor_mopping" onChange={handleChange} id="room_type">
                           <option hidden></option>
                           <option style={{ fontWeight: 'bolder' }} id={3} value={3}>
                             Flat mop
@@ -139,7 +162,7 @@ const CleaningDetailsForm = (props) => {
                           type="number"
                           className="form-control"
                           name="floor_mopping_size"
-                          value={sectionDetail.name}
+                          value={sectionDetail.floor_mopping_size}
                           onChange={handleChange}
                           required={true}
                           id="floatingInput"
@@ -152,7 +175,14 @@ const CleaningDetailsForm = (props) => {
                   <div className="row">
                     <div className="col-8 mb-4">
                       <div className="form-floating mb-3 go-bottom">
-                        <select name="floor_burnishing" className="form-control" list="floor_burnishing" onChange={handleChange} id="room_type">
+                        <select
+                          value={sectionDetail.floor_burnishing}
+                          name="floor_burnishing"
+                          className="form-control"
+                          list="floor_burnishing"
+                          onChange={handleChange}
+                          id="room_type"
+                        >
                           <option hidden></option>
                           <option style={{ fontWeight: 'bolder' }} id={6} value={6}>
                             Ride on burnisher
@@ -170,7 +200,7 @@ const CleaningDetailsForm = (props) => {
                           type="number"
                           className="form-control"
                           name="floor_burnishing_size"
-                          value={sectionDetail.name}
+                          value={sectionDetail.floor_burnishing_size}
                           onChange={handleChange}
                           id="floatingInput"
                           required={true}
@@ -183,7 +213,7 @@ const CleaningDetailsForm = (props) => {
                   <div className="row">
                     <div className="col-8">
                       <div className="form-floating mb-5 go-bottom">
-                        <select name="cleaning_table" className="form-control" list="cleaning_table" onChange={handleChange} id="room_type">
+                        <select value={sectionDetail.cleaning_table} name="cleaning_table" className="form-control" list="cleaning_table" onChange={handleChange} id="room_type">
                           <option hidden></option>
                           <option style={{ fontWeight: 'bolder' }} id={8} value={8}>
                             spray and wipe
@@ -202,7 +232,7 @@ const CleaningDetailsForm = (props) => {
                   <div className="row">
                     <div className="col-8">
                       <div className="form-floating mb-5 go-bottom">
-                        <select name="misting_table" className="form-control" list="misting_table" onChange={handleChange} id="room_type">
+                        <select value={sectionDetail.misting_table} name="misting_table" className="form-control" list="misting_table" onChange={handleChange} id="room_type">
                           <option hidden></option>
                           <option style={{ fontWeight: 'bolder' }} id={11} value={11}>
                             Electostatic sprayer (if they do it)
@@ -214,7 +244,7 @@ const CleaningDetailsForm = (props) => {
                   </div>
 
                   <button type="submit" data-dismiss={closeModal ? 'modal' : ''} className="btn btn-primary text-uppercase">
-                    {props.sectionDetails ? 'Update' : 'Save'}
+                    {props.edit ? 'Update' : 'Save'}
                   </button>
                 </form>
               </div>

@@ -96,7 +96,7 @@ export default function Section({ sectionNumber, noOfRooms, district, school, se
   return (
     <div className="tab-pane fade show active" id="overveiw" role="tabpanel" aria-labelledby="Overveiw-tab">
       <div className="tabs-inner-content-holder">
-        <div className="tabs-siderbar">
+        <div style={{ maxWidth: '415px', overflow: 'scroll', height: '63vh' }} className="tabs-siderbar">
           <div class="section-header">
             <h5>Sections</h5>
             <div className="d-flex header-button justify-content-between">
@@ -141,7 +141,7 @@ export default function Section({ sectionNumber, noOfRooms, district, school, se
             ))}
           </div>
         </div>
-        <div className="tabs-inner-block">
+        <div style={{ overflow: 'scroll', height: '63vh' }} className="tabs-inner-block">
           {showDetails ? (
             <UnselectSection selectionname="section" />
           ) : (

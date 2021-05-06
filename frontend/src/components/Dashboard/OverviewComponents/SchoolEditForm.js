@@ -49,6 +49,15 @@ export default function SchoolEdit(props) {
           school: props.id,
         };
         await dispatch(updateSchool(obj));
+      } else if (props.name === buildingDetail.name) {
+        const obj = {
+          data: {
+            image: buildingDetail.logo,
+            district: props.district,
+          },
+          school: props.id,
+        };
+        await dispatch(updateSchool(obj));
       } else {
         const obj = {
           data: {

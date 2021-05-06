@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import 'react-responsive-modal/styles.css';
 import { Modal } from 'react-responsive-modal';
 import { createRoom } from '../../../modules/actions/SectionActions';
+import { fetchReport } from '../../../modules/actions/SchoolActions';
 
 const roomsType = [
   {
@@ -86,7 +87,7 @@ const RoomForm = (props) => {
         district: props.district,
       };
       await dispatch(createRoom(obj));
-      await props.fetchSection();
+      // dispatch(fetchReport(props.school));
       // setSectionDetail({ name: '' });
       props.onCloseModal();
       setCloseModal(true);

@@ -27,6 +27,12 @@ import {
   FETCH_SCHOOLS_CLEANING_DETAILS,
   FETCH_SCHOOLS_CLEANING_DETAILS_SUCCESS,
   FETCH_SCHOOLS_CLEANING_DETAILS_ERROR,
+  UPDATE_CLEANUP_REQUEST,
+  UPDATE_CLEANUP_SUCCESS,
+  UPDATE_CLEANUP_ERROR,
+  FETCH_ROOM_SPECS_REQUEST,
+  FETCH_ROOM_SPECS_SUCCESS,
+  FETCH_ROOM_SPECS_ERROR,
 } from '../reducers/SchoolReducer';
 
 async function fetchSchools(districtId) {
@@ -105,7 +111,6 @@ async function createCleanup(data) {
 }
 
 function* handleCreateCleanup({ payload }) {
-  debugger;
   try {
     const response = yield call(createCleanup, payload);
     if (response) {
@@ -128,13 +133,13 @@ function* handleCreateCleanup({ payload }) {
 }
 
 async function fetchCleaningDetails(id) {
-  return await Axios.get(`/api/v1/equipment/${id}`, getHeader());
+  return await Axios.get(`/api/v1/equipment/?school=${id}`, getHeader());
 }
 
 function* handleFetchSchoolCleaningDetails(data) {
-  debugger;
   try {
-    const response = yield call(fetchCleaningDetails, data.payload);
+    const response = yield call(fetchCleaningDetails, data.payload.schoolId);
+    data.payload.cleanupDetail(response[0]);
     if (response) {
       yield put({
         type: FETCH_SCHOOLS_CLEANING_DETAILS_SUCCESS,
@@ -148,6 +153,42 @@ function* handleFetchSchoolCleaningDetails(data) {
     });
   }
 }
+
+async function editCleanupData(data) {
+  return await Axios.patch(
+    `/api/v1/equipment/${data.cleanupId}/`,
+    {
+      dust_cleaning: data.dust_cleaning,
+      dust_cleaning_size: data.dust_cleaning_size,
+      floor_burnishing: data.floor_burnishing,
+      floor_burnishing_size: data.floor_burnishing_size,
+      floor_mopping: data.floor_mopping,
+      floor_mopping_size: data.floor_mopping_size,
+      misting_table: data.misting_table,
+      cleaning_table: data.cleaning_table,
+    },
+    getHeader()
+  );
+}
+
+function* handleEditCleanupData({ payload }) {
+  try {
+    const response = yield call(editCleanupData, payload);
+    // const allSchool = yield call(fetchSchools, payload.data.district);
+    if (response) {
+      yield put({
+        type: UPDATE_CLEANUP_SUCCESS,
+        payload: response,
+      });
+    }
+  } catch (error) {
+    yield put({
+      type: UPDATE_CLEANUP_ERROR,
+      error: getSimplifiedError(error),
+    });
+  }
+}
+
 async function editSchool(data) {
   return await Axios.patch(`/api/v1/school/${data.school}/`, data.data, getHeader());
 }
@@ -191,6 +232,27 @@ function* handleFetchReports(data) {
   }
 }
 
+async function fetchRoomSpecs(schoolId) {
+  return await Axios.get(`/api/v1/school/${schoolId}/room-specs/`, getHeader());
+}
+
+function* handleFetchRoomSpecs(data) {
+  try {
+    const response = yield call(fetchRoomSpecs, data.payload);
+    if (response) {
+      yield put({
+        type: FETCH_ROOM_SPECS_SUCCESS,
+        payload: response,
+      });
+    }
+  } catch (error) {
+    yield put({
+      type: FETCH_ROOM_SPECS_ERROR,
+      error: getSimplifiedError(error),
+    });
+  }
+}
+
 async function deleteSchool(schoolId) {
   return await Axios.delete(`/api/v1/school/${schoolId}/`, getHeader());
 }
@@ -223,4 +285,6 @@ export default all([
   takeLatest(UPDATE_SCHOOL_REQUEST, handleEditSchool),
   takeLatest(CREATE_CLEANUP_REQUEST, handleCreateCleanup),
   takeLatest(FETCH_SCHOOLS_CLEANING_DETAILS, handleFetchSchoolCleaningDetails),
+  takeLatest(UPDATE_CLEANUP_REQUEST, handleEditCleanupData),
+  takeLatest(FETCH_ROOM_SPECS_REQUEST, handleFetchRoomSpecs),
 ]);

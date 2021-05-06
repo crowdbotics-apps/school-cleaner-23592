@@ -112,7 +112,13 @@ export default function BuildingCard(props) {
         </div>
       ) : null}
       {openCleaningModal ? (
-        <CleaningDeatlsForm open={openCleaningModal} onOpenModal={() => setOpenCleaningModal(true)} onCloseModal={() => setOpenCleaningModal(false)} schoolId={props.id} />
+        <CleaningDeatlsForm
+          edit={true}
+          open={openCleaningModal}
+          onOpenModal={() => setOpenCleaningModal(true)}
+          onCloseModal={() => setOpenCleaningModal(false)}
+          schoolId={props.id}
+        />
       ) : null}
     </div>
   );

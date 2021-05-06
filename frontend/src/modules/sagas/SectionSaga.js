@@ -26,7 +26,7 @@ import {
   EDIT_SECTION_REQUEST,
 } from '../reducers/SectionReducer';
 
-import { FETCH_SCHOOLS_SUCCESS } from '../reducers/SchoolReducer';
+import { FETCH_SCHOOLS_SUCCESS, FETCH_REPORT_SUCCESS } from '../reducers/SchoolReducer';
 
 async function fetchSchools(districtId) {
   return await Axios.get(`/api/v1/school/?district=${districtId}`, getHeader());
@@ -64,6 +64,10 @@ async function createSection({ name, school }) {
   );
 }
 
+async function fetchReports(schoolId) {
+  return await Axios.get(`/api/v1/school/${schoolId}/report/`, getHeader());
+}
+
 function* handleCreateSection({ payload }) {
   try {
     const response = yield call(createSection, payload);
@@ -78,6 +82,12 @@ function* handleCreateSection({ payload }) {
       yield put({
         type: FETCH_SCHOOLS_SUCCESS,
         payload: school,
+      });
+
+      const report = yield call(fetchReports, payload.school);
+      yield put({
+        type: FETCH_REPORT_SUCCESS,
+        payload: report,
       });
 
       yield put({
@@ -133,17 +143,20 @@ function* handleCreateRoom({ payload }) {
         payload: newRoom,
       });
       // yield put(handleFetchRoom(response.id));
-
       const getSection = yield call(fetchSections, payload.school);
       yield put({
         type: FETCH_SECTIONS_SUCCESS,
         payload: getSection,
       });
-
       const school = yield call(fetchSchools, payload.district);
       yield put({
         type: FETCH_SCHOOLS_SUCCESS,
         payload: school,
+      });
+      const report = yield call(fetchReports, payload.school);
+      yield put({
+        type: FETCH_REPORT_SUCCESS,
+        payload: report,
       });
 
       // yield put({
@@ -232,6 +245,11 @@ function* handleDeleteRoom(data) {
     yield put({
       type: FETCH_SCHOOLS_SUCCESS,
       payload: school,
+    });
+    const report = yield call(fetchReports, data.payload.school);
+    yield put({
+      type: FETCH_REPORT_SUCCESS,
+      payload: report,
     });
     // if (response) {
     //   yield put({
